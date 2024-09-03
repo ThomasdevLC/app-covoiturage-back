@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools{
-        maven 'Maven 3.9.9'
+        maven 'maven 3.9.9'
     }
     stages {
         stage('checkout') {
@@ -17,7 +17,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def mvnHome = tool 'Maven 3.9.9' //
+                    def mvnHome = tool 'maven 3.9.9' //
                     withSonarQubeEnv('SonarQ') {
                         sh "${mvnHome}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=covoiturage-back -Dsonar.projectName='App Covoiturage Backend'"
                     }
