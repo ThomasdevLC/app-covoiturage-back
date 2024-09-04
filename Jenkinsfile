@@ -19,26 +19,20 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Code Coverage') {
+
+
+    stage('Code Coverage') {
             steps {
-                sh 'mvn jacoco:prepare-agent test jacoco:report'
+                sh 'mvn jacoco:report'
             }
             post {
                 always {
-                    // Archive the JaCoCo HTML report for viewing
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'target/site/jacoco',
-                        reportFiles: 'index.html',
-                        reportName: 'JaCoCo Code Coverage'
-                    ])
-                    // Optionally, publish the coverage report in Cobertura format
-                    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: '**/target/site/jacoco/jacoco.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false
+                    jacoco execPattern: '**/target/jacoco.exec'
                 }
             }
         }
+
+        
         stage('SonarQube Analysis') {
             steps {
                 script {
