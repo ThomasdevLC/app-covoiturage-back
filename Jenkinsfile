@@ -1,12 +1,19 @@
 pipeline {
     agent any
+    parameters {
+        choice(
+            name: 'BRANCH_NAME', 
+            choices: ['main', 'jenkins'], 
+            description: 'select branch'
+        )
+    }
     tools {
         maven 'maven 3.9.9'
     }
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/ThomasdevLC/app-covoiturage-back.git'
+                git branch: "${BRANCH_NAME}", url: 'https://github.com/ThomasdevLC/app-covoiturage-back.git'
             }
         }
         stage('Build') {
