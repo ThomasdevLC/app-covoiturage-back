@@ -9,9 +9,14 @@ pipeline {
                 git 'https://github.com/ThomasdevLC/app-covoiturage-back.git'
             }
         }
-        stage('Build') {
+       stage('Build') {
             steps {
                 sh 'mvn clean package'
+            }
+        }
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn test'
             }
         }
         stage('SonarQube Analysis') {
@@ -23,6 +28,17 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml'
+        }
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
