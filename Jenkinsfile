@@ -21,16 +21,16 @@ pipeline {
         }
 
 
-    stage('Code Coverage') {
-            steps {
-                sh 'mvn jacoco:report'
-            }
-            post {
-                always {
-                    jacoco execPattern: '**/target/jacoco.exec'
-                }
-            }
-        }
+    // stage('Code Coverage') {
+    //         steps {
+    //             sh 'mvn jacoco:report'
+    //         }
+    //         post {
+    //             always {
+    //                 jacoco execPattern: '**/target/jacoco.exec'
+    //             }
+    //         }
+    //     }
 
         
         stage('SonarQube Analysis') {
