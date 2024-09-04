@@ -114,26 +114,26 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.11.5</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
             <version>0.8.12</version>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-  <groupId>org.sonarsource.scanner.maven</groupId>
-  <artifactId>sonar-maven-plugin</artifactId>
-  <version>6.1.0.4477</version> 
-</plugin>
-         <plugin>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>6.1.0.4477</version>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
@@ -152,9 +152,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-		</plugins>
-	</build>
-
+        </plugins>
+    </build>
 </project>
