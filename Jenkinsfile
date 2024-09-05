@@ -26,7 +26,8 @@ pipeline {
                 script {
                     def mvnHome = tool name: 'maven 3.9.9', type: 'maven'
                     withSonarQubeEnv('SonarQ') {
-                      sh "${mvnHome}/mvn clean verify sonar:sonar -Dsonar.projectKey=app-covoit -Dsonar.host.url=http://192.168.1.23:9000"
+                    sh "${mvnHome}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=app-covoit -Dsonar.host.url=http://192.168.1.23:9000"
+
 
                     }
                 }
