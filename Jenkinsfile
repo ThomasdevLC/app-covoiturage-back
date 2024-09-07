@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-                git 'https://github.com/ThomasdevLC/app-covoiturage-back.git'
+                git branch: 'jenkins', url: 'https://github.com/ThomasdevLC/app-covoiturage-back.git'
             }
         }
         stage('Build') {
