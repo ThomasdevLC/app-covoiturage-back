@@ -73,7 +73,7 @@ public class Employee implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @NotBlank(message = "Veuillez renseigner unmot de passe.")
+    @NotBlank(message = "Veuillez renseigner un mot de passe.")
     @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères")
     @NotBlank(message = "Le mot de passe ne peut pas être vide")
     @Column(name = "password")

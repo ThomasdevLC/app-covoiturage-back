@@ -34,8 +34,8 @@ public class PrivateVehicleDTO {
     public PrivateVehicleDTO() {
     }
 
-    public PrivateVehicleDTO(int id, String number, String brand, String model, String category, String picUrl,
-            String motor, int seats, EmployeeDTO employee, VehicleType type) {
+    public PrivateVehicleDTO(int id, String number, String brand, String model,
+            int seats, EmployeeDTO employee, VehicleType type) {
         this.id = id;
         this.number = number;
         this.brand = brand;

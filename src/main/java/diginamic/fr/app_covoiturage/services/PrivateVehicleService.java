@@ -38,7 +38,6 @@ public class PrivateVehicleService {
         if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
             vehicle.setEmployee(employee);
-
             Vehicle savedVehicle = privateVehicleRepository.save(vehicle);
 
             return privateVehicleMapper.toDTO(savedVehicle);
