@@ -142,7 +142,7 @@
 
 </plugins>
 
-<profiles>
+<!-- <profiles>
   <profile>
       <id>dev</id>
       <properties>
@@ -180,7 +180,7 @@
    <resource>
        <directory>${env}</directory>
    </resource>
-</resources>
+</resources> -->
 
 	</build>
 
