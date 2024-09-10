@@ -126,6 +126,12 @@
             <version>5.14.0.18788</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
+
 	</dependencies>
 
 	<build>
@@ -142,7 +148,7 @@
 
 </plugins>
 
-<!-- <profiles>
+<profiles>
   <profile>
       <id>dev</id>
       <properties>
@@ -180,7 +186,7 @@
    <resource>
        <directory>${env}</directory>
    </resource>
-</resources> -->
+</resources>
 
 	</build>
 
