@@ -1,0 +1,10 @@
+{
+    "build": {
+      "type": "maven",
+      "goal": "package -P prod"
+    },
+    "deploy": {
+      "jarName": "target/app-covoiturage-0.0.1-SNAPSHOT.jar"
+    }
+  }
+  
