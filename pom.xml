@@ -132,15 +132,17 @@
             <version>5.14.0.18788</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <scope>runtime</scope>
-</dependency>
 
 	</dependencies>
 
 	  <build>
+	    <resources>
+        	<resource>
+            	<directory>src/main/resources</directory>
+            	<filtering>true</filtering>
+        	</resource>
+    	</resources>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -153,43 +155,31 @@
             </plugin>
         </plugins>
         
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>dev/**</exclude>
-                    <exclude>test/**</exclude>
-                    <exclude>prod/**</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${env}</directory>
-            </resource>
-        </resources>
     </build>
 
     <profiles>
         <profile>
             <id>dev</id>
-            <properties>
-                <env>src/main/resources/dev</env>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-        </profile>
-        <profile>
-            <id>test</id>
             <properties>
-                <env>src/main/resources/test</env>
-            </properties>
+                <jdbc.url>jdbc:mysql://localhost:3306/db_covoit</jdbc.url>
+                <jdbc.user>root</jdbc.user>
+                <jdbc.password>3-!zPv%2X62Zo</jdbc.password>
+                <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
+                <jdbc.dialect>org.hibernate.dialect.MySQL5Dialect</jdbc.dialect>
+             </properties>
         </profile>
+        
         <profile>
             <id>prod</id>
-            <properties>
-                <env>src/main/resources/prod</env>
-                <maven.test.skip>true</maven.test.skip>
+    		<properties>
+                <jdbc.url>jdbc:mysql://${env.MYSQL_ADDON_HOST}:${env.MYSQL_ADDON_PORT}/${env.MYSQL_ADDON_DB}</jdbc.url>
+                <jdbc.user>${env.MYSQL_ADDON_USER}</jdbc.user>
+                <jdbc.password>${env.MYSQL_ADDON_PASSWORD}</jdbc.password>
+                <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
+                <jdbc.dialect>org.hibernate.dialect.MySQL5Dialect</jdbc.dialect>
             </properties>
         </profile>
     </profiles>
