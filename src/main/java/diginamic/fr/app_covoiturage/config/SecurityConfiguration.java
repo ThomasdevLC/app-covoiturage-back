@@ -20,8 +20,6 @@ public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    @Value("${cors.allowed.origins}")
-    private String allowedOrigins;
 
     public SecurityConfiguration(AuthenticationProvider authenticationProvider,
             JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -50,7 +48,9 @@ public class SecurityConfiguration {
     @Bean
     CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        configuration.setAllowedOrigins(List.of(
+                "https://thomasdevlc.github.io/app-covoiturage-front/",
+                "http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
