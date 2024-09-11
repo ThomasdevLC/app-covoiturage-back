@@ -48,7 +48,7 @@ public class SecurityConfiguration {
     CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "https://thomasdevlc.github.io/app-covoiturage-front/",
+                "https://thomasdevlc.github.io/app-covoiturage-front",
                 "http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
