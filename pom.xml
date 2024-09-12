@@ -169,7 +169,6 @@
                 <jdbc.password>3-!zPv%2X62Zo</jdbc.password>
                 <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
                 <jdbc.dialect>org.hibernate.dialect.MySQL5Dialect</jdbc.dialect>
-			
              </properties>
         </profile>
         
@@ -181,7 +180,6 @@
                 <jdbc.password>${env.MYSQL_ADDON_PASSWORD}</jdbc.password>
                 <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
                 <jdbc.dialect>org.hibernate.dialect.MySQL5Dialect</jdbc.dialect>
-			
             </properties>
         </profile>
     </profiles>
