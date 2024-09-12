@@ -166,7 +166,7 @@
             <properties>
                 <jdbc.url>jdbc:mysql://localhost:3306/db_covoit</jdbc.url>
                 <jdbc.user>root</jdbc.user>
-                <jdbc.password>3-!zPv%2X62Zo</jdbc.password>
+                <jdbc.password></jdbc.password>
                 <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
                 <jdbc.dialect>org.hibernate.dialect.MySQL5Dialect</jdbc.dialect>
 			
