@@ -17,46 +17,46 @@ import org.springframework.security.authentication.AuthenticationProvider;
 @Configuration
 public class SecurityConfiguration {
 
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final AuthenticationProvider authenticationProvider;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider,
-            JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.authenticationProvider = authenticationProvider;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+        public SecurityConfiguration(AuthenticationProvider authenticationProvider,
+                        JwtAuthenticationFilter jwtAuthenticationFilter) {
+                this.authenticationProvider = authenticationProvider;
+                this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/employees/**").permitAll()
-                        .requestMatchers("/company-vehicles").hasRole("ADMIN")
-                        .requestMatchers("/vehicle-bookings").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(corsFilter(), JwtAuthenticationFilter.class);
-        return httpSecurity.build();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+                httpSecurity
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .authorizeHttpRequests(request -> request
+                                                .requestMatchers("/auth/**").permitAll()
+                                                .requestMatchers("/employees/**").permitAll()
+                                                .requestMatchers("/company-vehicles").hasRole("ADMIN")
+                                                .requestMatchers("/vehicle-bookings").hasRole("ADMIN")
+                                                .anyRequest().authenticated())
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authenticationProvider(authenticationProvider)
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .addFilterBefore(corsFilter(), JwtAuthenticationFilter.class);
+                return httpSecurity.build();
+        }
 
-    @Bean
-    CorsFilter corsFilter() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "https://thomasdevlc.github.io/app-covoiturage-front",
-                "http://localhost:4200"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true);
+        @Bean
+        CorsFilter corsFilter() {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(List.of(
+                                "https://thomasdevlc.github.io/",
+                                "http://localhost:4200"));
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+                configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", configuration);
 
-        return new CorsFilter(source);
-    }
+                return new CorsFilter(source);
+        }
 }
