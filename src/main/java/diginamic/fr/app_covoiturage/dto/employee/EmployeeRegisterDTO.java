@@ -9,9 +9,10 @@ public class EmployeeRegisterDTO {
     private boolean admin = false;
     private String email;
     private String password;
+    private boolean isActive = true;
 
     public EmployeeRegisterDTO(String firstName, String lastName, String gender, String phone, String email,
-            String password, Boolean admin) {
+            String password, Boolean admin, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -21,6 +22,7 @@ public class EmployeeRegisterDTO {
         }
         this.email = email;
         this.password = password;
+        this.isActive = isActive;
     }
 
     public EmployeeRegisterDTO() {
@@ -80,5 +82,13 @@ public class EmployeeRegisterDTO {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }
