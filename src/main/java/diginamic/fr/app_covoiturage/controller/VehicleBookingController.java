@@ -55,6 +55,16 @@ public class VehicleBookingController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<?> getBookingById(@PathVariable int bookingId) {
+        try {
+            VehicleBookingDTO booking = vehicleBookingService.findById(bookingId);
+            return new ResponseEntity<>(booking, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/search/{employeeId}")
     public ResponseEntity<List<VehicleBookingDTO>> getBookingsByEmployeeAndTime(
             @PathVariable int employeeId,

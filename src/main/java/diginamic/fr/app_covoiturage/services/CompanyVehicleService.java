@@ -165,4 +165,10 @@ public class CompanyVehicleService {
                 .toList();
     }
 
+    public CompanyVehicleDTO getVehicleById(int id) {
+        Vehicle vehicle = companyVehicleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+        return companyVehicleMapper.toDTO(vehicle);
+    }
+
 }
