@@ -13,46 +13,45 @@ import java.util.Optional;
 @Repository
 public interface VehicleBookingRepository extends CrudRepository<VehicleBooking, Integer> {
 
-    List<VehicleBooking> findByStartTime(LocalDateTime startTime);
+        List<VehicleBooking> findByStartTime(LocalDateTime startTime);
 
-    List<VehicleBooking> findByEndTime(LocalDateTime endTime);
+        List<VehicleBooking> findByEndTime(LocalDateTime endTime);
 
-    List<VehicleBooking> findByEmployeeId(int employeeId);
+        List<VehicleBooking> findByEmployeeId(int employeeId);
 
-    List<VehicleBooking> findByCompanyVehicleId(int vehicleId);
+        List<VehicleBooking> findByCompanyVehicleId(int vehicleId);
 
-    List<VehicleBooking> findAll();
+        List<VehicleBooking> findAll();
 
-    //
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime >= :now")
-    List<VehicleBooking> findCurrentByEmployeeId(@Param("employeeId") int employeeId, @Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime >= :now")
+        List<VehicleBooking> findCurrentByEmployeeId(@Param("employeeId") int employeeId,
+                        @Param("now") LocalDateTime now);
 
-    // @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee = :employeeId AND
-    // vb.endTime < :now")+,Param("now") LocalDateTime now
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime < :now ")
-    List<VehicleBooking> findHistoryEmployeeId(@Param("employeeId") int employeeId, @Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime < :now ")
+        List<VehicleBooking> findHistoryEmployeeId(@Param("employeeId") int employeeId,
+                        @Param("now") LocalDateTime now);
 
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.companyVehicle.id = :vehicleId " +
-            "AND ((:startTime BETWEEN vb.startTime AND vb.endTime) " +
-            "OR (:endTime BETWEEN vb.startTime AND vb.endTime) " +
-            "OR (vb.startTime BETWEEN :startTime AND :endTime))")
-    Optional<VehicleBooking> findByBookingPeriod(int vehicleId, LocalDateTime startTime, LocalDateTime endTime);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.companyVehicle.id = :vehicleId " +
+                        "AND ((:startTime BETWEEN vb.startTime AND vb.endTime) " +
+                        "OR (:endTime BETWEEN vb.startTime AND vb.endTime) " +
+                        "OR (vb.startTime BETWEEN :startTime AND :endTime))")
+        Optional<VehicleBooking> findByBookingPeriod(int vehicleId, LocalDateTime startTime, LocalDateTime endTime);
 
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime < :now")
-    List<VehicleBooking> getPastBookingsByEmployeeId(@Param("employeeId") int employeeId,
-            @Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime < :now")
+        List<VehicleBooking> getPastBookingsByEmployeeId(@Param("employeeId") int employeeId,
+                        @Param("now") LocalDateTime now);
 
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime > :now")
-    List<VehicleBooking> getFuturesBookingsByEmployeeId(@Param("employeeId") int employeeId,
-            @Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.employee.id = :employeeId AND vb.startTime > :now")
+        List<VehicleBooking> getFuturesBookingsByEmployeeId(@Param("employeeId") int employeeId,
+                        @Param("now") LocalDateTime now);
 
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.endTime < :now")
-    List<VehicleBooking> findAllPastBookings(@Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.endTime < :now")
+        List<VehicleBooking> findAllPastBookings(@Param("now") LocalDateTime now);
 
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.startTime > :now")
-    List<VehicleBooking> findAllFutureBookings(@Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.startTime > :now")
+        List<VehicleBooking> findAllFutureBookings(@Param("now") LocalDateTime now);
 
-    @Query("SELECT vb FROM VehicleBooking vb WHERE vb.startTime <= :now AND vb.endTime >= :now")
-    List<VehicleBooking> findAllCurrentBookings(@Param("now") LocalDateTime now);
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.startTime <= :now AND vb.endTime >= :now")
+        List<VehicleBooking> findAllCurrentBookings(@Param("now") LocalDateTime now);
 
 }

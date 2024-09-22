@@ -123,6 +123,13 @@ public class VehicleBookingService {
                 .collect(Collectors.toList());
     }
 
+    public VehicleBookingDTO findById(int bookingId) {
+        VehicleBooking booking = vehicleBookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("La réservation n'existe pas."));
+
+        return vehicleBookingMapper.toDTO(booking);
+    }
+
     public List<VehicleBookingDTO> findBookingsByEmployeeAndTime(int employeeId, boolean past) {
         LocalDateTime now = LocalDateTime.now();
         List<VehicleBooking> vehicleBookings;
