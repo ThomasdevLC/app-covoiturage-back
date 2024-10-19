@@ -111,7 +111,6 @@ public class RideShareBasicDTO {
         this.vehicle = vehicle;
     }
 
-    // Nouvelle propriété pour calculer la durée du trajet
     public Duration getTripDuration() {
         if (departureTime != null && arrivalTime != null) {
             return Duration.between(departureTime, arrivalTime);
@@ -119,7 +118,6 @@ public class RideShareBasicDTO {
         return Duration.ZERO;
     }
 
-    // Optionnel : Méthode pour obtenir la durée sous forme de chaîne formatée
     public String getFormattedTripDuration() {
         Duration duration = getTripDuration();
         long hours = duration.toHours();
