@@ -1,6 +1,8 @@
 package diginamic.fr.app_covoiturage.services;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,5 +74,14 @@ public class PrivateVehicleService {
         } else {
             throw new RuntimeException("Véhicule non reconnu");
         }
+    }
+
+    public List<PrivateVehicleDTO> getVehiclesByEmployeeId(int employeeId) {
+        List<Vehicle> vehicles = privateVehicleRepository.findVehiclesByEmployeeId(employeeId);
+
+        // Convertir la liste des entités Vehicle en PrivateVehicleDTO
+        return vehicles.stream()
+                .map(privateVehicleMapper::toDTO) // Conversion en DTO
+                .collect(Collectors.toList()); // Collecter les DTOs dans une liste
     }
 }
