@@ -1,6 +1,7 @@
 package diginamic.fr.app_covoiturage.services;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,6 +74,14 @@ public class RideShareService {
 
         if (departureAddress.getId() == arrivalAddress.getId()) {
             throw new IllegalArgumentException("L'adresse de départ et l'adresse d'arrivée doivent être différentes.");
+        }
+
+        // Valider les dates de début et de fin
+        LocalDateTime departureTime = rideShareDTO.getDepartureTime();
+        LocalDateTime arrivalTime = rideShareDTO.getArrivalTime();
+        if (departureTime.isAfter(arrivalTime)) {
+            throw new IllegalArgumentException("La date de départ ne peut pas être après la date d'arrivée.");
+
         }
 
         // VERIFICATION Covoiturage pendant cette période //
@@ -220,6 +229,7 @@ public class RideShareService {
                 departureDateTime);
 
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareBasicMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -237,6 +247,7 @@ public class RideShareService {
             rideShares = rideShareRepository.findByOrganizerIdAndDepartureAfter(organizerId, now);
         }
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -255,11 +266,10 @@ public class RideShareService {
         }
 
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
-    // ----------------------------------------------------//
 
     public Optional<RideShareDTO> getRideShareById(int id) {
         return rideShareRepository.findById(id)
