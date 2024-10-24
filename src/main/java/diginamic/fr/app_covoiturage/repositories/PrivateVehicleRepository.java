@@ -18,7 +18,10 @@ public interface PrivateVehicleRepository extends
 
         Optional<Vehicle> findById(int number);
 
-        @Query("SELECT v FROM Vehicle v WHERE v.employee.id = :employeeId")
+        @Query("SELECT v FROM Vehicle v WHERE v.employee.id = :employeeId AND v.type = 'PRIVATE'")
         List<Vehicle> findVehiclesByEmployeeId(@Param("employeeId") int employeeId);
+
+        @Query("SELECT COUNT(r) > 0 FROM RideShare r WHERE r.vehicle.id = :vehicleId")
+        boolean isVehicleLinkedToRideShare(@Param("vehicleId") int vehicleId);
 
 }

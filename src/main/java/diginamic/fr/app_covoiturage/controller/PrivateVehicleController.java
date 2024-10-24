@@ -6,18 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 import diginamic.fr.app_covoiturage.exceptions.MessageException;
-import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.services.PrivateVehicleService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -59,4 +61,21 @@ public class PrivateVehicleController {
     public List<PrivateVehicleDTO> getVehiclesByEmployee(@PathVariable int employeeId) {
         return privateVehicleService.getVehiclesByEmployeeId(employeeId);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteVehicle(
+            @PathVariable int id,
+            @RequestParam("employeeId") int employeeId) {
+        try {
+            privateVehicleService.deleteVehicle(id, employeeId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

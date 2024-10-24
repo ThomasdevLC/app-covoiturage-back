@@ -13,6 +13,7 @@ import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PrivateVehicleService {
@@ -84,4 +85,22 @@ public class PrivateVehicleService {
                 .map(privateVehicleMapper::toDTO) // Conversion en DTO
                 .collect(Collectors.toList()); // Collecter les DTOs dans une liste
     }
+
+    public void deleteVehicle(int id, int employeeId) {
+        Vehicle vehicle = privateVehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
+
+        if (vehicle.getEmployee().getId() != employeeId) {
+            throw new IllegalArgumentException("Utilisateur non autorisé à supprimer ce véhicule.");
+        }
+
+        // Vérifiez si le véhicule est lié à un trajet
+        if (privateVehicleRepository.isVehicleLinkedToRideShare(id)) {
+            throw new IllegalArgumentException(
+                    "Impossible de supprimer ce véhicule car il est lié à un trajet que vous avez organisé.");
+        }
+
+        privateVehicleRepository.delete(vehicle);
+    }
+
 }
