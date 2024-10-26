@@ -1,6 +1,7 @@
 package diginamic.fr.app_covoiturage.services;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import diginamic.fr.app_covoiturage.dto.address.AddressDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareBasicDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareDTO;
+import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 import diginamic.fr.app_covoiturage.mapper.address.AddressMapper;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareBasicMapper;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareMapper;
@@ -21,6 +23,7 @@ import diginamic.fr.app_covoiturage.models.RideShare;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.repositories.AddressRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
+import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.RideShareRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -48,6 +51,9 @@ public class RideShareService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private PrivateVehicleRepository privateVehicleRepository;
+
     public RideShareDTO createNewRideShare(RideShareDTO rideShareDTO) {
 
         AddressDTO departureAddressDTO = rideShareDTO.getDepartureAddress();
@@ -70,7 +76,13 @@ public class RideShareService {
             throw new IllegalArgumentException("L'adresse de départ et l'adresse d'arrivée doivent être différentes.");
         }
 
-        Integer organizerId = rideShareDTO.getOrganizer().getId();
+        // Valider les dates de début et de fin
+        LocalDateTime departureTime = rideShareDTO.getDepartureTime();
+        LocalDateTime arrivalTime = rideShareDTO.getArrivalTime();
+        if (departureTime.isAfter(arrivalTime)) {
+            throw new IllegalArgumentException("La date de départ ne peut pas être après la date d'arrivée.");
+
+        }
 
         // VERIFICATION Covoiturage pendant cette période //
         // LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
@@ -84,13 +96,33 @@ public class RideShareService {
         // pendant cette période.");
         // }
 
+        // Vérification et récupération de l'organisateur
+        Integer organizerId = rideShareDTO.getOrganizer().getId(); // Récupérer l'ID de l'organisateur depuis le DTO
+
         Employee organizer = employeeRepository.findById(organizerId)
-                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu."));
-        Vehicle vehicle = organizer.getVehicle().stream().findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Aucun véhicule ne correspond à cet utilisateur."));
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu avec l'ID : " + organizerId));
+
+        // Vérification et récupération du véhicule
+        PrivateVehicleDTO vehicleDTO = rideShareDTO.getVehicle(); // Le véhicule est passé dans le corps de la requête
+
+        // Vérifiez que le véhicule est fourni dans le DTO
+        if (vehicleDTO == null) {
+            throw new IllegalArgumentException("Un véhicule doit être spécifié.");
+        }
+
+        // Utilisez privateVehicleRepository.findById pour récupérer le véhicule basé
+        // sur l'ID
+        Vehicle vehicle = privateVehicleRepository.findById(vehicleDTO.getId())
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Véhicule non reconnu avec l'ID : " + vehicleDTO.getId()));
+
+        // Mettez à jour le véhicule dans le DTO
         rideShareDTO.setVehicle(privateVehicleMapper.toDTO(vehicle));
 
+        // Création de l'entité RideShare avec l'organisateur et le véhicule
         RideShare rideShare = rideShareMapper.toEntity(rideShareDTO);
+        rideShare.setOrganizer(organizer); // Associez l'organisateur au covoiturage
+
         RideShare savedRideShare = rideShareRepository.save(rideShare);
 
         return rideShareMapper.toDTO(savedRideShare);
@@ -197,6 +229,7 @@ public class RideShareService {
                 departureDateTime);
 
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareBasicMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -214,6 +247,7 @@ public class RideShareService {
             rideShares = rideShareRepository.findByOrganizerIdAndDepartureAfter(organizerId, now);
         }
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -232,11 +266,10 @@ public class RideShareService {
         }
 
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
-    // ----------------------------------------------------//
 
     public Optional<RideShareDTO> getRideShareById(int id) {
         return rideShareRepository.findById(id)

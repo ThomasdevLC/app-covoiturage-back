@@ -123,6 +123,13 @@ public class VehicleBookingService {
                 .collect(Collectors.toList());
     }
 
+    public VehicleBookingDTO findById(int bookingId) {
+        VehicleBooking booking = vehicleBookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("La réservation n'existe pas."));
+
+        return vehicleBookingMapper.toDTO(booking);
+    }
+
     public List<VehicleBookingDTO> findBookingsByEmployeeAndTime(int employeeId, boolean past) {
         LocalDateTime now = LocalDateTime.now();
         List<VehicleBooking> vehicleBookings;
@@ -141,9 +148,21 @@ public class VehicleBookingService {
                 .collect(Collectors.toList());
     }
 
-    public List<VehicleBookingDTO> getAllBookingsByTime(String type, LocalDateTime now) {
+    public List<VehicleBookingDTO> getAllBookingsByTime(String type, LocalDateTime now, int employeeId) {
         if (now == null) {
             now = LocalDateTime.now();
+        }
+
+        // Check if the employee exists
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        if (!optionalEmployee.isPresent()) {
+            throw new RuntimeException("Utilisateur non reconnu");
+        }
+
+        // Retrieve the employee and check admin status
+        Employee employee = optionalEmployee.get();
+        if (!employee.isAdmin()) {
+            throw new RuntimeException("Vous ne disposez pas des droits nécessaires");
         }
 
         List<VehicleBooking> vehicleBookings;

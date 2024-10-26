@@ -1,31 +1,39 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
-public class EmployeeRegisterDTO {
+import java.util.List;
 
+import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
+
+public class EmployeeProfileDTO {
+
+    private int id;
     private String firstName;
     private String lastName;
     private String gender;
     private String phone;
-    private boolean admin = false;
     private String email;
-    private String password;
-    private boolean isActive = true;
+    private List<PrivateVehicleDTO> vehicle;
 
-    public EmployeeRegisterDTO(String firstName, String lastName, String gender, String phone, String email,
-            String password, Boolean admin, Boolean isActive) {
+    public EmployeeProfileDTO() {
+    }
+
+    public EmployeeProfileDTO(int id, String firstName, String lastName, String gender, String phone, String email,
+            List<PrivateVehicleDTO> vehicle) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        if (admin != null) {
-            this.admin = admin;
-        }
         this.email = email;
-        this.password = password;
-        this.isActive = isActive;
+        this.vehicle = vehicle;
     }
 
-    public EmployeeRegisterDTO() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -68,27 +76,12 @@ public class EmployeeRegisterDTO {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public List<PrivateVehicleDTO> getVehicle() {
+        return vehicle;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setVehicle(List<PrivateVehicleDTO> vehicle) {
+        this.vehicle = vehicle;
     }
 
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-    }
 }

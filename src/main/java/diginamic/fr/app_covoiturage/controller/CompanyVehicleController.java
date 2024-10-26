@@ -96,4 +96,9 @@ public class CompanyVehicleController {
         return ResponseEntity.ok(vehicles);
     }
 
+    @GetMapping("/{id}")
+    public CompanyVehicleDTO getVehicleById(@PathVariable int id) {
+        return companyVehicleService.getVehicleById(id);
+    }
+
 }
