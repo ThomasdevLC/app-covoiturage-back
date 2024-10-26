@@ -77,13 +77,19 @@ public class VehicleBookingController {
     @GetMapping("/search")
     public ResponseEntity<List<VehicleBookingDTO>> getBookings(
             @RequestParam String type,
-            @RequestParam(required = false) LocalDateTime now) {
+            @RequestParam(required = false) LocalDateTime now,
+            @RequestParam int employeeId) {
 
         try {
-            List<VehicleBookingDTO> bookings = vehicleBookingService.getAllBookingsByTime(type, now);
+            // Call the service with the type, now, and employeeId
+            List<VehicleBookingDTO> bookings = vehicleBookingService.getAllBookingsByTime(type, now, employeeId);
             return ResponseEntity.ok(bookings);
         } catch (IllegalArgumentException e) {
+            // Handle invalid booking type
             return ResponseEntity.badRequest().body(null);
+        } catch (RuntimeException e) {
+            // Handle employee not found or insufficient permissions
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
     }
 
