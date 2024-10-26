@@ -1,6 +1,8 @@
 package diginamic.fr.app_covoiturage.services;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PrivateVehicleService {
@@ -73,4 +76,31 @@ public class PrivateVehicleService {
             throw new RuntimeException("Véhicule non reconnu");
         }
     }
+
+    public List<PrivateVehicleDTO> getVehiclesByEmployeeId(int employeeId) {
+        List<Vehicle> vehicles = privateVehicleRepository.findVehiclesByEmployeeId(employeeId);
+
+        // Convertir la liste des entités Vehicle en PrivateVehicleDTO
+        return vehicles.stream()
+                .map(privateVehicleMapper::toDTO) // Conversion en DTO
+                .collect(Collectors.toList()); // Collecter les DTOs dans une liste
+    }
+
+    public void deleteVehicle(int id, int employeeId) {
+        Vehicle vehicle = privateVehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
+
+        if (vehicle.getEmployee().getId() != employeeId) {
+            throw new IllegalArgumentException("Utilisateur non autorisé à supprimer ce véhicule.");
+        }
+
+        // Vérifiez si le véhicule est lié à un trajet
+        if (privateVehicleRepository.isVehicleLinkedToRideShare(id)) {
+            throw new IllegalArgumentException(
+                    "Impossible de supprimer ce véhicule car il est lié à un trajet que vous avez organisé.");
+        }
+
+        privateVehicleRepository.delete(vehicle);
+    }
+
 }

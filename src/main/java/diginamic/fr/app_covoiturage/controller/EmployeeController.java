@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeConnectedDTO;
+import diginamic.fr.app_covoiturage.dto.employee.EmployeeProfileDTO;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRegisterDTO;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRideSharesDTO;
 import diginamic.fr.app_covoiturage.exceptions.MessageException;
@@ -73,9 +74,16 @@ public class EmployeeController {
         return ResponseEntity.ok(deletedEmployeeAccount);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/rideshares/{id}")
     public ResponseEntity<EmployeeRideSharesDTO> getEmployeeById(@PathVariable int id) {
         return employeeService.getEmployeeById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeProfileDTO> getEmployeeProfileById(@PathVariable int id) {
+        return employeeService.getEmployeeProfile(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

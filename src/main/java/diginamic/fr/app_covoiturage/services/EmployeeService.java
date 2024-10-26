@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import diginamic.fr.app_covoiturage.dto.employee.EmployeeDTO;
+import diginamic.fr.app_covoiturage.dto.employee.EmployeeProfileDTO;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRegisterDTO;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRideSharesDTO;
-import diginamic.fr.app_covoiturage.mapper.employee.EmployeeMapper;
+import diginamic.fr.app_covoiturage.mapper.employee.EmployeeProfileMapper;
 import diginamic.fr.app_covoiturage.mapper.employee.EmployeeRideSharesMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
@@ -25,7 +25,7 @@ public class EmployeeService {
     private EmployeeRideSharesMapper employeeRideSharesMapper;
 
     @Autowired
-    private EmployeeMapper employeeMapper;
+    private EmployeeProfileMapper employeeProfileMapper;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -78,9 +78,9 @@ public class EmployeeService {
                 .map(employeeRideSharesMapper::toDTO);
     }
 
-    public Optional<EmployeeDTO> getEmployee(int id) {
+    public Optional<EmployeeProfileDTO> getEmployeeProfile(int id) {
         return employeeRepository.findById(id)
-                .map(employeeMapper::toDTO);
+                .map(employeeProfileMapper::toDTO);
     }
 
 }
