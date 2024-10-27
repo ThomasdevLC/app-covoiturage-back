@@ -103,4 +103,11 @@ public class PrivateVehicleService {
         privateVehicleRepository.delete(vehicle);
     }
 
+    public PrivateVehicleDTO getVehicleById(int id) {
+        Vehicle vehicle = privateVehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
+
+        return privateVehicleMapper.toDTO(vehicle);
+    }
+
 }

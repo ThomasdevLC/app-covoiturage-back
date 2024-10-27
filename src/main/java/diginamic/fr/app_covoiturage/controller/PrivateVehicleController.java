@@ -78,4 +78,14 @@ public class PrivateVehicleController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getVehicleById(@PathVariable int id) {
+        try {
+            PrivateVehicleDTO vehicle = privateVehicleService.getVehicleById(id);
+            return new ResponseEntity<>(vehicle, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
