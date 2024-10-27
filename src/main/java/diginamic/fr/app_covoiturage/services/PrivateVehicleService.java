@@ -27,13 +27,13 @@ public class PrivateVehicleService {
     @Autowired
     private PrivateVehicleRepository privateVehicleRepository;
 
-    public PrivateVehicleDTO createVehicle(PrivateVehicleDTO vehicleDTO) {
-        Optional<Vehicle> existingVehicle = privateVehicleRepository.findByNumber(vehicleDTO.getNumber());
+    public PrivateVehicleDTO createVehicle(PrivateVehicleDTO privateVehicleDTO) {
+        Optional<Vehicle> existingVehicle = privateVehicleRepository.findByNumber(privateVehicleDTO.getNumber());
         if (existingVehicle.isPresent()) {
             throw new RuntimeException("Ce véhicule est déjà enregistré.");
         }
 
-        Vehicle vehicle = privateVehicleMapper.toEntity(vehicleDTO);
+        Vehicle vehicle = privateVehicleMapper.toEntity(privateVehicleDTO);
 
         int employeeId = vehicle.getEmployee().getId();
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);

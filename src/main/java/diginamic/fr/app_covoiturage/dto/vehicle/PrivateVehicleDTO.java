@@ -26,8 +26,7 @@ public class PrivateVehicleDTO {
     @Max(value = 50, message = "Le nombre de sièges ne peut pas dépasser 50.")
     private int seats;
 
-    @NotNull(message = "Veuillez renseigner le type de véhicule.")
-    private VehicleType type;
+    private VehicleType type = VehicleType.PRIVATE;
 
     private EmployeeDTO employee;
 

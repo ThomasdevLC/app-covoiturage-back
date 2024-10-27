@@ -41,7 +41,7 @@ public class CompanyVehicleDTO {
 
     private VehicleStatus status;
 
-    private VehicleType type;
+    private VehicleType type = VehicleType.COMPANY;
 
     private EmployeeDTO employee;
 
