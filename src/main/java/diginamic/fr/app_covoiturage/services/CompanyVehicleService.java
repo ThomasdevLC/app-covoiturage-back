@@ -6,7 +6,6 @@ import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
-import diginamic.fr.app_covoiturage.models.enums.VehicleType;
 import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
