@@ -20,7 +20,15 @@ public class CompanyVehicleController {
     @Autowired
     private CompanyVehicleService companyVehicleService;
 
-    @PostMapping
+    @GetMapping("/admin/")
+    public ResponseEntity<?> getAllVehiclesAdminOnly(
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String number) {
+        List<CompanyVehicleDTO> vehicles = companyVehicleService.getAllVehicles(brand, number);
+        return ResponseEntity.ok(vehicles);
+    }
+
+    @PostMapping("/admin")
     public ResponseEntity<?> createVehicle(
             @RequestBody CompanyVehicleDTO companyVehicleDTO, BindingResult validation) {
 
@@ -37,7 +45,7 @@ public class CompanyVehicleController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<?> updateVehicle(
             @PathVariable int id,
             @RequestBody CompanyVehicleDTO companyVehicleDTO,
@@ -56,7 +64,7 @@ public class CompanyVehicleController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> deleteCompanyVehicle(@PathVariable int id) {
         try {
             companyVehicleService.deleteCompanyVehicle(id);
@@ -66,15 +74,7 @@ public class CompanyVehicleController {
         }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<?> getAllVehiclesAdminOnly(
-            @RequestParam(required = false) String brand,
-            @RequestParam(required = false) String number) {
-        List<CompanyVehicleDTO> vehicles = companyVehicleService.getAllVehicles(brand, number);
-        return ResponseEntity.ok(vehicles);
-    }
-
-    @PutMapping("/{id}/status")
+    @PutMapping("/admin/{id}/status")
     public ResponseEntity<?> updateVehicleStatus(
             @PathVariable int id,
             @RequestParam VehicleStatus newStatus,
@@ -86,6 +86,11 @@ public class CompanyVehicleController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/admin/{id}")
+    public CompanyVehicleDTO getVehicleByIdAdminOnly(@PathVariable int id) {
+        return companyVehicleService.getVehicleById(id);
     }
 
     @GetMapping("/status-and-booking-dates")

@@ -60,7 +60,7 @@ public class CompanyVehicleService {
     public CompanyVehicleDTO updateCompanyVehicle(int id, CompanyVehicleDTO companyVehicleDTO) {
         // Vérifier si le véhicule existe
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new RuntimeException("Véhicule non reconnu"));
 
         // Vérifier l'existence du véhicule avec le même numéro (sauf le véhicule
         // actuel)
@@ -98,7 +98,7 @@ public class CompanyVehicleService {
 
     public void deleteCompanyVehicle(int id) {
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new RuntimeException("Véhicule non reconnu : "));
 
         companyVehicleRepository.delete(existingVehicle);
     }
