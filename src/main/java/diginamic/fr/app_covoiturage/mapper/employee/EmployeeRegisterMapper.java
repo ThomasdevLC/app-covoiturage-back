@@ -44,10 +44,10 @@ public class EmployeeRegisterMapper {
         dto.setFirstName(employee.getFirstName());
         dto.setLastName(employee.getLastName());
         dto.setGender(employee.getGender());
-        dto.setPhone(employee.getPhone());
-        dto.setEmail(employee.getEmail());
-        dto.setPassword(employee.getPassword());
-        dto.setAdmin(employee.isAdmin());
+        // dto.setPhone(employee.getPhone());
+        // dto.setEmail(employee.getEmail());
+        // dto.setPassword(employee.getPassword());
+        // dto.setAdmin(employee.isAdmin());
 
         return dto;
     }
