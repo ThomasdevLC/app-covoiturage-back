@@ -1,7 +1,7 @@
 package diginamic.fr.app_covoiturage.mapper.address;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import diginamic.fr.app_covoiturage.dto.address.AddressRideSharesDTO;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareBasicMapper;
 import diginamic.fr.app_covoiturage.models.Address;
@@ -11,11 +11,8 @@ import java.util.stream.Collectors;
 @Component
 public class AddressRideSharesMapper {
 
-    private final RideShareBasicMapper rideShareBasicMapper;
-
-    public AddressRideSharesMapper(RideShareBasicMapper rideShareBasicMapper) {
-        this.rideShareBasicMapper = rideShareBasicMapper;
-    }
+    @Autowired
+    private RideShareBasicMapper rideShareBasicMapper;
 
     public AddressRideSharesDTO toDTO(Address address) {
 

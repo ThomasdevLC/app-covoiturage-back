@@ -1,5 +1,6 @@
 package diginamic.fr.app_covoiturage.mapper.rideshare;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareDTO;
@@ -13,16 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class RideShareMapper {
 
-    private final AddressMapper addressMapper;
-    private final EmployeeMapper employeeMapper;
-    private final PrivateVehicleMapper privateVehicleMapper;
+    @Autowired
+    private AddressMapper addressMapper;
 
-    public RideShareMapper(AddressMapper addressMapper, EmployeeMapper employeeMapper,
-            PrivateVehicleMapper privateVehicleMapper) {
-        this.addressMapper = addressMapper;
-        this.employeeMapper = employeeMapper;
-        this.privateVehicleMapper = privateVehicleMapper;
-    }
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
+    @Autowired
+    private PrivateVehicleMapper privateVehicleMapper;
 
     public RideShareDTO toDTO(RideShare rideShare) {
 

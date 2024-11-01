@@ -2,6 +2,7 @@ package diginamic.fr.app_covoiturage.mapper.employee;
 
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRideSharesDTO;
@@ -11,11 +12,8 @@ import diginamic.fr.app_covoiturage.models.Employee;
 @Component
 public class EmployeeRideSharesMapper {
 
-    private final RideShareBasicMapper rideShareBasicMapper;
-
-    public EmployeeRideSharesMapper(RideShareBasicMapper rideShareBasicMapper) {
-        this.rideShareBasicMapper = rideShareBasicMapper;
-    }
+    @Autowired
+    private RideShareBasicMapper rideShareBasicMapper;
 
     public EmployeeRideSharesDTO toDTO(Employee employee) {
 
