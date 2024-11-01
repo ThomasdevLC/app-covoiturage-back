@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeLoginDTO;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRegisterDTO;
+import diginamic.fr.app_covoiturage.mapper.employee.EmployeeRegisterMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 
@@ -26,7 +27,7 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public Employee signup(EmployeeRegisterDTO input) {
+    public EmployeeRegisterDTO signup(EmployeeRegisterDTO input) {
         Employee employee = new Employee(
                 input.getFirstName(),
                 input.getLastName(),
@@ -36,17 +37,19 @@ public class AuthenticationService {
                 input.getEmail(),
                 passwordEncoder.encode(input.getPassword()),
                 true);
-        return employeeRepository.save(employee);
+        employeeRepository.save(employee);
+        return EmployeeRegisterMapper.toDTO(employee);
+
     }
 
     public Employee authenticate(EmployeeLoginDTO input) {
         // Rechercher l'utilisateur par email
         Employee employee = employeeRepository.findByEmail(input.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Utilisateur non reconnu"));
 
         // Vérifier si l'utilisateur est activé
         if (!employee.isActive()) {
-            throw new RuntimeException("User not enabled");
+            throw new RuntimeException("Votre compte n'est pas activé");
         }
 
         // Authentifier l'utilisateur
