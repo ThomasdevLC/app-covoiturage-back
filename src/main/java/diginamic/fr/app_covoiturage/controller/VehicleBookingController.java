@@ -74,7 +74,7 @@ public class VehicleBookingController {
         return ResponseEntity.ok(bookings);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/admin/search")
     public ResponseEntity<List<VehicleBookingDTO>> getBookings(
             @RequestParam String type,
             @RequestParam(required = false) LocalDateTime now,
