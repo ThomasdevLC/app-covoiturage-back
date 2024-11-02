@@ -33,123 +33,73 @@ public class RideShareController {
     private RideShareService rideShareService;
 
     @PostMapping
-    public ResponseEntity<?> createRideShare(@Valid @RequestBody RideShareDTO rideShareDTO) {
-        try {
-            RideShareDTO createdRideShare = rideShareService.createNewRideShare(rideShareDTO);
-            return new ResponseEntity<>(createdRideShare, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<RideShareDTO> createRideShare(@Valid @RequestBody RideShareDTO rideShareDTO) {
+        RideShareDTO createdRideShare = rideShareService.createNewRideShare(rideShareDTO);
+        return new ResponseEntity<>(createdRideShare, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateRideShare(
+    public ResponseEntity<RideShareDTO> updateRideShare(
             @PathVariable int id,
             @RequestParam int organizerId,
-            @RequestBody RideShareDTO rideShareDTO) {
-        try {
-            RideShareDTO updatedRideShare = rideShareService.updateRideShare(id, organizerId, rideShareDTO);
-            return ResponseEntity.ok(updatedRideShare);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+            @Valid @RequestBody RideShareDTO rideShareDTO) {
+        RideShareDTO updatedRideShare = rideShareService.updateRideShare(id, organizerId, rideShareDTO);
+        return ResponseEntity.ok(updatedRideShare);
     }
 
     @DeleteMapping("/{id}/delete/{organizerId}")
-    public ResponseEntity<?> delete(@PathVariable Integer id,
+    public ResponseEntity<RideShareDTO> delete(@PathVariable Integer id,
             @PathVariable("organizerId") Integer organizerId) {
-        try {
-            RideShareDTO deletedRideShare = rideShareService.deleteById(id, organizerId);
-            return new ResponseEntity<>(deletedRideShare, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        RideShareDTO deletedRideShare = rideShareService.deleteById(id, organizerId);
+        return ResponseEntity.ok(deletedRideShare);
     }
 
     @PostMapping("/{rideShareId}/add-passenger/{employeeId}")
-    public ResponseEntity<?> addPassenger(
+    public ResponseEntity<RideShareDTO> addPassenger(
             @PathVariable int rideShareId,
             @PathVariable int employeeId) {
-        try {
-            RideShareDTO updatedRideShare = rideShareService.addPassengerToRideShare(rideShareId, employeeId);
-            return ResponseEntity.ok(updatedRideShare);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        RideShareDTO updatedRideShare = rideShareService.addPassengerToRideShare(rideShareId, employeeId);
+        return ResponseEntity.ok(updatedRideShare);
     }
 
     @DeleteMapping("/{rideShareId}/cancel-passenger/{employeeId}")
-    public ResponseEntity<?> cancelPassengerParticipation(
+    public ResponseEntity<RideShareDTO> cancelPassengerParticipation(
             @PathVariable int rideShareId,
             @PathVariable int employeeId) {
-        try {
-            RideShareDTO updatedRideShare = rideShareService.cancelPassengerParticipation(rideShareId, employeeId);
-            return ResponseEntity.ok(updatedRideShare);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        RideShareDTO updatedRideShare = rideShareService.cancelPassengerParticipation(rideShareId, employeeId);
+        return ResponseEntity.ok(updatedRideShare);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> findByAddresses(
+    public ResponseEntity<List<RideShareBasicDTO>> findByAddresses(
             @RequestParam(required = false) String departureCity,
             @RequestParam(required = false) String arrivalCity,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departureDateTime) {
-        try {
-            List<RideShareBasicDTO> rideShares = rideShareService.findByAddresses(departureCity, arrivalCity,
-                    departureDateTime);
-            return ResponseEntity.ok(rideShares);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-
-        }
+        List<RideShareBasicDTO> rideShares = rideShareService.findByAddresses(departureCity, arrivalCity,
+                departureDateTime);
+        return ResponseEntity.ok(rideShares);
     }
 
     @GetMapping("/organizer/{organizerId}")
-    public ResponseEntity<?> getRideSharesByOrganizer(
+    public ResponseEntity<List<RideShareDTO>> getRideSharesByOrganizer(
             @PathVariable Integer organizerId,
             @RequestParam boolean past) {
-        try {
-
-            List<RideShareDTO> rideShares = rideShareService.findRideSharesByOrganizerIdAndTime(organizerId, past);
-            return ResponseEntity.ok(rideShares);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
+        List<RideShareDTO> rideShares = rideShareService.findRideSharesByOrganizerIdAndTime(organizerId, past);
+        return ResponseEntity.ok(rideShares);
     }
 
     @GetMapping("/passenger/{passengerId}")
-    public ResponseEntity<?> getRideSharesByPassenger(
+    public ResponseEntity<List<RideShareDTO>> getRideSharesByPassenger(
             @PathVariable Integer passengerId,
             @RequestParam boolean past) {
-        try {
-            List<RideShareDTO> rideShares = rideShareService.findRideSharesByPassengerIdAndTime(passengerId, past);
-            return ResponseEntity.ok(rideShares);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
+        List<RideShareDTO> rideShares = rideShareService.findRideSharesByPassengerIdAndTime(passengerId, past);
+        return ResponseEntity.ok(rideShares);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RideShareDTO> getRideShareById(@PathVariable int id) throws MessageException {
-        Optional<RideShareDTO> rideShareDTO = rideShareService.getRideShareById(id);
-
-        if (rideShareDTO.isPresent()) {
-            return new ResponseEntity<>(rideShareDTO.get(), HttpStatus.OK);
-        } else {
-            throw new MessageException("Le covoiturage avec l'id " + id + " n'existe pas.");
-        }
+        RideShareDTO rideShareDTO = rideShareService.getRideShareById(id);
+        return ResponseEntity.ok(rideShareDTO);
     }
 
 }

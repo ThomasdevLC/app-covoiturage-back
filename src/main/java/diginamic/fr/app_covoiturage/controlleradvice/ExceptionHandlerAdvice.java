@@ -1,34 +1,53 @@
 package diginamic.fr.app_covoiturage.controlleradvice;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import diginamic.fr.app_covoiturage.exceptions.MessageException;
+import jakarta.persistence.EntityNotFoundException;
 
 /**
- * Classe de gestion globale des exceptions qui gère les
- * {@link MessageException}
+ * Classe de gestion globale des exceptions qui gère diverses exceptions
  * et renvoie une réponse d'erreur.
  */
-
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
 
      /**
-      * Gère les {@link MessageException} et renvoie une réponse de mauvaise requête
-      * avec
-      * le message d'erreur fourni par l'exception.
-      *
-      * @param e l'instance {@link MessageException} lancée pendant l'exécution de
-      *          l'application.
-      * @return un ResponseEntity avec un statut de mauvaise requête et le message
-      *         d'erreur
-      *         provenant de l'exception comme corps de réponse.
+      * Gère les exceptions EntityNotFoundException et renvoie une réponse 404
+      * avec le message d'erreur.
       */
+     @ExceptionHandler(EntityNotFoundException.class)
+     public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException e) {
+          return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+     }
 
-     @ExceptionHandler({ MessageException.class })
-     public ResponseEntity<String> traiterErreurs(MessageException e) {
-          return ResponseEntity.badRequest().body(e.getMessage());
+     /**
+      * Gère les exceptions IllegalArgumentException et renvoie une réponse 403
+      * avec le message d'erreur.
+      */
+     @ExceptionHandler(IllegalArgumentException.class)
+     public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
+          return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+     }
+
+     /**
+      * Gère les exceptions personnalisées MessageException et renvoie une réponse
+      * 400 avec le message d'erreur.
+      */
+     @ExceptionHandler(MessageException.class)
+     public ResponseEntity<String> handleCustomMessageException(MessageException e) {
+          return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+     }
+
+     /**
+      * Gère les exceptions RuntimeException pour capturer les erreurs inattendues.
+      * Renvoie une réponse générique 500 avec un message d'erreur standard.
+      */
+     @ExceptionHandler(RuntimeException.class)
+     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+          return new ResponseEntity<>("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
      }
 }
