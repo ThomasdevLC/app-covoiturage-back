@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import diginamic.fr.app_covoiturage.dto.booking.VehicleBookingDTO;
 import diginamic.fr.app_covoiturage.services.VehicleBookingService;
+import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,35 +19,23 @@ public class VehicleBookingController {
     private VehicleBookingService vehicleBookingService;
 
     @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody VehicleBookingDTO vehicleBookingDTO) {
-        try {
-            VehicleBookingDTO createdBooking = vehicleBookingService.createBooking(vehicleBookingDTO);
-            return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @DeleteMapping("/{bookingId}")
-    public ResponseEntity<?> cancelBooking(@PathVariable int bookingId, @RequestParam int employeeId) {
-        try {
-            vehicleBookingService.cancelBooking(bookingId, employeeId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        }
+    public ResponseEntity<VehicleBookingDTO> createBooking(@Valid @RequestBody VehicleBookingDTO vehicleBookingDTO) {
+        VehicleBookingDTO createdBooking = vehicleBookingService.createBooking(vehicleBookingDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBooking(
+    public ResponseEntity<VehicleBookingDTO> updateBooking(
             @PathVariable("id") int id,
-            @RequestBody VehicleBookingDTO vehicleBookingDTO) {
-        try {
-            VehicleBookingDTO updatedBooking = vehicleBookingService.updateBooking(id, vehicleBookingDTO);
-            return ResponseEntity.ok(updatedBooking);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+            @Valid @RequestBody VehicleBookingDTO vehicleBookingDTO) {
+        VehicleBookingDTO updatedBooking = vehicleBookingService.updateBooking(id, vehicleBookingDTO);
+        return ResponseEntity.ok(updatedBooking);
+    }
+
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity<Void> cancelBooking(@PathVariable int bookingId, @RequestParam int employeeId) {
+        vehicleBookingService.cancelBooking(bookingId, employeeId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
@@ -56,13 +45,9 @@ public class VehicleBookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<?> getBookingById(@PathVariable int bookingId) {
-        try {
-            VehicleBookingDTO booking = vehicleBookingService.findById(bookingId);
-            return new ResponseEntity<>(booking, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<VehicleBookingDTO> getBookingById(@PathVariable int bookingId) {
+        VehicleBookingDTO booking = vehicleBookingService.findById(bookingId);
+        return ResponseEntity.ok(booking);
     }
 
     @GetMapping("/search/{employeeId}")
@@ -80,17 +65,7 @@ public class VehicleBookingController {
             @RequestParam(required = false) LocalDateTime now,
             @RequestParam int employeeId) {
 
-        try {
-            // Call the service with the type, now, and employeeId
-            List<VehicleBookingDTO> bookings = vehicleBookingService.getAllBookingsByTime(type, now, employeeId);
-            return ResponseEntity.ok(bookings);
-        } catch (IllegalArgumentException e) {
-            // Handle invalid booking type
-            return ResponseEntity.badRequest().body(null);
-        } catch (RuntimeException e) {
-            // Handle employee not found or insufficient permissions
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        }
+        List<VehicleBookingDTO> bookings = vehicleBookingService.getAllBookingsByTime(type, now, employeeId);
+        return ResponseEntity.ok(bookings);
     }
-
 }
