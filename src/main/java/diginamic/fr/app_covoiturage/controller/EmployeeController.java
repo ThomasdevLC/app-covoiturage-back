@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeConnectedDTO;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeProfileDTO;
-import diginamic.fr.app_covoiturage.dto.employee.EmployeeRideSharesDTO;
 import diginamic.fr.app_covoiturage.mapper.employee.EmployeeConnectedMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.services.EmployeeService;

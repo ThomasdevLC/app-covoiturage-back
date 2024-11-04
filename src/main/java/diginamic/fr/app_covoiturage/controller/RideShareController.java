@@ -2,7 +2,6 @@ package diginamic.fr.app_covoiturage.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,7 +21,6 @@ import diginamic.fr.app_covoiturage.dto.rideshare.RideShareBasicDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareDTO;
 import diginamic.fr.app_covoiturage.exceptions.MessageException;
 import diginamic.fr.app_covoiturage.services.RideShareService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController

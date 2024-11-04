@@ -57,7 +57,7 @@ public class Vehicle {
     @Max(value = 50, message = "Le nombre de sièges ne peut pas dépasser 50.")
     private int seats;
 
-    // @Min(value = 0, message = "La valeur du CO2/km doit être positive.")
+    // @Min(value = 1, message = "La valeur du CO2/km doit être positive.")
     @Column(name = "co2_per_km", nullable = true)
     private double co2PerKm;
 

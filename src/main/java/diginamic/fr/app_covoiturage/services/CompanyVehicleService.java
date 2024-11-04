@@ -167,7 +167,7 @@ public class CompanyVehicleService {
 
     public CompanyVehicleDTO getVehicleById(int id) {
         Vehicle vehicle = companyVehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));
         return companyVehicleMapper.toDTO(vehicle);
     }
 
