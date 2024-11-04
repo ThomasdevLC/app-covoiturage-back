@@ -33,14 +33,6 @@ public class EmployeeController {
         return ResponseEntity.ok(deletedEmployeeAccount);
     }
 
-    // @GetMapping("/rideshares/{id}")
-    // public ResponseEntity<EmployeeRideSharesDTO> getEmployeeById(@PathVariable
-    // int id) {
-    // return employeeService.getEmployeeById(id)
-    // .map(ResponseEntity::ok)
-    // .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    // }
-
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeProfileDTO> getEmployeeProfileById(@PathVariable int id) {
         return employeeService.getEmployeeProfile(id)
@@ -56,5 +48,13 @@ public class EmployeeController {
         EmployeeConnectedDTO employeeDTO = employeeConnectedMapper.toDto(currentEmployee);
         return ResponseEntity.ok(employeeDTO);
     }
+
+    // @GetMapping("/rideshares/{id}")
+    // public ResponseEntity<EmployeeRideSharesDTO> getEmployeeById(@PathVariable
+    // int id) {
+    // return employeeService.getEmployeeById(id)
+    // .map(ResponseEntity::ok)
+    // .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    // }
 
 }
