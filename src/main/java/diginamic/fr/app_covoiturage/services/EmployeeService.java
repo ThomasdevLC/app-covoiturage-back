@@ -4,9 +4,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeProfileDTO;
-import diginamic.fr.app_covoiturage.dto.employee.EmployeeRideSharesDTO;
 import diginamic.fr.app_covoiturage.mapper.employee.EmployeeProfileMapper;
-import diginamic.fr.app_covoiturage.mapper.employee.EmployeeRideSharesMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 
@@ -37,14 +35,13 @@ public class EmployeeService {
         }
     }
 
-    // public Optional<EmployeeRideSharesDTO> getEmployeeById(int id) {
-    // return employeeRepository.findById(id)
-    // .map(employeeRideSharesMapper::toDTO);
-    // }
-
     public Optional<EmployeeProfileDTO> getEmployeeProfile(int id) {
         return employeeRepository.findById(id)
                 .map(employeeProfileMapper::toDTO);
     }
 
+    // public Optional<EmployeeRideSharesDTO> getEmployeeById(int id) {
+    // return employeeRepository.findById(id)
+    // .map(employeeRideSharesMapper::toDTO);
+    // }
 }
