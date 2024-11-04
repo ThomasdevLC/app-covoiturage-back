@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 import diginamic.fr.app_covoiturage.exceptions.MessageException;
 import diginamic.fr.app_covoiturage.services.PrivateVehicleService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -30,31 +28,18 @@ public class PrivateVehicleController {
     private PrivateVehicleService privateVehicleService;
 
     @PostMapping
-    public ResponseEntity<?> createVehicle(
-            @Valid @RequestBody PrivateVehicleDTO vehicleDTO,
-            BindingResult validation) throws MessageException {
-
-        if (validation.hasErrors()) {
-            throw new MessageException(validation.getAllErrors().get(0).getDefaultMessage());
-        }
-
-        try {
-            PrivateVehicleDTO savedVehicleDTO = privateVehicleService.createVehicle(vehicleDTO);
-            return new ResponseEntity<>(savedVehicleDTO, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<PrivateVehicleDTO> createVehicle(@Valid @RequestBody PrivateVehicleDTO vehicleDTO)
+            throws MessageException {
+        PrivateVehicleDTO savedVehicleDTO = privateVehicleService.createVehicle(vehicleDTO);
+        return new ResponseEntity<>(savedVehicleDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateVehicle(@PathVariable int id,
-            @RequestBody PrivateVehicleDTO vehicleDTO) {
-        try {
-            PrivateVehicleDTO updatedVehicle = privateVehicleService.updateVehicle(id, vehicleDTO);
-            return new ResponseEntity<>(updatedVehicle, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<PrivateVehicleDTO> updateVehicle(@PathVariable int id,
+            @Valid @RequestBody PrivateVehicleDTO vehicleDTO) {
+
+        PrivateVehicleDTO updatedVehicle = privateVehicleService.updateVehicle(id, vehicleDTO);
+        return new ResponseEntity<>(updatedVehicle, HttpStatus.OK);
     }
 
     @GetMapping("/employees/{employeeId}")
@@ -63,29 +48,17 @@ public class PrivateVehicleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteVehicle(
-            @PathVariable int id,
+    public ResponseEntity<Void> deleteVehicle(@PathVariable int id,
             @RequestParam("employeeId") int employeeId) {
-        try {
-            privateVehicleService.deleteVehicle(id, employeeId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+
+        privateVehicleService.deleteVehicle(id, employeeId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getVehicleById(@PathVariable int id) {
-        try {
-            PrivateVehicleDTO vehicle = privateVehicleService.getVehicleById(id);
-            return new ResponseEntity<>(vehicle, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<PrivateVehicleDTO> getVehicleById(@PathVariable int id) {
+        PrivateVehicleDTO vehicle = privateVehicleService.getVehicleById(id);
+        return ResponseEntity.ok(vehicle);
     }
 
 }
