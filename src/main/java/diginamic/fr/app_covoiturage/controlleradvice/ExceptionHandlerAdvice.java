@@ -19,52 +19,41 @@ import jakarta.persistence.EntityNotFoundException;
 @ControllerAdvice
 public class ExceptionHandlerAdvice {
 
-     /**
-      * Gère les exceptions EntityNotFoundException et renvoie une réponse 404
-      * avec le message d'erreur.
-      */
+     // Gère les exceptions EntityNotFoundException et renvoie une réponse 404
      @ExceptionHandler(EntityNotFoundException.class)
      public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException e) {
           return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
      }
 
-     /**
-      * Gère les exceptions IllegalArgumentException et renvoie une réponse 403
-      * avec le message d'erreur.
-      */
+     // Gère les exceptions IllegalArgumentException et renvoie une réponse 400 (au
+     // lieu de 403 qui était incorrect)
      @ExceptionHandler(IllegalArgumentException.class)
      public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
-          return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+          return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
      }
 
-     /**
-      * Gère les exceptions personnalisées MessageException et renvoie une réponse
-      * 400 avec le message d'erreur.
-      */
+     // Gère les exceptions personnalisées MessageException et renvoie une réponse
+     // 400
      @ExceptionHandler(MessageException.class)
      public ResponseEntity<String> handleCustomMessageException(MessageException e) {
           return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
      }
 
-     /**
-      * Gère les exceptions RuntimeException pour capturer les erreurs inattendues.
-      * Renvoie une réponse générique 500 avec un message d'erreur standard.
-      */
+     // Gère les exceptions RuntimeException pour capturer les erreurs inattendues
      @ExceptionHandler(RuntimeException.class)
      public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
           return new ResponseEntity<>("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
      }
 
-     /**
-      * Gère les exceptions AccessDeniedException pour les erreurs d'accès interdit.
-      * Renvoie une réponse 403 avec un message d'erreur.
-      */
+     // Gère les exceptions AccessDeniedException pour les erreurs d'accès interdit
      @ExceptionHandler(AccessDeniedException.class)
      public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
           return new ResponseEntity<>("Vous n'avez pas les droits nécessaires pour accéder à cette ressource.",
                     HttpStatus.FORBIDDEN);
      }
 
+     // Gère les exceptions MethodArgumentNotValidException pour la validation des
+     // arguments
      @ExceptionHandler(MethodArgumentNotValidException.class)
      public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
           Map<String, String> errors = new HashMap<>();
@@ -75,5 +64,4 @@ public class ExceptionHandlerAdvice {
 
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
      }
-
 }

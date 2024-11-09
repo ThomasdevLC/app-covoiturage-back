@@ -109,6 +109,10 @@ public class CompanyVehicleService {
 
     public List<CompanyVehicleDTO> getAllVehicles(String brand, String number) {
         List<Vehicle> vehicles;
+
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
         if (brand != null) {
             vehicles = companyVehicleRepository.findByBrand(brand);
         } else if (number != null) {
