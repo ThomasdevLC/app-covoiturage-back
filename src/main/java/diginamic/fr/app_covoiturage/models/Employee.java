@@ -16,9 +16,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import diginamic.fr.app_covoiturage.models.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -64,9 +68,10 @@ public class Employee implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @NotNull
-    @Column(name = "admin", nullable = false)
-    private boolean admin;
+    @NotNull(message = "Veuillez renseigner le statut d'utilisateur.")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
+    private UserStatus userStatus;
 
     @NotBlank(message = "Veuillez renseigner votre email.")
     @Email(message = "Le champ doit être un email valide")
@@ -100,10 +105,16 @@ public class Employee implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (this.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        switch (this.userStatus) {
+            case SUPER_ADMIN:
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
+                break;
+            case ADMIN:
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                break;
+            default:
+                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return authorities;
     }
@@ -120,17 +131,16 @@ public class Employee implements UserDetails {
      * @param password
      */
 
-    public Employee(String firstName, String lastName, String gender, String phone, boolean admin, String email,
-            String password, boolean isActive) {
+    public Employee(String firstName, String lastName, String gender, String phone, UserStatus userStatus,
+            String email, String password, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        this.admin = admin;
+        this.userStatus = userStatus;
         this.email = email;
         this.password = password;
         this.isActive = isActive;
-
     }
 
     public Employee() {
@@ -177,12 +187,12 @@ public class Employee implements UserDetails {
         this.phone = phone;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public String getEmail() {
@@ -269,7 +279,7 @@ public class Employee implements UserDetails {
     @Override
     public String toString() {
         return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender
-                + ", admin=" + admin + "]";
+                + ", user status=" + userStatus + "]";
     }
 
 }

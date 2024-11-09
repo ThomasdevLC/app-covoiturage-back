@@ -2,6 +2,7 @@ package diginamic.fr.app_covoiturage.mapper.employee;
 
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRegisterDTO;
 import diginamic.fr.app_covoiturage.models.Employee;
+import diginamic.fr.app_covoiturage.models.enums.UserStatus;
 
 public class EmployeeRegisterMapper {
 
@@ -24,8 +25,7 @@ public class EmployeeRegisterMapper {
         employee.setEmail(dto.getEmail());
         employee.setPassword(dto.getPassword());
         employee.setActive(true);
-        employee.setAdmin(dto.isAdmin());
-
+        employee.setUserStatus(dto.getUserStatus() != null ? dto.getUserStatus() : UserStatus.USER);
         return employee;
     }
 

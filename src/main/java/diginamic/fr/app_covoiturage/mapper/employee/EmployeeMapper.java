@@ -17,7 +17,7 @@ public class EmployeeMapper {
         dto.setGender(employee.getGender());
         dto.setPhone(employee.getPhone());
         dto.setEmail(employee.getEmail());
-        dto.setAdmin(employee.isAdmin());
+        dto.setUserStatus(employee.getUserStatus());
         return dto;
     }
 
@@ -30,7 +30,7 @@ public class EmployeeMapper {
         employee.setGender(employeeDTO.getGender());
         employee.setPhone(employeeDTO.getPhone());
         employee.setEmail(employeeDTO.getEmail());
-        employee.setAdmin(employeeDTO.isAdmin());
+        employee.setUserStatus(employeeDTO.getUserStatus());
 
         return employee;
     }

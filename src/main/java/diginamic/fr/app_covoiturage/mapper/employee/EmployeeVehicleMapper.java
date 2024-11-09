@@ -30,7 +30,7 @@ public class EmployeeVehicleMapper {
         dto.setGender(employee.getGender());
         dto.setPhone(employee.getPhone());
         dto.setEmail(employee.getEmail());
-        dto.setAdmin(employee.isAdmin());
+        dto.setUserStatus(employee.getUserStatus());
 
         if (employee.getVehicle() != null) {
             List<CompanyVehicleDTO> vehicleDTOs = employee.getVehicle().stream()
@@ -54,7 +54,7 @@ public class EmployeeVehicleMapper {
         employee.setGender(dto.getGender());
         employee.setPhone(dto.getPhone());
         employee.setEmail(dto.getEmail());
-        employee.setAdmin(dto.isAdmin());
+        employee.setUserStatus(dto.getUserStatus());
 
         if (dto.getCompanyVehicle() != null) {
             List<Vehicle> vehicles = dto.getCompanyVehicle().stream()

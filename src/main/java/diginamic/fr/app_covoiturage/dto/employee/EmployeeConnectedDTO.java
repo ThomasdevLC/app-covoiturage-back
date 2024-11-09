@@ -1,22 +1,24 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
+import diginamic.fr.app_covoiturage.models.enums.UserStatus;
+
 public class EmployeeConnectedDTO {
 
     private int id;
     private String firstName;
     private String lastName;
     private String gender;
-    private boolean isAdmin;
+    private UserStatus userStatus;
 
     public EmployeeConnectedDTO() {
     }
 
-    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, boolean isAdmin) {
+    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, UserStatus userStatus) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.isAdmin = isAdmin;
+        this.userStatus = userStatus;
     }
 
     public int getId() {
@@ -51,11 +53,11 @@ public class EmployeeConnectedDTO {
         this.gender = gender;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 }

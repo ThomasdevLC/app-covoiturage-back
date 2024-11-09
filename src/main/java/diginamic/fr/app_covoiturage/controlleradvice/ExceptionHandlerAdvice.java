@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,16 @@ public class ExceptionHandlerAdvice {
      @ExceptionHandler(RuntimeException.class)
      public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
           return new ResponseEntity<>("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
+     }
+
+     /**
+      * Gère les exceptions AccessDeniedException pour les erreurs d'accès interdit.
+      * Renvoie une réponse 403 avec un message d'erreur.
+      */
+     @ExceptionHandler(AccessDeniedException.class)
+     public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
+          return new ResponseEntity<>("Vous n'avez pas les droits nécessaires pour accéder à cette ressource.",
+                    HttpStatus.FORBIDDEN);
      }
 
      @ExceptionHandler(MethodArgumentNotValidException.class)

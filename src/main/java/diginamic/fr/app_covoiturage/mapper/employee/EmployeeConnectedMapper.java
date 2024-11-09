@@ -18,7 +18,7 @@ public class EmployeeConnectedMapper {
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getGender(),
-                employee.isAdmin());
+                employee.getUserStatus());
     }
 
     public Employee toEntity(EmployeeConnectedDTO dto) {
@@ -30,7 +30,7 @@ public class EmployeeConnectedMapper {
         employee.setFirstName(dto.getFirstName());
         employee.setLastName(dto.getLastName());
         employee.setGender(dto.getGender());
-        employee.setAdmin(dto.isAdmin());
+        employee.setUserStatus(dto.getUserStatus());
         return employee;
     }
 }

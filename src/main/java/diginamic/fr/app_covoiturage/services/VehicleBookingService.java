@@ -8,9 +8,11 @@ import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
+import diginamic.fr.app_covoiturage.utils.SecurityUtils;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -159,10 +161,8 @@ public class VehicleBookingService {
             throw new RuntimeException("Utilisateur non reconnu");
         }
 
-        // Retrieve the employee and check admin status
-        Employee employee = optionalEmployee.get();
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous ne disposez pas des droits nécessaires");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
         List<VehicleBooking> vehicleBookings;

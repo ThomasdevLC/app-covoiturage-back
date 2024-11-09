@@ -9,8 +9,10 @@ import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
 import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
+import diginamic.fr.app_covoiturage.utils.SecurityUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -44,9 +46,8 @@ public class CompanyVehicleService {
             throw new RuntimeException("Utilisateur non reconnu");
         }
 
-        Employee employee = optionalEmployee.get();
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous ne disposez pas des droits nécessaires");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
         Vehicle vehicle = companyVehicleMapper.toEntity(companyVehicleDTO);
@@ -75,9 +76,8 @@ public class CompanyVehicleService {
             throw new RuntimeException("Utilisateur non reconnu");
         }
 
-        Employee employee = optionalEmployee.get();
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous ne disposez pas des droits nécessaires");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
         existingVehicle.setNumber(companyVehicleDTO.getNumber());
@@ -99,6 +99,10 @@ public class CompanyVehicleService {
     public void deleteCompanyVehicle(int id) {
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Véhicule non reconnu : "));
+
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
 
         companyVehicleRepository.delete(existingVehicle);
     }
@@ -123,14 +127,9 @@ public class CompanyVehicleService {
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Véhicule non trouvé"));
 
-        // Vérifier si l'employé est autorisé
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new RuntimeException("Employé non trouvé"));
-
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous n'avez pas les droits nécessaires pour modifier le statut.");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
-
         // Vérifier si le statut change de AVAILABLE à un autre statut
         if (vehicle.getStatus() == VehicleStatus.AVAILABLE && newStatus != VehicleStatus.AVAILABLE) {
             // Annuler toutes les réservations associées

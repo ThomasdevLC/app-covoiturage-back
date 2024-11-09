@@ -1,28 +1,28 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
+import diginamic.fr.app_covoiturage.models.enums.UserStatus;
+
 public class EmployeeRegisterDTO {
 
     private String firstName;
     private String lastName;
     private String gender;
     private String phone;
-    private boolean admin = false;
+    private UserStatus userStatus = UserStatus.USER;
     private String email;
     private String password;
     private boolean isActive = true;
 
     public EmployeeRegisterDTO(String firstName, String lastName, String gender, String phone, String email,
-            String password, Boolean admin, Boolean isActive) {
+            String password, UserStatus userStatus, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        if (admin != null) {
-            this.admin = admin;
-        }
+        this.userStatus = userStatus != null ? userStatus : UserStatus.USER;
         this.email = email;
         this.password = password;
-        this.isActive = isActive;
+        this.isActive = isActive != null ? isActive : true;
     }
 
     public EmployeeRegisterDTO() {
@@ -76,12 +76,12 @@ public class EmployeeRegisterDTO {
         this.password = password;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public UserStatus getUserStatus() {
+        return userStatus;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     public boolean isActive() {

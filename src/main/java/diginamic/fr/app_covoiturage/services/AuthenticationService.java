@@ -33,7 +33,7 @@ public class AuthenticationService {
                 input.getLastName(),
                 input.getGender(),
                 input.getPhone(),
-                input.isAdmin(),
+                input.getUserStatus(),
                 input.getEmail(),
                 passwordEncoder.encode(input.getPassword()),
                 true);
