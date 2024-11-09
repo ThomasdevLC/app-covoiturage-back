@@ -1,6 +1,9 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
-import diginamic.fr.app_covoiturage.models.enums.UserStatus;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import diginamic.fr.app_covoiturage.models.Role;
 
 public class EmployeeConnectedDTO {
 
@@ -8,17 +11,21 @@ public class EmployeeConnectedDTO {
     private String firstName;
     private String lastName;
     private String gender;
-    private UserStatus userStatus;
+    private Set<String> roles;
 
     public EmployeeConnectedDTO() {
     }
 
-    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, UserStatus userStatus) {
+    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.userStatus = userStatus;
+        // Transformer le Set<Role> en Set<String> pour ne contenir que le nom du rôle
+        this.roles = roles.stream()
+                .map(Role::getRoleName)
+                .map(Enum::name)
+                .collect(Collectors.toSet());
     }
 
     public int getId() {
@@ -53,11 +60,14 @@ public class EmployeeConnectedDTO {
         this.gender = gender;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles.stream()
+                .map(Role::getRoleName)
+                .map(Enum::name)
+                .collect(Collectors.toSet());
     }
 }

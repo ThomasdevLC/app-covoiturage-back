@@ -7,22 +7,23 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import diginamic.fr.app_covoiturage.models.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -68,10 +69,10 @@ public class Employee implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @NotNull(message = "Veuillez renseigner le statut d'utilisateur.")
-    @Enumerated(EnumType.STRING)
-    @Column(name = "user_status", nullable = false)
-    private UserStatus userStatus;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JsonManagedReference
+    private Set<Role> roles = new HashSet<>();
 
     @NotBlank(message = "Veuillez renseigner votre email.")
     @Email(message = "Le champ doit être un email valide")
@@ -102,21 +103,28 @@ public class Employee implements UserDetails {
     @JoinTable(name = "employee_ride_share", joinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_ride_share", referencedColumnName = "id"))
     private List<RideShare> rideShares;
 
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    // List<GrantedAuthority> authorities = new ArrayList<>();
+    // switch (this.userStatus) {
+    // case SUPER_ADMIN:
+    // authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    // authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
+    // break;
+    // case ADMIN:
+    // authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    // break;
+    // default:
+    // authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+    // }
+    // return authorities;
+    // }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        switch (this.userStatus) {
-            case SUPER_ADMIN:
-                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
-                break;
-            case ADMIN:
-                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                break;
-            default:
-                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        }
-        return authorities;
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleName().toString()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -131,13 +139,12 @@ public class Employee implements UserDetails {
      * @param password
      */
 
-    public Employee(String firstName, String lastName, String gender, String phone, UserStatus userStatus,
+    public Employee(String firstName, String lastName, String gender, String phone,
             String email, String password, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        this.userStatus = userStatus;
         this.email = email;
         this.password = password;
         this.isActive = isActive;
@@ -185,14 +192,6 @@ public class Employee implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
     }
 
     public String getEmail() {
@@ -276,10 +275,18 @@ public class Employee implements UserDetails {
         return true;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender
-                + ", user status=" + userStatus + "]";
+                + ", role=" + roles + "]";
     }
 
 }

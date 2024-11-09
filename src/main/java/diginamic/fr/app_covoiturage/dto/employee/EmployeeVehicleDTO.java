@@ -1,8 +1,9 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
 import java.util.List;
+import java.util.Set;
+
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
-import diginamic.fr.app_covoiturage.models.enums.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,8 +33,8 @@ public class EmployeeVehicleDTO {
     @Email(message = "Le champ doit être un email valide")
     private String email;
 
-    @NotNull(message = "Veuillez renseigner le statut d'utilisateur.")
-    private UserStatus userStatus;
+    @NotNull(message = "Veuillez renseigner les rôles d'utilisateur.")
+    private Set<String> roles;
 
     private List<CompanyVehicleDTO> companyVehicle;
 
@@ -41,16 +42,18 @@ public class EmployeeVehicleDTO {
     }
 
     public EmployeeVehicleDTO(int id, String firstName, String lastName, String gender, String phone, String email,
-            UserStatus userStatus, List<CompanyVehicleDTO> companyVehicle) {
+            Set<String> roles, List<CompanyVehicleDTO> companyVehicle) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
-        this.userStatus = userStatus;
+        this.roles = roles;
         this.companyVehicle = companyVehicle;
     }
+
+    // Getters et Setters
 
     public int getId() {
         return id;
@@ -100,12 +103,12 @@ public class EmployeeVehicleDTO {
         this.email = email;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public List<CompanyVehicleDTO> getCompanyVehicle() {

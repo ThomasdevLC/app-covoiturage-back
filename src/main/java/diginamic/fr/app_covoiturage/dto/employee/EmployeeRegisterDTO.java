@@ -1,6 +1,7 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
-import diginamic.fr.app_covoiturage.models.enums.UserStatus;
+import java.util.Set;
+import java.util.HashSet;
 
 public class EmployeeRegisterDTO {
 
@@ -8,24 +9,31 @@ public class EmployeeRegisterDTO {
     private String lastName;
     private String gender;
     private String phone;
-    private UserStatus userStatus = UserStatus.USER;
     private String email;
     private String password;
     private boolean isActive = true;
 
+    private Set<String> roles = new HashSet<>();
+
     public EmployeeRegisterDTO(String firstName, String lastName, String gender, String phone, String email,
-            String password, UserStatus userStatus, Boolean isActive) {
+            String password, Set<String> roles, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        this.userStatus = userStatus != null ? userStatus : UserStatus.USER;
         this.email = email;
         this.password = password;
         this.isActive = isActive != null ? isActive : true;
+
+        if (roles == null || roles.isEmpty()) {
+            this.roles.add("ROLE_USER");
+        } else {
+            this.roles = roles;
+        }
     }
 
     public EmployeeRegisterDTO() {
+        this.roles.add("ROLE_USER");
     }
 
     public String getFirstName() {
@@ -76,12 +84,16 @@ public class EmployeeRegisterDTO {
         this.password = password;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public Set<String> getRoles() {
+        return roles;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setRoles(Set<String> roles) {
+        if (roles == null || roles.isEmpty()) {
+            this.roles.add("ROLE_USER");
+        } else {
+            this.roles = roles;
+        }
     }
 
     public boolean isActive() {
