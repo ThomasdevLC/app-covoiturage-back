@@ -127,6 +127,11 @@ public class CompanyVehicleService {
     }
 
     public CompanyVehicleDTO updateVehicleStatus(int vehicleId, VehicleStatus newStatus, int employeeId) {
+
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
+
         // Vérifier si le véhicule existe
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Véhicule non trouvé"));
