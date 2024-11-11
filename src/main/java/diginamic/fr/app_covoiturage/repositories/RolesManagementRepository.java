@@ -14,8 +14,8 @@ import diginamic.fr.app_covoiturage.models.Employee;
 public interface RolesManagementRepository extends CrudRepository<Employee, Integer> {
     Optional<Employee> findById(int id);
 
-    @Query("SELECT e FROM Employee e WHERE e.firstName LIKE %:name% OR e.lastName LIKE %:name% OR e.email LIKE %:name%")
-    List<Employee> searchByNameOrEmail(@Param("name") String name);
+    @Query("SELECT e FROM Employee e WHERE e.firstName LIKE %:search% OR e.lastName LIKE %:search% OR e.email LIKE %:search%")
+    List<Employee> searchByNameOrEmail(@Param("search") String search);
 
     @Override
     List<Employee> findAll();

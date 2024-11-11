@@ -35,7 +35,7 @@ public class EmployeeRegisterMapper {
         employee.setActive(dto.isActive());
 
         // Ajouter ROLE_USER par défaut
-        Role defaultRole = roleRepository.findByRoleName(RoleName.ROLE_USER)
+        Role defaultRole = roleRepository.findByRoleName(RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("Rôle 'ROLE_USER' non trouvé."));
         employee.getRoles().add(defaultRole);
 

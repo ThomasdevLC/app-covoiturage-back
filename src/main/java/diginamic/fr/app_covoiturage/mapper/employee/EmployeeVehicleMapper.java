@@ -69,7 +69,7 @@ public class EmployeeVehicleMapper {
         employee.setEmail(dto.getEmail());
 
         // Ajouter ROLE_USER par défaut à l'employé
-        Role defaultRole = roleRepository.findByRoleName(RoleName.ROLE_USER)
+        Role defaultRole = roleRepository.findByRoleName(RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("Rôle 'ROLE_USER' non trouvé."));
         employee.getRoles().add(defaultRole);
 

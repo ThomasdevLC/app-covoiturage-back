@@ -17,7 +17,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -40,8 +39,17 @@ public class Employee implements UserDetails {
      * Identifiant unique auto-incrementé: int id
      * attribut FirstName de type string
      * attribut Lastname de type String
-     * attribut type de type String
      * attribut admin de type boolean
+     * attribut email de type String
+     * attribut phone de type String
+     * attribut password de type String
+     * attribut isActive de type boolean
+     * attribut roles de type Set<Role>
+     * attribut organizedRides de type List<RideShare>
+     * attribut vehicleBooking de type List<VehicleBooking>
+     * attribut vehicle de type List<Vehicle>
+     * attribut rideShares de type List<RideShare>
+     * 
      */
 
     @Id
@@ -71,7 +79,6 @@ public class Employee implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    @JsonManagedReference
     private Set<Role> roles = new HashSet<>();
 
     @NotBlank(message = "Veuillez renseigner votre email.")
@@ -103,27 +110,16 @@ public class Employee implements UserDetails {
     @JoinTable(name = "employee_ride_share", joinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_ride_share", referencedColumnName = "id"))
     private List<RideShare> rideShares;
 
-    // @Override
-    // public Collection<? extends GrantedAuthority> getAuthorities() {
-    // List<GrantedAuthority> authorities = new ArrayList<>();
-    // switch (this.userStatus) {
-    // case SUPER_ADMIN:
-    // authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    // authorities.add(new SimpleGrantedAuthority("ROLE_SUPER_ADMIN"));
-    // break;
-    // case ADMIN:
-    // authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    // break;
-    // default:
-    // authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-    // }
-    // return authorities;
-    // }
+    /**
+     * Méthode getAuthorities() qui retourne la liste des rôles de l'employé
+     * 
+     * @return la liste des rôles de l'employé
+     */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName().toString()))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName().toString()))
                 .collect(Collectors.toList());
     }
 

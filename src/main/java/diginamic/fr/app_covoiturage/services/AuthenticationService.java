@@ -35,7 +35,7 @@ public class AuthenticationService {
 
     public EmployeeRegisterDTO signup(EmployeeRegisterDTO input) {
         // Récupérer le rôle par défaut "ROLE_USER"
-        Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER)
+        Role userRole = roleRepository.findByRoleName(RoleName.USER)
                 .orElseThrow(() -> new RuntimeException("Le rôle 'ROLE_USER' n'a pas été trouvé."));
 
         // Créer un nouvel employé à partir des informations fournies

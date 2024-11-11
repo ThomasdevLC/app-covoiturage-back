@@ -1,11 +1,14 @@
 package diginamic.fr.app_covoiturage.services;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import diginamic.fr.app_covoiturage.dto.employee.EmployeeRoleDTO;
+import diginamic.fr.app_covoiturage.mapper.employee.EmployeeRoleMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Role;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
@@ -24,44 +27,41 @@ public class RolesManagementService {
     private RoleRepository roleRepository;
 
     /**
-     * Retourne tous les employés enregistrés.
+     * Retourne tous les employés enregistrés sous forme de DTO.
      */
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeRoleDTO> getAllEmployees() {
         if (!SecurityUtils.hasRole("ROLE_SUPER_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
-        return rolesManagementRepository.findAll();
+        List<Employee> employees = rolesManagementRepository.findAll();
+        return employees.stream()
+                .map(EmployeeRoleMapper::toEmployeeRoleDTO)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Recherche des employés par nom ou email.
+     * Recherche des employés par nom ou email et les retourne sous forme de DTO.
      *
      * @param keyword Le mot-clé pour la recherche (nom ou email).
      */
-    public List<Employee> searchEmployees(String keyword) {
+    public List<EmployeeRoleDTO> searchEmployees(String keyword) {
         if (!SecurityUtils.hasRole("ROLE_SUPER_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
-        return rolesManagementRepository.searchByNameOrEmail(keyword);
+        List<Employee> employees = rolesManagementRepository.searchByNameOrEmail(keyword);
+        return employees.stream()
+                .map(EmployeeRoleMapper::toEmployeeRoleDTO)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Met à jour les rôles d'un employé.
-     *
-     * @param employeeId  L'identifiant de l'employé dont on veut mettre à jour le
-     *                    rôle.
-     * @param newRoleName Le nom du nouveau rôle (par exemple, "ROLE_ADMIN",
-     *                    "ROLE_USER").
+     * Active ou désactive le rôle ADMIN pour un employé donné.
+     * 
+     * @param employeeId L'identifiant de l'employé à modifier.
+     * @param isAdmin    Indique si le rôle ADMIN doit être attribué ou retiré.
+     * @return L'employé mis à jour sous forme de DTO.
      */
-    public Employee updateUserRole(int employeeId, String newRoleName) {
-        // Validation du rôle à ce niveau
-        if (newRoleName == null || (!newRoleName.equals("ROLE_ADMIN") &&
-                !newRoleName.equals("ROLE_SUPER_ADMIN") &&
-                !newRoleName.equals("ROLE_USER"))) {
-            throw new IllegalArgumentException("Le rôle spécifié est invalide.");
-        }
-
-        // Vérification des permissions
+    public EmployeeRoleDTO toggleAdminRole(int employeeId, boolean isAdmin) {
         if (!SecurityUtils.hasRole("ROLE_SUPER_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
@@ -70,15 +70,25 @@ public class RolesManagementService {
         Employee employee = rolesManagementRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employé non reconnu"));
 
-        // Recherche du nouveau rôle par son nom
-        Role newRole = roleRepository.findByRoleName(RoleName.valueOf(newRoleName))
-                .orElseThrow(() -> new RuntimeException("Rôle non trouvé : " + newRoleName));
+        // Recherche du rôle ADMIN
+        Role adminRole = roleRepository.findByRoleName(RoleName.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Rôle non trouvé : ADMIN"));
 
-        // Ajouter le nouveau rôle à l'employé
-        employee.getRoles().add(newRole);
+        if (isAdmin) {
+            // Ajouter le rôle ADMIN s'il n'est pas déjà attribué
+            if (!employee.getRoles().contains(adminRole)) {
+                employee.getRoles().add(adminRole);
+            }
+        } else {
+            // Retirer le rôle ADMIN s'il est présent
+            employee.getRoles().remove(adminRole);
+        }
 
         // Sauvegarder les modifications
-        return rolesManagementRepository.save(employee);
+        Employee updatedEmployee = rolesManagementRepository.save(employee);
+
+        // Retourner l'employé mis à jour sous forme de DTO
+        return EmployeeRoleMapper.toEmployeeRoleDTO(updatedEmployee);
     }
 
 }
