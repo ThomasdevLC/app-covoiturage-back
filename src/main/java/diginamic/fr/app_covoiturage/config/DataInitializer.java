@@ -18,15 +18,15 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        if (!roleRepository.existsByRoleName(RoleName.ROLE_USER)) {
-            roleRepository.save(new Role(RoleName.ROLE_USER));
+        if (!roleRepository.existsByRoleName(RoleName.USER)) {
+            roleRepository.save(new Role(RoleName.USER));
         }
 
-        if (!roleRepository.existsByRoleName(RoleName.ROLE_ADMIN)) {
-            roleRepository.save(new Role(RoleName.ROLE_ADMIN));
+        if (!roleRepository.existsByRoleName(RoleName.ADMIN)) {
+            roleRepository.save(new Role(RoleName.ADMIN));
         }
-        if (!roleRepository.existsByRoleName(RoleName.ROLE_SUPER_ADMIN)) {
-            roleRepository.save(new Role(RoleName.ROLE_SUPER_ADMIN));
+        if (!roleRepository.existsByRoleName(RoleName.SUPER_ADMIN)) {
+            roleRepository.save(new Role(RoleName.SUPER_ADMIN));
         }
     }
 }
