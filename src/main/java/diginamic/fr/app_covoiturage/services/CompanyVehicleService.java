@@ -173,6 +173,15 @@ public class CompanyVehicleService {
                 .toList();
     }
 
+    public CompanyVehicleDTO getVehicleByIdAdminOnly(int id) {
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
+        Vehicle vehicle = companyVehicleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));
+        return companyVehicleMapper.toDTO(vehicle);
+    }
+
     public CompanyVehicleDTO getVehicleById(int id) {
         Vehicle vehicle = companyVehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));

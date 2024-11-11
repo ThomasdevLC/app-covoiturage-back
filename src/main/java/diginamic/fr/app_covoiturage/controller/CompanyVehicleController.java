@@ -62,9 +62,6 @@ public class CompanyVehicleController {
 
     @GetMapping("/admin/{id}")
     public CompanyVehicleDTO getVehicleByIdAdminOnly(@PathVariable int id) {
-        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
-            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
-        }
         return companyVehicleService.getVehicleById(id);
     }
 
