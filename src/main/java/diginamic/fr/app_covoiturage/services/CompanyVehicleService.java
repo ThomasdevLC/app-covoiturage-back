@@ -3,11 +3,14 @@ package diginamic.fr.app_covoiturage.services;
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import diginamic.fr.app_covoiturage.mapper.vehicle.CompanyVehicleMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
+import diginamic.fr.app_covoiturage.models.Message;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
+import diginamic.fr.app_covoiturage.models.enums.BookingStatus;
 import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
 import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
+import diginamic.fr.app_covoiturage.repositories.MessageRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
 import diginamic.fr.app_covoiturage.utils.SecurityUtils;
 
@@ -16,8 +19,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +40,9 @@ public class CompanyVehicleService {
     @Autowired
     private VehicleBookingRepository vehicleBookingRepository;
 
+    @Autowired
+    private MessageRepository messageRepository;
+
     public CompanyVehicleDTO createCompanyVehicle(CompanyVehicleDTO companyVehicleDTO) {
         Optional<Vehicle> existingVehicle = companyVehicleRepository.findByNumber(companyVehicleDTO.getNumber());
         if (existingVehicle.isPresent()) {
@@ -48,6 +56,7 @@ public class CompanyVehicleService {
 
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+
         }
 
         Vehicle vehicle = companyVehicleMapper.toEntity(companyVehicleDTO);
@@ -78,6 +87,7 @@ public class CompanyVehicleService {
 
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+
         }
 
         existingVehicle.setNumber(companyVehicleDTO.getNumber());
@@ -102,6 +112,7 @@ public class CompanyVehicleService {
 
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+
         }
 
         companyVehicleRepository.delete(existingVehicle);
@@ -136,9 +147,6 @@ public class CompanyVehicleService {
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Véhicule non trouvé"));
 
-        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
-            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
-        }
         // Vérifier si le statut change de AVAILABLE à un autre statut
         if (vehicle.getStatus() == VehicleStatus.AVAILABLE && newStatus != VehicleStatus.AVAILABLE) {
             // Annuler toutes les réservations associées
@@ -153,11 +161,53 @@ public class CompanyVehicleService {
         return companyVehicleMapper.toDTO(updatedVehicle);
     }
 
+    // private void cancelAllBookingsForVehicle(Vehicle vehicle) {
+    // List<VehicleBooking> bookings =
+    // vehicleBookingRepository.findByCompanyVehicleId(vehicle.getId());
+    // for (VehicleBooking booking : bookings) {
+    // vehicleBookingRepository.delete(booking);
+    // }
+    // }
+
     private void cancelAllBookingsForVehicle(Vehicle vehicle) {
-        List<VehicleBooking> bookings = vehicleBookingRepository.findByCompanyVehicleId(vehicle.getId());
+        // Obtenir le moment du changement de statut
+        LocalDateTime statusChangeTime = LocalDateTime.now();
+
+        // Récupérer les réservations actives pour ce véhicule qui commencent après le
+        // changement de statut
+        List<VehicleBooking> bookings = vehicleBookingRepository.findActiveBookingsAfterStatusChange(vehicle.getId(),
+                statusChangeTime);
+
+        // Collection pour stocker les employés concernés
+        Set<Employee> employees = new HashSet<>();
+
         for (VehicleBooking booking : bookings) {
-            vehicleBookingRepository.delete(booking);
+            // Mettre à jour le statut de la réservation à CANCELED
+            booking.setStatus(BookingStatus.CANCELED);
+            vehicleBookingRepository.save(booking);
+
+            // Ajouter l'employé à la liste des employés concernés
+            employees.add(booking.getEmployee());
         }
+
+        if (!employees.isEmpty()) {
+            // Créer le message
+            Message message = new Message();
+            message.setContent("Votre réservation a été annulée. Veuillez nous excuser pour la gêne occasionnée.");
+            message.setTimestamp(LocalDateTime.now());
+
+            // Sauvegarder le message
+            messageRepository.save(message);
+
+            // Associer le message aux employés concernés
+            for (Employee employee : employees) {
+                employee.getMessages().add(message);
+            }
+
+            // Mettre à jour les employés
+            employeeRepository.saveAll(employees);
+        }
+
     }
 
     public List<CompanyVehicleDTO> getVehiclesByStatusAndBookingDates(
@@ -171,6 +221,15 @@ public class CompanyVehicleService {
         return vehicles.stream()
                 .map(companyVehicleMapper::toDTO)
                 .toList();
+    }
+
+    public CompanyVehicleDTO getVehicleByIdAdminOnly(int id) {
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
+        Vehicle vehicle = companyVehicleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));
+        return companyVehicleMapper.toDTO(vehicle);
     }
 
     public CompanyVehicleDTO getVehicleById(int id) {

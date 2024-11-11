@@ -54,4 +54,8 @@ public interface VehicleBookingRepository extends CrudRepository<VehicleBooking,
         @Query("SELECT vb FROM VehicleBooking vb WHERE vb.startTime <= :now AND vb.endTime >= :now")
         List<VehicleBooking> findAllCurrentBookings(@Param("now") LocalDateTime now);
 
+        @Query("SELECT vb FROM VehicleBooking vb WHERE vb.companyVehicle.id = :vehicleId AND vb.startTime >= :statusChangeTime AND vb.status = 'ACTIVE'")
+        List<VehicleBooking> findActiveBookingsAfterStatusChange(
+                        @Param("vehicleId") int vehicleId,
+                        @Param("statusChangeTime") LocalDateTime statusChangeTime);
 }

@@ -5,6 +5,7 @@ import diginamic.fr.app_covoiturage.mapper.booking.VehicleBookingMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
+import diginamic.fr.app_covoiturage.models.enums.BookingStatus;
 import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
@@ -41,15 +42,13 @@ public class VehicleBookingService {
             throw new IllegalArgumentException("La date de début ne peut pas être après la date de fin.");
         }
 
-        // 2. Vérifier si le véhicule existe
         Vehicle vehicle = vehicleRepository.findById(vehicleBookingDTO.getVehicle().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Ce véhicule n'existe pas."));
 
-        // 3. Vérifier si l'employé existe
         Employee employee = employeeRepository.findById(vehicleBookingDTO.getEmployee().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Cet utilisateur n'existe pas."));
 
-        // 4. Vérifier si le véhicule est déjà réservé sur ce créneau
+        // Vérifier si le véhicule est déjà réservé sur ce créneau
         Optional<VehicleBooking> BookingPeriod = vehicleBookingRepository.findByBookingPeriod(
                 vehicle.getId(), vehicleBookingDTO.getStartTime(), vehicleBookingDTO.getEndTime());
 
@@ -57,15 +56,15 @@ public class VehicleBookingService {
             throw new IllegalArgumentException("Le véhicule  est déjà réservé sur ce créneau.");
         }
 
-        // 5. Créer l'entité de réservation
+        // Créer l'entité de réservation
         VehicleBooking vehicleBooking = vehicleBookingMapper.toEntity(vehicleBookingDTO);
         vehicleBooking.setCompanyVehicle(vehicle);
         vehicleBooking.setEmployee(employee);
 
-        // 6. Sauvegarder la réservation
+        // Sauvegarder la réservation
         VehicleBooking savedBooking = vehicleBookingRepository.save(vehicleBooking);
 
-        // 7. Mapper l'entité sauvegardée en DTO et retourner le résultat
+        // Mapper l'entité sauvegardée en DTO et retourner le résultat
         return vehicleBookingMapper.toDTO(savedBooking);
     }
 

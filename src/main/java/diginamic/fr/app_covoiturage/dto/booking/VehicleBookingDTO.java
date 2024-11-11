@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeDTO;
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
+import diginamic.fr.app_covoiturage.models.enums.BookingStatus;
 import jakarta.validation.constraints.NotNull;
 
 public class VehicleBookingDTO {
@@ -19,19 +20,24 @@ public class VehicleBookingDTO {
     private CompanyVehicleDTO vehicle;
     private EmployeeDTO employee;
 
+    // Ajoutez le champ 'status'
+    private BookingStatus status;
+
+    // Constructeurs
+    public VehicleBookingDTO() {
+    }
+
     public VehicleBookingDTO(int id, LocalDateTime startTime, LocalDateTime endTime, CompanyVehicleDTO vehicle,
-            EmployeeDTO employee) {
+            EmployeeDTO employee, BookingStatus status) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.vehicle = vehicle;
         this.employee = employee;
-
+        this.status = status;
     }
 
-    public VehicleBookingDTO() {
-    }
-
+    // Getters et setters
     public int getId() {
         return id;
     }
@@ -72,4 +78,11 @@ public class VehicleBookingDTO {
         this.employee = employee;
     }
 
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
 }

@@ -4,6 +4,7 @@ import diginamic.fr.app_covoiturage.dto.booking.VehicleBookingDTO;
 import diginamic.fr.app_covoiturage.mapper.employee.EmployeeMapper;
 import diginamic.fr.app_covoiturage.mapper.vehicle.CompanyVehicleMapper;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
+import diginamic.fr.app_covoiturage.models.enums.BookingStatus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,8 +27,16 @@ public class VehicleBookingMapper {
         dto.setId(vehicleBooking.getId());
         dto.setStartTime(vehicleBooking.getStartTime());
         dto.setEndTime(vehicleBooking.getEndTime());
-        dto.setVehicle(companyVehicleMapper.toDTO(vehicleBooking.getCompanyVehicle()));
-        dto.setEmployee(employeeMapper.toDTO(vehicleBooking.getEmployee()));
+
+        if (vehicleBooking.getCompanyVehicle() != null) {
+            dto.setVehicle(companyVehicleMapper.toDTO(vehicleBooking.getCompanyVehicle()));
+        }
+
+        if (vehicleBooking.getEmployee() != null) {
+            dto.setEmployee(employeeMapper.toDTO(vehicleBooking.getEmployee()));
+        }
+
+        dto.setStatus(vehicleBooking.getStatus());
 
         return dto;
     }
@@ -41,8 +50,20 @@ public class VehicleBookingMapper {
         vehicleBooking.setId(dto.getId());
         vehicleBooking.setStartTime(dto.getStartTime());
         vehicleBooking.setEndTime(dto.getEndTime());
-        vehicleBooking.setCompanyVehicle(companyVehicleMapper.toEntity(dto.getVehicle()));
-        vehicleBooking.setEmployee(employeeMapper.toEntity(dto.getEmployee()));
+
+        if (dto.getVehicle() != null) {
+            vehicleBooking.setCompanyVehicle(companyVehicleMapper.toEntity(dto.getVehicle()));
+        }
+
+        if (dto.getEmployee() != null) {
+            vehicleBooking.setEmployee(employeeMapper.toEntity(dto.getEmployee()));
+        }
+
+        if (dto.getStatus() == null) {
+            vehicleBooking.setStatus(BookingStatus.ACTIVE);
+        } else {
+            vehicleBooking.setStatus(dto.getStatus());
+        }
 
         return vehicleBooking;
     }

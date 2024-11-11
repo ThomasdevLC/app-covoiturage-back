@@ -2,7 +2,11 @@ package diginamic.fr.app_covoiturage.models;
 
 import java.time.LocalDateTime;
 
+import diginamic.fr.app_covoiturage.models.enums.BookingStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,6 +29,10 @@ public class VehicleBooking {
     @NotNull(message = "Veuillez renseigner la date de fin d'emprunt")
     private LocalDateTime endTime;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private BookingStatus status;
+
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
@@ -36,7 +44,7 @@ public class VehicleBooking {
     public VehicleBooking(LocalDateTime startTime, LocalDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
-
+        this.status = BookingStatus.ACTIVE;
     }
 
     public VehicleBooking() {
@@ -64,6 +72,14 @@ public class VehicleBooking {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
     }
 
     public Employee getEmployee() {
