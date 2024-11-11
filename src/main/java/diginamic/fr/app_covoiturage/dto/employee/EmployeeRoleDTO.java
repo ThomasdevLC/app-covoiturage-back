@@ -2,16 +2,14 @@ package diginamic.fr.app_covoiturage.dto.employee;
 
 import java.util.Set;
 
-import diginamic.fr.app_covoiturage.dto.role.RoleDTO;
-
 public class EmployeeRoleDTO {
     private int id;
     private String firstName;
     private String lastName;
     private String email;
-    private Set<RoleDTO> roles;
+    private Set<String> roles;
 
-    public EmployeeRoleDTO(int id, String firstName, String lastName, String email, Set<RoleDTO> roles) {
+    public EmployeeRoleDTO(int id, String firstName, String lastName, String email, Set<String> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -54,12 +52,11 @@ public class EmployeeRoleDTO {
         this.email = email;
     }
 
-    public Set<RoleDTO> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<RoleDTO> roles) {
+    public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
-
 }

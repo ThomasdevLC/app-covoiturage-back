@@ -3,11 +3,10 @@ package diginamic.fr.app_covoiturage.mapper.employee;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import diginamic.fr.app_covoiturage.mapper.role.RoleMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Role;
+import diginamic.fr.app_covoiturage.models.enums.RoleName;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRoleDTO;
-import diginamic.fr.app_covoiturage.dto.role.RoleDTO;
 
 public class EmployeeRoleMapper {
     /**
@@ -21,8 +20,8 @@ public class EmployeeRoleMapper {
             return null;
         }
 
-        Set<RoleDTO> roleDTOs = employee.getRoles().stream()
-                .map(RoleMapper::toRoleDTO)
+        Set<String> roleNames = employee.getRoles().stream()
+                .map(role -> role.getRoleName().toString()) // Conversion en String du nom du rôle
                 .collect(Collectors.toSet());
 
         return new EmployeeRoleDTO(
@@ -30,7 +29,7 @@ public class EmployeeRoleMapper {
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getEmail(),
-                roleDTOs);
+                roleNames);
     }
 
     /**
@@ -51,7 +50,11 @@ public class EmployeeRoleMapper {
         employee.setEmail(employeeRoleDTO.getEmail());
 
         Set<Role> roles = employeeRoleDTO.getRoles().stream()
-                .map(RoleMapper::toRole)
+                .map(roleName -> {
+                    Role role = new Role();
+                    role.setRoleName(RoleName.valueOf(roleName));
+                    return role;
+                })
                 .collect(Collectors.toSet());
 
         employee.setRoles(roles);
