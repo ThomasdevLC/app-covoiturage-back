@@ -187,5 +187,4 @@ public class CompanyVehicleService {
                 .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));
         return companyVehicleMapper.toDTO(vehicle);
     }
-
 }
