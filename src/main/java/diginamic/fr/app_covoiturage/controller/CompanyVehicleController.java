@@ -62,7 +62,7 @@ public class CompanyVehicleController {
 
     @GetMapping("/admin/{id}")
     public CompanyVehicleDTO getVehicleByIdAdminOnly(@PathVariable int id) {
-        return companyVehicleService.getVehicleById(id);
+        return companyVehicleService.getVehicleByIdAdminOnly(id);
     }
 
     @GetMapping("/status-and-booking-dates")
