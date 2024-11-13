@@ -39,7 +39,6 @@ public class Employee implements UserDetails {
      * Identifiant unique auto-incrementé: int id
      * attribut FirstName de type string
      * attribut Lastname de type String
-     * attribut admin de type boolean
      * attribut email de type String
      * attribut phone de type String
      * attribut password de type String
@@ -77,7 +76,7 @@ public class Employee implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
@@ -130,7 +129,6 @@ public class Employee implements UserDetails {
      * @param lastName
      * @param gender
      * @param phone
-     * @param admin
      * @param email
      * @param password
      */

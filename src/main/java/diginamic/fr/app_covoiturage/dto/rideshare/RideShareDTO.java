@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import diginamic.fr.app_covoiturage.dto.address.AddressDTO;
-import diginamic.fr.app_covoiturage.dto.employee.EmployeeDTO;
+import diginamic.fr.app_covoiturage.dto.employee.EmployeeProfileDTO;
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,21 +23,21 @@ public class RideShareDTO {
     @NotNull(message = "L'adresse d'arrivée est obligatoire")
     private AddressDTO arrivalAddress;
 
-    private EmployeeDTO organizer;
+    private EmployeeProfileDTO organizer;
 
     @NotNull(message = "Le nombre de sièges disponible est obligatoire")
     private int availableSeats;
 
     private PrivateVehicleDTO vehicle;
 
-    private List<EmployeeDTO> passengers;
+    private List<EmployeeProfileDTO> passengers;
 
     public RideShareDTO() {
     }
 
     public RideShareDTO(int id, LocalDateTime departureTime, LocalDateTime arrivalTime, AddressDTO departureAddress,
-            AddressDTO arrivalAddress, EmployeeDTO organizer, int availableSeats, PrivateVehicleDTO vehicle,
-            List<EmployeeDTO> passengers) {
+            AddressDTO arrivalAddress, EmployeeProfileDTO organizer, int availableSeats, PrivateVehicleDTO vehicle,
+            List<EmployeeProfileDTO> passengers) {
         this.id = id;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -90,11 +90,11 @@ public class RideShareDTO {
         this.arrivalAddress = arrivalAddress;
     }
 
-    public EmployeeDTO getOrganizer() {
+    public EmployeeProfileDTO getOrganizer() {
         return organizer;
     }
 
-    public void setOrganizer(EmployeeDTO organizer) {
+    public void setOrganizer(EmployeeProfileDTO organizer) {
         this.organizer = organizer;
     }
 
@@ -114,11 +114,11 @@ public class RideShareDTO {
         this.vehicle = vehicle;
     }
 
-    public List<EmployeeDTO> getPassengers() {
+    public List<EmployeeProfileDTO> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<EmployeeDTO> passengers) {
+    public void setPassengers(List<EmployeeProfileDTO> passengers) {
         this.passengers = passengers;
     }
 
