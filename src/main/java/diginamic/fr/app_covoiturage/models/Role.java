@@ -11,6 +11,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -23,6 +25,7 @@ public class Role {
     private int id;
 
     @Enumerated(EnumType.STRING)
+    @JoinTable(name = "employee_roles", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "employee_id ", referencedColumnName = "id"))
     @Column(name = "role_name", nullable = false, unique = true)
     private RoleName roleName;
 
