@@ -1,15 +1,15 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
-import java.util.Set;
+import java.util.List;
 
 public class EmployeeRoleDTO {
     private int id;
     private String firstName;
     private String lastName;
     private String email;
-    private Set<String> roles;
+    private List<String> roles;
 
-    public EmployeeRoleDTO(int id, String firstName, String lastName, String email, Set<String> roles) {
+    public EmployeeRoleDTO(int id, String firstName, String lastName, String email, List<String> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,11 +52,11 @@ public class EmployeeRoleDTO {
         this.email = email;
     }
 
-    public Set<String> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }

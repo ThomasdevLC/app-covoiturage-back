@@ -1,6 +1,6 @@
 package diginamic.fr.app_covoiturage.mapper.employee;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
@@ -62,10 +62,10 @@ public class EmployeeRegisterMapper {
         dto.setPassword(employee.getPassword());
         dto.setActive(employee.isActive());
 
-        // Convertir Set<Role> en Set<String>
-        Set<String> roles = employee.getRoles().stream()
+        List<String> roles = employee.getRoles().stream()
                 .map(role -> role.getRoleName().name())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+
         dto.setRoles(roles);
 
         return dto;

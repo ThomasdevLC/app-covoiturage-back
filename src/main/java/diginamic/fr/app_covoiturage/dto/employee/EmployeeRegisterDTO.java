@@ -1,7 +1,7 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeRegisterDTO {
 
@@ -13,10 +13,10 @@ public class EmployeeRegisterDTO {
     private String password;
     private boolean isActive = true;
 
-    private Set<String> roles = new HashSet<>();
+    private List<String> roles = new ArrayList<>();
 
     public EmployeeRegisterDTO(String firstName, String lastName, String gender, String phone, String email,
-            String password, Set<String> roles, Boolean isActive) {
+            String password, List<String> roles, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -84,11 +84,11 @@ public class EmployeeRegisterDTO {
         this.password = password;
     }
 
-    public Set<String> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(List<String> roles) {
         if (roles == null || roles.isEmpty()) {
             this.roles.add("ROLE_USER");
         } else {

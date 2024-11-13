@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.Set;
+import java.util.List;
 
 public class EmployeeDTO {
 
@@ -32,7 +32,7 @@ public class EmployeeDTO {
     private String email;
 
     @NotNull(message = "Veuillez renseigner les rôles d'utilisateur.")
-    private Set<String> roles;
+    private List<String> roles;
 
     // Constructeurs
 
@@ -40,7 +40,7 @@ public class EmployeeDTO {
     }
 
     public EmployeeDTO(int id, String firstName, String lastName, String gender, String phone, String email,
-            Set<String> roles) {
+            List<String> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -100,11 +100,11 @@ public class EmployeeDTO {
         this.email = email;
     }
 
-    public Set<String> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }

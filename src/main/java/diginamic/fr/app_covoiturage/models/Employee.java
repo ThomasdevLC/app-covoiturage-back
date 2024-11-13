@@ -7,10 +7,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -43,7 +42,7 @@ public class Employee implements UserDetails {
      * attribut phone de type String
      * attribut password de type String
      * attribut isActive de type boolean
-     * attribut roles de type Set<Role>
+     * attribut roles de type List<Role>
      * attribut organizedRides de type List<RideShare>
      * attribut vehicleBooking de type List<VehicleBooking>
      * attribut vehicle de type List<Vehicle>
@@ -78,7 +77,7 @@ public class Employee implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
     @NotBlank(message = "Veuillez renseigner votre email.")
     @Email(message = "Le champ doit être un email valide")
@@ -269,11 +268,11 @@ public class Employee implements UserDetails {
         return true;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 

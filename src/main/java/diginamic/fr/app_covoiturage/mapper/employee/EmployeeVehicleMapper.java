@@ -1,7 +1,6 @@
 package diginamic.fr.app_covoiturage.mapper.employee;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +37,10 @@ public class EmployeeVehicleMapper {
         dto.setPhone(employee.getPhone());
         dto.setEmail(employee.getEmail());
 
-        // Convertir Set<Role> en Set<String> pour les rôles
-        Set<String> roles = employee.getRoles().stream()
+        // Convertir List<Role> en List<String> pour les rôles
+        List<String> roles = employee.getRoles().stream()
                 .map(role -> role.getRoleName().name())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         dto.setRoles(roles);
 
         // Mapper la liste des véhicules associés à l'employé

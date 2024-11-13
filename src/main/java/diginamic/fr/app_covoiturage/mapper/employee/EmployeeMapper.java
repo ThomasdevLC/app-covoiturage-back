@@ -9,7 +9,7 @@ import diginamic.fr.app_covoiturage.models.Role;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
 import diginamic.fr.app_covoiturage.repositories.RoleRepository;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,9 +31,9 @@ public class EmployeeMapper {
         dto.setPhone(employee.getPhone());
         dto.setEmail(employee.getEmail());
 
-        Set<String> roles = employee.getRoles().stream()
+        List<String> roles = employee.getRoles().stream()
                 .map(role -> role.getRoleName().name())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         dto.setRoles(roles);
 
         return dto;
@@ -52,12 +52,12 @@ public class EmployeeMapper {
         employee.setPhone(employeeDTO.getPhone());
         employee.setEmail(employeeDTO.getEmail());
 
-        // Convertir Set<String> en Set<Role> pour les rôles
+        // Convertir List<String> en List<Role> pour les rôles
         if (employeeDTO.getRoles() != null) {
-            Set<Role> roles = employeeDTO.getRoles().stream()
+            List<Role> roles = employeeDTO.getRoles().stream()
                     .map(roleName -> roleRepository.findByRoleName(RoleName.valueOf(roleName))
                             .orElseThrow(() -> new RuntimeException("Rôle non trouvé : " + roleName)))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             employee.setRoles(roles);
         }
 

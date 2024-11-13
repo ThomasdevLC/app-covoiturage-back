@@ -1,6 +1,6 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import diginamic.fr.app_covoiturage.models.Role;
@@ -11,21 +11,21 @@ public class EmployeeConnectedDTO {
     private String firstName;
     private String lastName;
     private String gender;
-    private Set<String> roles;
+    private List<String> roles;
 
     public EmployeeConnectedDTO() {
     }
 
-    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, Set<Role> roles) {
+    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, List<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        // Transformer le Set<Role> en Set<String> pour ne contenir que le nom du rôle
+        // Transformer le List<Role> en List<String> pour ne contenir que le nom du rôle
         this.roles = roles.stream()
                 .map(Role::getRoleName)
                 .map(Enum::name)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public int getId() {
@@ -60,14 +60,14 @@ public class EmployeeConnectedDTO {
         this.gender = gender;
     }
 
-    public Set<String> getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles.stream()
                 .map(Role::getRoleName)
                 .map(Enum::name)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

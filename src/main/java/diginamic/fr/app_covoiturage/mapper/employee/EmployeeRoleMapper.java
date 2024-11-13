@@ -1,6 +1,6 @@
 package diginamic.fr.app_covoiturage.mapper.employee;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import diginamic.fr.app_covoiturage.models.Employee;
@@ -20,9 +20,9 @@ public class EmployeeRoleMapper {
             return null;
         }
 
-        Set<String> roleNames = employee.getRoles().stream()
+        List<String> roleNames = employee.getRoles().stream()
                 .map(role -> role.getRoleName().toString()) // Conversion en String du nom du rôle
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         return new EmployeeRoleDTO(
                 employee.getId(),
@@ -49,13 +49,13 @@ public class EmployeeRoleMapper {
         employee.setLastName(employeeRoleDTO.getLastName());
         employee.setEmail(employeeRoleDTO.getEmail());
 
-        Set<Role> roles = employeeRoleDTO.getRoles().stream()
+        List<Role> roles = employeeRoleDTO.getRoles().stream()
                 .map(roleName -> {
                     Role role = new Role();
                     role.setRoleName(RoleName.valueOf(roleName));
                     return role;
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         employee.setRoles(roles);
 

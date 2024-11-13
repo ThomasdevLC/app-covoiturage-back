@@ -1,6 +1,6 @@
 package diginamic.fr.app_covoiturage.mapper.employee;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -40,10 +40,10 @@ public class EmployeeConnectedMapper {
         employee.setGender(dto.getGender());
 
         if (dto.getRoles() != null) {
-            Set<Role> roles = dto.getRoles().stream()
+            List<Role> roles = dto.getRoles().stream()
                     .map(roleName -> roleRepository.findByRoleName(RoleName.valueOf(roleName))
                             .orElseThrow(() -> new RuntimeException("Rôle non trouvé : " + roleName)))
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toList());
             employee.setRoles(roles);
         }
 
