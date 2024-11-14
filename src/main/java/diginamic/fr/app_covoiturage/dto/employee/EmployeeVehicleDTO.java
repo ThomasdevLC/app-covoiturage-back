@@ -1,8 +1,6 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
 import java.util.List;
-import java.util.List;
-
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

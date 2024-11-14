@@ -3,13 +3,11 @@ package diginamic.fr.app_covoiturage.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
 import diginamic.fr.app_covoiturage.services.CompanyVehicleService;
-import diginamic.fr.app_covoiturage.utils.SecurityUtils;
 import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
