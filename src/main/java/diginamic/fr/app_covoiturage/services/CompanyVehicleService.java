@@ -6,12 +6,13 @@ import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
-import diginamic.fr.app_covoiturage.models.enums.VehicleType;
 import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
+import diginamic.fr.app_covoiturage.utils.SecurityUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,9 +46,8 @@ public class CompanyVehicleService {
             throw new RuntimeException("Utilisateur non reconnu");
         }
 
-        Employee employee = optionalEmployee.get();
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous ne disposez pas des droits nécessaires");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
         Vehicle vehicle = companyVehicleMapper.toEntity(companyVehicleDTO);
@@ -61,7 +61,7 @@ public class CompanyVehicleService {
     public CompanyVehicleDTO updateCompanyVehicle(int id, CompanyVehicleDTO companyVehicleDTO) {
         // Vérifier si le véhicule existe
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new RuntimeException("Véhicule non reconnu"));
 
         // Vérifier l'existence du véhicule avec le même numéro (sauf le véhicule
         // actuel)
@@ -76,9 +76,8 @@ public class CompanyVehicleService {
             throw new RuntimeException("Utilisateur non reconnu");
         }
 
-        Employee employee = optionalEmployee.get();
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous ne disposez pas des droits nécessaires");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
         existingVehicle.setNumber(companyVehicleDTO.getNumber());
@@ -99,13 +98,21 @@ public class CompanyVehicleService {
 
     public void deleteCompanyVehicle(int id) {
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new RuntimeException("Véhicule non reconnu : "));
+
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
 
         companyVehicleRepository.delete(existingVehicle);
     }
 
     public List<CompanyVehicleDTO> getAllVehicles(String brand, String number) {
         List<Vehicle> vehicles;
+
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
         if (brand != null) {
             vehicles = companyVehicleRepository.findByBrand(brand);
         } else if (number != null) {
@@ -120,18 +127,18 @@ public class CompanyVehicleService {
     }
 
     public CompanyVehicleDTO updateVehicleStatus(int vehicleId, VehicleStatus newStatus, int employeeId) {
+
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
+
         // Vérifier si le véhicule existe
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new RuntimeException("Véhicule non trouvé"));
 
-        // Vérifier si l'employé est autorisé
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new RuntimeException("Employé non trouvé"));
-
-        if (!employee.isAdmin()) {
-            throw new RuntimeException("Vous n'avez pas les droits nécessaires pour modifier le statut.");
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
-
         // Vérifier si le statut change de AVAILABLE à un autre statut
         if (vehicle.getStatus() == VehicleStatus.AVAILABLE && newStatus != VehicleStatus.AVAILABLE) {
             // Annuler toutes les réservations associées
@@ -166,10 +173,18 @@ public class CompanyVehicleService {
                 .toList();
     }
 
-    public CompanyVehicleDTO getVehicleById(int id) {
+    public CompanyVehicleDTO getVehicleByIdAdminOnly(int id) {
+        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
+            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
+        }
         Vehicle vehicle = companyVehicleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé avec l'ID : " + id));
+                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));
         return companyVehicleMapper.toDTO(vehicle);
     }
 
+    public CompanyVehicleDTO getVehicleById(int id) {
+        Vehicle vehicle = companyVehicleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé "));
+        return companyVehicleMapper.toDTO(vehicle);
+    }
 }

@@ -15,13 +15,19 @@ public class AddressService {
     private AddressRepository addressRepository;
 
     public Address save(Address address) {
-        
+
         return addressRepository.save(address);
     }
 
     public Optional<Address> findById(int id) {
         return addressRepository.findById(id);
     }
-    
-   
+
+    public Address createOrGetAddress(Address address) {
+        Optional<Address> existingAddress = addressRepository.findByNumberAndStreetAndCity(
+                address.getNumber(), address.getStreet(), address.getCity());
+
+        return existingAddress.orElseGet(() -> addressRepository.save(address));
+    }
+
 }

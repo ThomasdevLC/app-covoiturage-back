@@ -1,17 +1,26 @@
 package diginamic.fr.app_covoiturage.mapper.employee;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
+
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRegisterDTO;
 import diginamic.fr.app_covoiturage.models.Employee;
+import diginamic.fr.app_covoiturage.models.Role;
+import diginamic.fr.app_covoiturage.models.enums.RoleName;
+import diginamic.fr.app_covoiturage.repositories.RoleRepository;
 
+@Component
 public class EmployeeRegisterMapper {
 
     /**
      * Mappe un EmployeeRegisterDTO vers une entité Employee.
      *
-     * @param dto Le DTO d'inscription
+     * @param dto            Le DTO d'inscription
+     * @param roleRepository Le repository pour accéder aux rôles
      * @return Une entité Employee avec les données du DTO
      */
-    public static Employee toEntity(EmployeeRegisterDTO dto) {
+    public static Employee toEntity(EmployeeRegisterDTO dto, RoleRepository roleRepository) {
         if (dto == null) {
             return null;
         }
@@ -23,8 +32,12 @@ public class EmployeeRegisterMapper {
         employee.setPhone(dto.getPhone());
         employee.setEmail(dto.getEmail());
         employee.setPassword(dto.getPassword());
-        employee.setActive(true);
-        employee.setAdmin(dto.isAdmin());
+        employee.setActive(dto.isActive());
+
+        // Ajouter ROLE_USER par défaut
+        Role defaultRole = roleRepository.findByRoleName(RoleName.USER)
+                .orElseThrow(() -> new RuntimeException("Rôle 'ROLE_USER' non trouvé."));
+        employee.getRoles().add(defaultRole);
 
         return employee;
     }
@@ -47,7 +60,13 @@ public class EmployeeRegisterMapper {
         dto.setPhone(employee.getPhone());
         dto.setEmail(employee.getEmail());
         dto.setPassword(employee.getPassword());
-        dto.setAdmin(employee.isAdmin());
+        dto.setActive(employee.isActive());
+
+        List<String> roles = employee.getRoles().stream()
+                .map(role -> role.getRoleName().name())
+                .collect(Collectors.toList());
+
+        dto.setRoles(roles);
 
         return dto;
     }

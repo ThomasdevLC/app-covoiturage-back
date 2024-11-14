@@ -57,6 +57,7 @@ public class PrivateVehicleService {
             Vehicle vehicle = optionalVehicle.get();
 
             vehicle.setNumber(vehicleDTO.getNumber());
+            vehicle.setBrand(vehicleDTO.getBrand());
             vehicle.setType(vehicleDTO.getType());
             vehicle.setModel(vehicleDTO.getModel());
             vehicle.setSeats(vehicleDTO.getSeats());

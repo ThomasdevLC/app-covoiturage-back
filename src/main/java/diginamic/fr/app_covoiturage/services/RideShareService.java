@@ -13,6 +13,7 @@ import diginamic.fr.app_covoiturage.dto.address.AddressDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareBasicDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareDTO;
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
+import diginamic.fr.app_covoiturage.exceptions.MessageException;
 import diginamic.fr.app_covoiturage.mapper.address.AddressMapper;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareBasicMapper;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareMapper;
@@ -100,7 +101,7 @@ public class RideShareService {
         Integer organizerId = rideShareDTO.getOrganizer().getId(); // Récupérer l'ID de l'organisateur depuis le DTO
 
         Employee organizer = employeeRepository.findById(organizerId)
-                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu avec l'ID : " + organizerId));
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu "));
 
         // Vérification et récupération du véhicule
         PrivateVehicleDTO vehicleDTO = rideShareDTO.getVehicle(); // Le véhicule est passé dans le corps de la requête
@@ -271,8 +272,11 @@ public class RideShareService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<RideShareDTO> getRideShareById(int id) {
-        return rideShareRepository.findById(id)
-                .map(rideShareMapper::toDTO);
+    public RideShareDTO getRideShareById(int id) throws MessageException {
+        RideShare rideShare = rideShareRepository.findById(id)
+                .orElseThrow(() -> new MessageException("Ce covoiturage n'existe pas."));
+
+        return rideShareMapper.toDTO(rideShare);
     }
+
 }

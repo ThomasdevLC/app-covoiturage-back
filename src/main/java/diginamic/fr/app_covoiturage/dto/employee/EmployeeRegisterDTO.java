@@ -1,31 +1,39 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EmployeeRegisterDTO {
 
     private String firstName;
     private String lastName;
     private String gender;
     private String phone;
-    private boolean admin = false;
     private String email;
     private String password;
     private boolean isActive = true;
 
+    private List<String> roles = new ArrayList<>();
+
     public EmployeeRegisterDTO(String firstName, String lastName, String gender, String phone, String email,
-            String password, Boolean admin, Boolean isActive) {
+            String password, List<String> roles, Boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        if (admin != null) {
-            this.admin = admin;
-        }
         this.email = email;
         this.password = password;
-        this.isActive = isActive;
+        this.isActive = isActive != null ? isActive : true;
+
+        if (roles == null || roles.isEmpty()) {
+            this.roles.add("ROLE_USER");
+        } else {
+            this.roles = roles;
+        }
     }
 
     public EmployeeRegisterDTO() {
+        this.roles.add("ROLE_USER");
     }
 
     public String getFirstName() {
@@ -76,12 +84,16 @@ public class EmployeeRegisterDTO {
         this.password = password;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRoles(List<String> roles) {
+        if (roles == null || roles.isEmpty()) {
+            this.roles.add("ROLE_USER");
+        } else {
+            this.roles = roles;
+        }
     }
 
     public boolean isActive() {
