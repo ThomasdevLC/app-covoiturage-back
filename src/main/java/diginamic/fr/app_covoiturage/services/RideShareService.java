@@ -244,6 +244,7 @@ public class RideShareService {
 
         if (past) {
             rideShares = rideShareRepository.findByOrganizerIdAndArrivalBefore(organizerId, now);
+
         } else {
             rideShares = rideShareRepository.findByOrganizerIdAndDepartureAfter(organizerId, now);
         }

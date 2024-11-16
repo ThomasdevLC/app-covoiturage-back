@@ -38,7 +38,8 @@ public class VehicleBookingService {
     public VehicleBookingDTO createBooking(VehicleBookingDTO vehicleBookingDTO) {
         // 1. Valider les dates de début et de fin
         if (vehicleBookingDTO.getStartTime().isAfter(vehicleBookingDTO.getEndTime())) {
-            throw new IllegalArgumentException("La date de début ne peut pas être après la date de fin.");
+            throw new IllegalArgumentException(
+                    "La date de fin ne peut pas être antérieure à la date de début de réservation.");
         }
 
         // 2. Vérifier si le véhicule existe
@@ -83,7 +84,8 @@ public class VehicleBookingService {
     public VehicleBookingDTO updateBooking(int bookingId, VehicleBookingDTO vehicleBookingDTO) {
         // 1. Valider les dates de début et de fin
         if (vehicleBookingDTO.getStartTime().isAfter(vehicleBookingDTO.getEndTime())) {
-            throw new IllegalArgumentException("La date de début ne peut pas être après la date de fin.");
+            throw new IllegalArgumentException(
+                    "La date de fin ne peut pas être antérieure à la date de début de réservation");
         }
 
         // 2. Récupérer la réservation existante par ID

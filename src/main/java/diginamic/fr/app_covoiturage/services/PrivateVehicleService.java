@@ -81,6 +81,10 @@ public class PrivateVehicleService {
     public List<PrivateVehicleDTO> getVehiclesByEmployeeId(int employeeId) {
         List<Vehicle> vehicles = privateVehicleRepository.findVehiclesByEmployeeId(employeeId);
 
+        if (vehicles.isEmpty()) {
+            throw new IllegalArgumentException("Vous n'avez pas de véhicule lié à votre compte.");
+        }
+
         // Convertir la liste des entités Vehicle en PrivateVehicleDTO
         return vehicles.stream()
                 .map(privateVehicleMapper::toDTO) // Conversion en DTO
