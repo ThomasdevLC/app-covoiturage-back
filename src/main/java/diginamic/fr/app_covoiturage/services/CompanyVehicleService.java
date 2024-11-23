@@ -97,14 +97,25 @@ public class CompanyVehicleService {
     }
 
     public void deleteCompanyVehicle(int id) {
+        // Récupérer le véhicule par son ID
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Véhicule non reconnu : "));
 
+        // Vérifier si l'utilisateur a le rôle ADMIN
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
-        companyVehicleRepository.delete(existingVehicle);
+        // Vérifier si le véhicule est lié à un booking actif ou futur
+        boolean isLinkedToBooking = companyVehicleRepository.isVehicleLinkedToBooking(id);
+        if (isLinkedToBooking) {
+            throw new IllegalArgumentException(
+                    "Impossible de supprimer ce véhicule car il est  lié à une réservation en cours.");
+        }
+
+        // Marquer le véhicule comme supprimé
+        existingVehicle.setIsDeleted(true);
+        companyVehicleRepository.save(existingVehicle);
     }
 
     public List<CompanyVehicleDTO> getAllVehicles(String brand, String number) {
