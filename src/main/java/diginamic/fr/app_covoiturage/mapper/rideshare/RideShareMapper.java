@@ -39,6 +39,8 @@ public class RideShareMapper {
                     .map(employeeMapper::toDTO)
                     .collect(Collectors.toList()));
         }
+        dto.setDeleted(rideShare.isDeleted());
+
         return dto;
     }
 
@@ -58,6 +60,7 @@ public class RideShareMapper {
                     .map(employeeMapper::toEntity)
                     .collect(Collectors.toList()));
         }
+        rideShare.setDeleted(rideShareDTO.isDeleted());
         return rideShare;
     }
 }

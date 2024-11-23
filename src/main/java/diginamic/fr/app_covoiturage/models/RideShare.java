@@ -57,6 +57,9 @@ public class RideShare {
     @JoinTable(name = "employee_ride_share", joinColumns = @JoinColumn(name = "id_ride_share", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"))
     private List<Employee> passengers;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public RideShare(LocalDateTime departureTime, LocalDateTime arrivalTime, Address departureAddress,
             Address arrivalAddress, int availableSeats, Employee organizer, List<Employee> passengers) {
         this.departureTime = departureTime;
@@ -140,6 +143,14 @@ public class RideShare {
 
     public void setPassengers(List<Employee> passengers) {
         this.passengers = passengers;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override

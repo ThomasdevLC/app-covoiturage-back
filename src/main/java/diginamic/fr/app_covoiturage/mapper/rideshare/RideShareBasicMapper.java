@@ -32,7 +32,7 @@ public class RideShareBasicMapper {
         dto.setOrganizer(employeeMapper.toDTO(rideShare.getOrganizer()));
         dto.setAvailableSeats(rideShare.getAvailableSeats());
         dto.setVehicle(privateVehicleMapper.toDTO(rideShare.getVehicle()));
-
+        dto.setDeleted(rideShare.isDeleted());
         return dto;
     }
 
@@ -47,7 +47,7 @@ public class RideShareBasicMapper {
         rideShare.setOrganizer(employeeMapper.toEntity(rideShareDTO.getOrganizer()));
         rideShare.setAvailableSeats(rideShareDTO.getAvailableSeats());
         rideShare.setVehicle(privateVehicleMapper.toEntity(rideShareDTO.getVehicle()));
-
+        rideShare.setDeleted(rideShareDTO.isDeleted());
         return rideShare;
     }
 }

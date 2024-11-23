@@ -30,12 +30,15 @@ public class RideShareBasicDTO {
 
     private PrivateVehicleDTO vehicle;
 
+    private boolean isDeleted;
+
     public RideShareBasicDTO() {
     }
 
     public RideShareBasicDTO(int id, LocalDateTime departureTime, LocalDateTime arrivalTime,
             AddressDTO departureAddress,
-            AddressDTO arrivalAddress, EmployeeDTO organizer, int availableSeats, PrivateVehicleDTO vehicle) {
+            AddressDTO arrivalAddress, EmployeeDTO organizer, int availableSeats, PrivateVehicleDTO vehicle,
+            boolean isDeleted) {
         this.id = id;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -44,7 +47,7 @@ public class RideShareBasicDTO {
         this.organizer = organizer;
         this.availableSeats = availableSeats;
         this.vehicle = vehicle;
-
+        this.isDeleted = isDeleted;
     }
 
     public int getId() {
@@ -109,6 +112,14 @@ public class RideShareBasicDTO {
 
     public void setVehicle(PrivateVehicleDTO vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public Duration getTripDuration() {

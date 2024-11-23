@@ -151,20 +151,21 @@ public class RideShareService {
     }
 
     public RideShareDTO deleteById(Integer id, int organizerId) {
-        Optional<RideShare> optionalRideShare = rideShareRepository.findById(id);
-        if (!optionalRideShare.isPresent()) {
-            throw new EntityNotFoundException("Ce covoiturage n'existe pas");
-        }
+        // Récupérer le covoiturage ou lever une exception s'il n'existe pas
+        RideShare rideShare = rideShareRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ce covoiturage n'existe pas"));
 
-        RideShare rideShare = optionalRideShare.get();
-
+        // Vérifier les droits de l'organisateur
         if (rideShare.getOrganizer().getId() != organizerId) {
             throw new IllegalArgumentException("Vous n'êtes pas autorisé à supprimer ce covoiturage.");
         }
 
-        RideShareDTO rideShareDTO = rideShareMapper.toDTO(rideShare);
-        rideShareRepository.deleteById(id);
-        return rideShareDTO;
+        // Marquer le covoiturage comme supprimé
+        rideShare.setDeleted(true);
+        rideShareRepository.save(rideShare);
+
+        // Retourner le DTO correspondant
+        return rideShareMapper.toDTO(rideShare);
     }
 
     public RideShareDTO addPassengerToRideShare(int rideShareId, int employeeId) {
