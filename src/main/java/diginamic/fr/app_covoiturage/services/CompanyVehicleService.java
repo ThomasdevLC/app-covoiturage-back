@@ -154,9 +154,14 @@ public class CompanyVehicleService {
     }
 
     private void cancelAllBookingsForVehicle(Vehicle vehicle) {
-        List<VehicleBooking> bookings = vehicleBookingRepository.findByCompanyVehicleId(vehicle.getId());
+        // Récupérer toutes les réservations actives du véhicule
+        List<VehicleBooking> bookings = vehicleBookingRepository
+                .findByCompanyVehicleIdAndIsDeletedFalse(vehicle.getId());
+
+        // Marquer chaque réservation comme supprimée
         for (VehicleBooking booking : bookings) {
-            vehicleBookingRepository.delete(booking);
+            booking.setDeleted(true); // Suppression logique
+            vehicleBookingRepository.save(booking); // Sauvegarde pour persister les modifications
         }
     }
 

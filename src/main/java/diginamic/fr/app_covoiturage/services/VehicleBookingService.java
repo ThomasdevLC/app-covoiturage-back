@@ -78,7 +78,9 @@ public class VehicleBookingService {
             throw new IllegalArgumentException("Vous n'êtes pas autorisé à annuler cette réservation.");
         }
 
-        vehicleBookingRepository.delete(booking);
+        // Marquer la réservation comme supprimée
+        booking.setDeleted(true);
+        vehicleBookingRepository.save(booking);
     }
 
     public VehicleBookingDTO updateBooking(int bookingId, VehicleBookingDTO vehicleBookingDTO) {
@@ -121,7 +123,7 @@ public class VehicleBookingService {
     }
 
     public List<VehicleBookingDTO> getAllBookings() {
-        List<VehicleBooking> bookings = vehicleBookingRepository.findAll();
+        List<VehicleBooking> bookings = vehicleBookingRepository.findAllByIsDeletedFalse();
         return bookings.stream()
                 .map(vehicleBookingMapper::toDTO)
                 .collect(Collectors.toList());
@@ -144,7 +146,7 @@ public class VehicleBookingService {
         if (past) {
             vehicleBookings = vehicleBookingRepository.getPastBookingsByEmployeeId(employeeId, now);
         } else {
-            vehicleBookings = vehicleBookingRepository.getFuturesBookingsByEmployeeId(employeeId, now);
+            vehicleBookings = vehicleBookingRepository.getFutureBookingsByEmployeeId(employeeId, now);
         }
 
         return vehicleBookings.stream()
