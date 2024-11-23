@@ -30,7 +30,7 @@ public class PrivateVehicleService {
     public PrivateVehicleDTO createVehicle(PrivateVehicleDTO privateVehicleDTO) {
         Optional<Vehicle> existingVehicle = privateVehicleRepository.findByNumber(privateVehicleDTO.getNumber());
         if (existingVehicle.isPresent()) {
-            throw new RuntimeException("Ce véhicule est déjà enregistré.");
+            throw new IllegalArgumentException("Ce véhicule est déjà enregistré.");
         }
 
         Vehicle vehicle = privateVehicleMapper.toEntity(privateVehicleDTO);

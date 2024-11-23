@@ -31,6 +31,10 @@ public class RideShare {
     @NotNull(message = "La date d'arrivée est obligatoire")
     private LocalDateTime arrivalTime;
 
+    @Column(name = "available_seats")
+    @NotNull(message = "Le nombre de sièges disponible est obligatoire")
+    private int availableSeats;
+
     @ManyToOne
     @JoinColumn(name = "departure_address_id")
     @NotNull(message = "L'adresse de départ est obligatoire")
@@ -44,10 +48,6 @@ public class RideShare {
     @ManyToOne
     @JoinColumn(name = "organizer_id")
     private Employee organizer;
-
-    @Column(name = "available_seats")
-    @NotNull(message = "Le nombre de sièges disponible est obligatoire")
-    private int availableSeats;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id")
