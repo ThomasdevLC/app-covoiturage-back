@@ -179,11 +179,24 @@ public class CompanyVehicleService {
     public List<CompanyVehicleDTO> getVehiclesByStatusAndBookingDates(
             LocalDateTime startTime, LocalDateTime endTime) {
         List<Vehicle> vehicles;
+        LocalDateTime now = LocalDateTime.now();
+
+        if (startTime == null || endTime == null) {
+            throw new IllegalArgumentException(
+                    "Vous devez spécifier une date de début et une date de fin de réservation.");
+        }
 
         if (endTime != null && startTime != null && endTime.isBefore(startTime)) {
             throw new IllegalArgumentException(
                     "La date de fin ne peut pas être antérieure à la date de début de réservation.");
         }
+
+        if ((startTime != null && startTime.isBefore(now)) ||
+                (endTime != null && endTime.isBefore(now))) {
+            throw new IllegalArgumentException(
+                    "La date de début et la date de fin ne peuvent pas être antérieures à la date actuelle.");
+        }
+
         if (startTime != null && endTime != null) {
             vehicles = companyVehicleRepository.findByStatusAndBookingDates(startTime, endTime);
         } else {

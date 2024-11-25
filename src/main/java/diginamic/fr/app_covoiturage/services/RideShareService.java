@@ -77,28 +77,31 @@ public class RideShareService {
             throw new IllegalArgumentException("L'adresse de départ et l'adresse d'arrivée doivent être différentes.");
         }
 
-        // Valider les dates de début et de fin
         LocalDateTime departureTime = rideShareDTO.getDepartureTime();
         LocalDateTime arrivalTime = rideShareDTO.getArrivalTime();
         if (departureTime.isAfter(arrivalTime)) {
-            throw new IllegalArgumentException("La date de départ ne peut pas être après la date d'arrivée.");
-
+            throw new IllegalArgumentException("La date de départ nne peut pas être antérieure à la date d'arrivée.");
         }
 
-        // VERIFICATION Covoiturage pendant cette période //
-        // LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
-        // LocalDateTime newArrivalTime = rideShareDTO.getArrivalTime();
+        LocalDateTime now = LocalDateTime.now();
 
-        // List<RideShare> overlappingRides =
-        // rideShareRepository.findBySimilarPeriod(organizerId,
-        // newDepartureTime, newArrivalTime);
-        // if (!overlappingRides.isEmpty()) {
-        // throw new IllegalArgumentException("Vous avez déjà créé un covoiturage
-        // pendant cette période.");
-        // }
+        if (departureTime.isBefore(now) || arrivalTime.isBefore(now)) {
+            throw new IllegalArgumentException(
+                    "La date de départ et la date d'arrivée ne peuvent pas être antérieures à la date actuelle.");
+        }
 
         // Vérification et récupération de l'organisateur
         Integer organizerId = rideShareDTO.getOrganizer().getId(); // Récupérer l'ID de l'organisateur depuis le DTO
+
+        // VERIFICATION Covoiturage pendant cette période
+        LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
+        LocalDateTime newArrivalTime = rideShareDTO.getArrivalTime();
+
+        List<RideShare> overlappingRides = rideShareRepository.findBySimilarPeriod(organizerId,
+                newDepartureTime, newArrivalTime);
+        if (!overlappingRides.isEmpty()) {
+            throw new IllegalArgumentException("Vous avez déjà créé un covoiturage pendant cette période.");
+        }
 
         Employee organizer = employeeRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu "));
