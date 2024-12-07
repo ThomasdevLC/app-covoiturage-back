@@ -74,8 +74,12 @@ public class AuthenticationService {
         }
 
         // Authentifier l'utilisateur
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(input.getEmail(), input.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(input.getEmail(), input.getPassword()));
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            throw new RuntimeException("Email ou mot de passe incorrect", e);
+        }
 
         return employee;
     }

@@ -2,9 +2,11 @@ package diginamic.fr.app_covoiturage.controlleradvice;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -63,5 +65,12 @@ public class ExceptionHandlerAdvice {
                     .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+     }
+
+     // Gère les exceptions personnalisées AuthenticationException et renvoie une
+     // réponse 401
+     @ExceptionHandler(AuthenticationException.class)
+     public ResponseEntity<String> handleAuthenticationException(AuthenticationException e) {
+          return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
      }
 }

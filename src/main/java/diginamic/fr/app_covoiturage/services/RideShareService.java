@@ -94,14 +94,16 @@ public class RideShareService {
         Integer organizerId = rideShareDTO.getOrganizer().getId(); // Récupérer l'ID de l'organisateur depuis le DTO
 
         // VERIFICATION Covoiturage pendant cette période
-        LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
-        LocalDateTime newArrivalTime = rideShareDTO.getArrivalTime();
+        // LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
+        // LocalDateTime newArrivalTime = rideShareDTO.getArrivalTime();
 
-        List<RideShare> overlappingRides = rideShareRepository.findBySimilarPeriod(organizerId,
-                newDepartureTime, newArrivalTime);
-        if (!overlappingRides.isEmpty()) {
-            throw new IllegalArgumentException("Vous avez déjà créé un covoiturage pendant cette période.");
-        }
+        // List<RideShare> overlappingRides =
+        // rideShareRepository.findBySimilarPeriod(organizerId,
+        // newDepartureTime, newArrivalTime);
+        // if (!overlappingRides.isEmpty()) {
+        // throw new IllegalArgumentException("Vous avez déjà créé un covoiturage
+        // pendant cette période.");
+        // }
 
         Employee organizer = employeeRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu "));
