@@ -55,6 +55,9 @@ public class RideShareService {
     @Autowired
     private PrivateVehicleRepository privateVehicleRepository;
 
+    @Autowired
+    private MessageService messageService;
+
     public RideShareDTO createNewRideShare(RideShareDTO rideShareDTO) {
 
         AddressDTO departureAddressDTO = rideShareDTO.getDepartureAddress();
@@ -168,9 +171,24 @@ public class RideShareService {
         // Marquer le covoiturage comme supprimé
         rideShare.setDeleted(true);
         rideShareRepository.save(rideShare);
+        notifyPassengersForRideShareCancellation(rideShare);
 
         // Retourner le DTO correspondant
         return rideShareMapper.toDTO(rideShare);
+    }
+
+    /**
+     * Notifie les passagers d'un covoiturage annulé.
+     *
+     * @param rideShare le covoiturage annulé
+     */
+    private void notifyPassengersForRideShareCancellation(RideShare rideShare) {
+        List<Employee> passengers = rideShare.getPassengers();
+        Vehicle vehicle = rideShare.getVehicle();
+
+        for (Employee passenger : passengers) {
+            messageService.notifyEmployeeForRideshareCancellation(passenger, vehicle, rideShare);
+        }
     }
 
     public RideShareDTO addPassengerToRideShare(int rideShareId, int employeeId) {

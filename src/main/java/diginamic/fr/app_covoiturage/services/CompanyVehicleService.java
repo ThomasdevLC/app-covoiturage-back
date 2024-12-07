@@ -10,6 +10,7 @@ import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
 import diginamic.fr.app_covoiturage.utils.SecurityUtils;
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +35,9 @@ public class CompanyVehicleService {
 
     @Autowired
     private VehicleBookingRepository vehicleBookingRepository;
+
+    @Autowired
+    private MessageService messageService;
 
     public CompanyVehicleDTO createCompanyVehicle(CompanyVehicleDTO companyVehicleDTO) {
         Optional<Vehicle> existingVehicle = companyVehicleRepository.findByNumber(companyVehicleDTO.getNumber());
@@ -145,11 +149,8 @@ public class CompanyVehicleService {
 
         // Vérifier si le véhicule existe
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non trouvé"));
 
-        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
-            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
-        }
         // Vérifier si le statut change de AVAILABLE à un autre statut
         if (vehicle.getStatus() == VehicleStatus.AVAILABLE && newStatus != VehicleStatus.AVAILABLE) {
             // Annuler toutes les réservations associées
@@ -164,15 +165,44 @@ public class CompanyVehicleService {
         return companyVehicleMapper.toDTO(updatedVehicle);
     }
 
+    /**
+     * Annule toutes les réservations futures pour un véhicule et notifie les
+     * employés concernés.
+     *
+     * @param vehicle le véhicule dont les réservations doivent être annulées
+     */
     private void cancelAllBookingsForVehicle(Vehicle vehicle) {
-        // Récupérer toutes les réservations actives du véhicule
-        List<VehicleBooking> bookings = vehicleBookingRepository
-                .findByCompanyVehicleIdAndIsDeletedFalse(vehicle.getId());
+        LocalDateTime now = LocalDateTime.now();
 
-        // Marquer chaque réservation comme supprimée
-        for (VehicleBooking booking : bookings) {
-            booking.setDeleted(true); // Suppression logique
-            vehicleBookingRepository.save(booking); // Sauvegarde pour persister les modifications
+        // Récupérer toutes les réservations futures non supprimées pour ce véhicule
+        List<VehicleBooking> futureBookings = vehicleBookingRepository.findFutureBookingsByVehicleId(vehicle.getId(),
+                now);
+
+        if (!futureBookings.isEmpty()) {
+            // Extraire les employés concernés sans duplication
+            List<Employee> affectedEmployees = futureBookings.stream()
+                    .map(VehicleBooking::getEmployee)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            // Notifier chaque employé concerné
+            for (Employee employee : affectedEmployees) {
+                // Filtrer les réservations de cet employé
+                List<VehicleBooking> employeeBookings = futureBookings.stream()
+                        .filter(vb -> vb.getEmployee().getId() == employee.getId())
+                        .collect(Collectors.toList());
+
+                // Créer un message interne pour chaque réservation
+                for (VehicleBooking booking : employeeBookings) {
+                    messageService.notifyEmployeeForBookingCancelation(employee, vehicle, booking);
+                }
+
+                // Annuler les réservations de l'employé
+                employeeBookings.forEach(vb -> {
+                    vb.setDeleted(true); // Suppression logique
+                    vehicleBookingRepository.save(vb);
+                });
+            }
         }
     }
 

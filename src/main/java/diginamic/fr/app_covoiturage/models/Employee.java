@@ -108,6 +108,9 @@ public class Employee implements UserDetails {
     @JoinTable(name = "employee_ride_share", joinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_ride_share", referencedColumnName = "id"))
     private List<RideShare> rideShares;
 
+    @ManyToMany(mappedBy = "employees")
+    private List<Message> messages = new ArrayList<>();
+
     /**
      * Méthode getAuthorities() qui retourne la liste des rôles de l'employé
      * 
@@ -225,6 +228,14 @@ public class Employee implements UserDetails {
 
     public void setRideShares(List<RideShare> rideShares) {
         this.rideShares = rideShares;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     public List<Vehicle> getVehicle() {

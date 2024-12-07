@@ -47,6 +47,8 @@ public class Vehicle {
     private VehicleCategory category;
 
     @URL(message = "L'URL de l'image doit être valide.")
+    @Size(max = 500, message = "L'URL de l'image ne peut pas dépasser 500 caractères.")
+    @Column(length = 500, nullable = true)
     private String picUrl;
 
     @Enumerated(EnumType.STRING)
