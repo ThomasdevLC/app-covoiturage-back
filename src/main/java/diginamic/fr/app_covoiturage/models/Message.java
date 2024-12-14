@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "message")
+@Table(name = "messages")
 public class Message {
 
     @Id
@@ -27,6 +27,12 @@ public class Message {
 
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
+
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     @ManyToMany
     @JoinTable(name = "employee_messages", joinColumns = @JoinColumn(name = "message_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
@@ -72,6 +78,22 @@ public class Message {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean isRead) {
+        this.isRead = isRead;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }
