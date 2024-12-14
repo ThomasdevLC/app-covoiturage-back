@@ -27,6 +27,8 @@ public class MessageMapper {
         dto.setId(message.getId());
         dto.setContent(message.getContent());
         dto.setDate(message.getDate());
+        dto.setRead(message.isRead());
+        dto.setDeleted(message.isDeleted());
 
         List<Integer> employeeIds = message.getEmployees()
                 .stream()
@@ -53,6 +55,8 @@ public class MessageMapper {
         message.setId(messageDTO.getId());
         message.setContent(messageDTO.getContent());
         message.setDate(messageDTO.getDate());
+        message.setRead(messageDTO.isRead());
+        message.setDeleted(messageDTO.isDeleted());
 
         if (employees != null) {
             message.setEmployees(employees);
