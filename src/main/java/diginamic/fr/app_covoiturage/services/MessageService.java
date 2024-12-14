@@ -69,15 +69,44 @@ public class MessageService {
     }
 
     /**
-     * Récupère tous les messages pour un employé spécifique.
-     *
-     * @param employeeId l'ID de l'employé
-     * @return une liste de MessageDTO
+     * Récupère tous les messages non supprimés pour un employé spécifique.
      */
     public List<MessageDTO> getMessagesForEmployee(int employeeId) {
         List<Message> messages = messageRepository.findByEmployeeId(employeeId);
         return messages.stream()
                 .map(messageMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Marque un message comme lu.
+     */
+    public boolean markMessageAsRead(int messageId) {
+        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("Ce message n'existe pas"));
+        message.setRead(true);
+        messageRepository.save(message);
+        return true;
+    }
+
+    /**
+     * Marque un message comme supprimé.
+     */
+    public boolean deleteMessage(int messageId) {
+        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("Ce message n'existe pas"));
+
+        message.setDeleted(true);
+        messageRepository.save(message);
+        return true;
+    }
+
+    /**
+     * Récupère un message non supprimé par son ID.
+     */
+    public MessageDTO getMessageById(int messageId) {
+        Message message = messageRepository.findByIdAndIsDeletedFalse(messageId)
+                .orElseThrow(() -> new IllegalArgumentException("Ce message n'existe pas"));
+        return messageMapper.toDTO(message);
     }
 }
