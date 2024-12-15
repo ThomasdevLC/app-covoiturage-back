@@ -30,7 +30,7 @@ public class PrivateVehicleService {
     public PrivateVehicleDTO createVehicle(PrivateVehicleDTO privateVehicleDTO) {
         Optional<Vehicle> existingVehicle = privateVehicleRepository.findByNumber(privateVehicleDTO.getNumber());
         if (existingVehicle.isPresent()) {
-            throw new RuntimeException("Ce véhicule est déjà enregistré.");
+            throw new IllegalArgumentException("Ce véhicule est déjà enregistré.");
         }
 
         Vehicle vehicle = privateVehicleMapper.toEntity(privateVehicleDTO);
@@ -81,6 +81,10 @@ public class PrivateVehicleService {
     public List<PrivateVehicleDTO> getVehiclesByEmployeeId(int employeeId) {
         List<Vehicle> vehicles = privateVehicleRepository.findVehiclesByEmployeeId(employeeId);
 
+        if (vehicles.isEmpty()) {
+            throw new IllegalArgumentException("Vous n'avez pas de véhicule lié à votre compte.");
+        }
+
         // Convertir la liste des entités Vehicle en PrivateVehicleDTO
         return vehicles.stream()
                 .map(privateVehicleMapper::toDTO) // Conversion en DTO
@@ -88,9 +92,11 @@ public class PrivateVehicleService {
     }
 
     public void deleteVehicle(int id, int employeeId) {
+        // Récupérer le véhicule depuis la base de données
         Vehicle vehicle = privateVehicleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
 
+        // Vérifier si l'utilisateur est autorisé à supprimer ce véhicule
         if (vehicle.getEmployee().getId() != employeeId) {
             throw new IllegalArgumentException("Utilisateur non autorisé à supprimer ce véhicule.");
         }
@@ -101,7 +107,9 @@ public class PrivateVehicleService {
                     "Impossible de supprimer ce véhicule car il est lié à un trajet que vous avez organisé.");
         }
 
-        privateVehicleRepository.delete(vehicle);
+        // Marquer le véhicule comme supprimé
+        vehicle.setIsDeleted(true);
+        privateVehicleRepository.save(vehicle); // Sauvegarder l'état mis à jour
     }
 
     public PrivateVehicleDTO getVehicleById(int id) {

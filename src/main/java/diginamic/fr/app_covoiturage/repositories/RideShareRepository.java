@@ -7,14 +7,19 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import diginamic.fr.app_covoiturage.models.RideShare;
 
+@Repository
 public interface RideShareRepository extends CrudRepository<RideShare, Integer> {
 
-        Optional<RideShare> findById(int id);
+        // Recherche par ID
+        @Query("SELECT r FROM RideShare r WHERE r.id = :id AND r.isDeleted = false")
+        Optional<RideShare> findById(@Param("id") int id);
 
-        @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND " +
+        // Recherche de trajets par période et organisateur
+        @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.isDeleted = false AND " +
                         "((r.departureTime < :newArrivalTime AND r.arrivalTime > :newDepartureTime) OR " +
                         "(r.departureTime <= :newDepartureTime AND r.arrivalTime >= :newDepartureTime) OR " +
                         "(r.departureTime <= :newArrivalTime AND r.arrivalTime >= :newArrivalTime))")
@@ -23,7 +28,8 @@ public interface RideShareRepository extends CrudRepository<RideShare, Integer> 
                         @Param("newDepartureTime") LocalDateTime newDepartureTime,
                         @Param("newArrivalTime") LocalDateTime newArrivalTime);
 
-        @Query("SELECT r FROM RideShare r WHERE " +
+        // Recherche de trajets par ville de départ/arrivée et date
+        @Query("SELECT r FROM RideShare r WHERE r.isDeleted = false AND " +
                         "(:departureCity IS NULL OR r.departureAddress.city = :departureCity) " +
                         "AND (:arrivalCity IS NULL OR r.arrivalAddress.city = :arrivalCity) " +
                         "AND r.departureTime > :currentDateTime " +
@@ -35,21 +41,24 @@ public interface RideShareRepository extends CrudRepository<RideShare, Integer> 
                         @Param("currentDateTime") LocalDateTime currentDateTime,
                         @Param("departureDateTime") LocalDateTime departureDateTime);
 
-        @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.arrivalTime < :now")
+        // Recherche des trajets passés par organisateur
+        @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.arrivalTime < :now AND r.isDeleted = false")
         List<RideShare> findByOrganizerIdAndArrivalBefore(@Param("organizerId") Integer organizerId,
                         @Param("now") LocalDateTime now);
 
-        @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.departureTime > :now")
+        // Recherche des trajets futurs par organisateur
+        @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.departureTime > :now AND r.isDeleted = false")
         List<RideShare> findByOrganizerIdAndDepartureAfter(@Param("organizerId") Integer organizerId,
                         @Param("now") LocalDateTime now);
 
-        @Query("SELECT r FROM RideShare r JOIN r.passengers p WHERE p.id = :passengerId AND r.arrivalTime < :now")
+        // Recherche des trajets passés par passager
+        @Query("SELECT r FROM RideShare r JOIN r.passengers p WHERE p.id = :passengerId AND r.arrivalTime < :now AND r.isDeleted = false")
         List<RideShare> findByPassengerIdAndArrivalBefore(@Param("passengerId") Integer passengerId,
                         @Param("now") LocalDateTime now);
 
-        @Query("SELECT r FROM RideShare r JOIN r.passengers p WHERE p.id = :passengerId AND r.departureTime > :now")
+        // Recherche des trajets futurs par passager
+        @Query("SELECT r FROM RideShare r JOIN r.passengers p WHERE p.id = :passengerId AND r.departureTime > :now AND r.isDeleted = false")
         List<RideShare> findByPassengerIdAndDepartureAfter(@Param("passengerId") Integer passengerId,
                         @Param("now") LocalDateTime now);
 
-        void deleteById(int id);
 }

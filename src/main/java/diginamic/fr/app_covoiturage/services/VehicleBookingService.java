@@ -38,7 +38,8 @@ public class VehicleBookingService {
     public VehicleBookingDTO createBooking(VehicleBookingDTO vehicleBookingDTO) {
         // 1. Valider les dates de début et de fin
         if (vehicleBookingDTO.getStartTime().isAfter(vehicleBookingDTO.getEndTime())) {
-            throw new IllegalArgumentException("La date de début ne peut pas être après la date de fin.");
+            throw new IllegalArgumentException(
+                    "La date de fin ne peut pas être antérieure à la date de début de réservation.");
         }
 
         // 2. Vérifier si le véhicule existe
@@ -77,13 +78,16 @@ public class VehicleBookingService {
             throw new IllegalArgumentException("Vous n'êtes pas autorisé à annuler cette réservation.");
         }
 
-        vehicleBookingRepository.delete(booking);
+        // Marquer la réservation comme supprimée
+        booking.setDeleted(true);
+        vehicleBookingRepository.save(booking);
     }
 
     public VehicleBookingDTO updateBooking(int bookingId, VehicleBookingDTO vehicleBookingDTO) {
         // 1. Valider les dates de début et de fin
         if (vehicleBookingDTO.getStartTime().isAfter(vehicleBookingDTO.getEndTime())) {
-            throw new IllegalArgumentException("La date de début ne peut pas être après la date de fin.");
+            throw new IllegalArgumentException(
+                    "La date de fin ne peut pas être antérieure à la date de début de réservation");
         }
 
         // 2. Récupérer la réservation existante par ID
@@ -119,7 +123,7 @@ public class VehicleBookingService {
     }
 
     public List<VehicleBookingDTO> getAllBookings() {
-        List<VehicleBooking> bookings = vehicleBookingRepository.findAll();
+        List<VehicleBooking> bookings = vehicleBookingRepository.findAllByIsDeletedFalse();
         return bookings.stream()
                 .map(vehicleBookingMapper::toDTO)
                 .collect(Collectors.toList());
@@ -142,7 +146,7 @@ public class VehicleBookingService {
         if (past) {
             vehicleBookings = vehicleBookingRepository.getPastBookingsByEmployeeId(employeeId, now);
         } else {
-            vehicleBookings = vehicleBookingRepository.getFuturesBookingsByEmployeeId(employeeId, now);
+            vehicleBookings = vehicleBookingRepository.getFutureBookingsByEmployeeId(employeeId, now);
         }
 
         return vehicleBookings.stream()
