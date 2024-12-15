@@ -45,8 +45,11 @@ public class CompanyVehicleDTO {
 
     private EmployeeDTO employee;
 
+    private boolean isDeleted;
+
     public CompanyVehicleDTO(int id, String number, String brand, String model, VehicleCategory category, String picUrl,
-            Motor motor, int seats, double co2PerKm, VehicleStatus status, VehicleType type, EmployeeDTO employee) {
+            Motor motor, int seats, double co2PerKm, VehicleStatus status, VehicleType type, EmployeeDTO employee,
+            boolean isDeleted) {
         this.id = id;
         this.number = number;
         this.brand = brand;
@@ -59,6 +62,7 @@ public class CompanyVehicleDTO {
         this.status = status;
         this.type = type;
         this.employee = employee;
+        this.isDeleted = isDeleted;
 
     }
 
@@ -161,6 +165,14 @@ public class CompanyVehicleDTO {
 
     public void setEmployee(EmployeeDTO employee) {
         this.employee = employee;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

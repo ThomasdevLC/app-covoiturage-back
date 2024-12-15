@@ -4,7 +4,6 @@ import diginamic.fr.app_covoiturage.dto.booking.VehicleBookingDTO;
 import diginamic.fr.app_covoiturage.mapper.employee.EmployeeMapper;
 import diginamic.fr.app_covoiturage.mapper.vehicle.CompanyVehicleMapper;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +27,7 @@ public class VehicleBookingMapper {
         dto.setEndTime(vehicleBooking.getEndTime());
         dto.setVehicle(companyVehicleMapper.toDTO(vehicleBooking.getCompanyVehicle()));
         dto.setEmployee(employeeMapper.toDTO(vehicleBooking.getEmployee()));
+        dto.setDeleted(vehicleBooking.isDeleted());
 
         return dto;
     }
@@ -43,6 +43,7 @@ public class VehicleBookingMapper {
         vehicleBooking.setEndTime(dto.getEndTime());
         vehicleBooking.setCompanyVehicle(companyVehicleMapper.toEntity(dto.getVehicle()));
         vehicleBooking.setEmployee(employeeMapper.toEntity(dto.getEmployee()));
+        vehicleBooking.setDeleted(dto.isDeleted());
 
         return vehicleBooking;
     }

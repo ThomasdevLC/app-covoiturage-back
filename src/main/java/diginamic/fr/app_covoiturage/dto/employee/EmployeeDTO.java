@@ -2,7 +2,10 @@ package diginamic.fr.app_covoiturage.dto.employee;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 public class EmployeeDTO {
 
@@ -28,21 +31,26 @@ public class EmployeeDTO {
     @Email(message = "Le champ doit être un email valide")
     private String email;
 
-    private boolean admin;
+    @NotNull(message = "Veuillez renseigner les rôles d'utilisateur.")
+    private List<String> roles;
+
+    // Constructeurs
 
     public EmployeeDTO() {
     }
 
     public EmployeeDTO(int id, String firstName, String lastName, String gender, String phone, String email,
-            boolean admin) {
+            List<String> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
-        this.admin = admin;
+        this.roles = roles;
     }
+
+    // Getters et setters
 
     public int getId() {
         return id;
@@ -92,11 +100,11 @@ public class EmployeeDTO {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

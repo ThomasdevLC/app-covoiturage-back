@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareDTO;
 import diginamic.fr.app_covoiturage.mapper.address.AddressMapper;
-import diginamic.fr.app_covoiturage.mapper.employee.EmployeeMapper;
+import diginamic.fr.app_covoiturage.mapper.employee.EmployeeProfileMapper;
 import diginamic.fr.app_covoiturage.mapper.vehicle.PrivateVehicleMapper;
 import diginamic.fr.app_covoiturage.models.RideShare;
 
@@ -18,7 +18,7 @@ public class RideShareMapper {
     private AddressMapper addressMapper;
 
     @Autowired
-    private EmployeeMapper employeeMapper;
+    private EmployeeProfileMapper employeeMapper;
 
     @Autowired
     private PrivateVehicleMapper privateVehicleMapper;
@@ -39,6 +39,8 @@ public class RideShareMapper {
                     .map(employeeMapper::toDTO)
                     .collect(Collectors.toList()));
         }
+        dto.setDeleted(rideShare.isDeleted());
+
         return dto;
     }
 
@@ -58,6 +60,7 @@ public class RideShareMapper {
                     .map(employeeMapper::toEntity)
                     .collect(Collectors.toList()));
         }
+        rideShare.setDeleted(rideShareDTO.isDeleted());
         return rideShare;
     }
 }

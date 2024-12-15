@@ -13,25 +13,33 @@ import java.util.Optional;
 @Repository
 public interface CompanyVehicleRepository extends CrudRepository<Vehicle, Integer> {
 
-        @Query("SELECT v FROM Vehicle v WHERE v.status = 'AVAILABLE' AND v.type = 'COMPANY'")
+        @Query("SELECT v FROM Vehicle v WHERE v.status = 'AVAILABLE' AND v.type = 'COMPANY' AND v.isDeleted = false")
         List<Vehicle> findByStatus();
 
-        @Query("SELECT v FROM Vehicle v WHERE v.brand = :brand AND v.type = 'COMPANY'")
+        @Query("SELECT v FROM Vehicle v WHERE v.brand = :brand AND v.type = 'COMPANY' AND v.isDeleted = false")
         List<Vehicle> findByBrand(@Param("brand") String brand);
 
-        @Query("SELECT v FROM Vehicle v WHERE v.number = :number AND v.type = 'COMPANY'")
+        @Query("SELECT v FROM Vehicle v WHERE v.number = :number AND v.type = 'COMPANY' AND v.isDeleted = false")
         Optional<Vehicle> findByNumber(@Param("number") String number);
 
-        @Query("SELECT v FROM Vehicle v WHERE v.type = 'COMPANY'")
+        @Query("SELECT v FROM Vehicle v WHERE v.type = 'COMPANY' AND v.isDeleted = false")
         List<Vehicle> findAll();
 
-        Optional<Vehicle> findById(int number);
+        @Query("SELECT v FROM Vehicle v WHERE v.id = :id AND v.isDeleted = false")
+        Optional<Vehicle> findById(@Param("id") int id);
 
         @Query("SELECT v FROM Vehicle v " +
-                        "WHERE v.status = 'AVAILABLE' AND v.type = 'COMPANY' " +
+                        "WHERE v.status = 'AVAILABLE' AND v.type = 'COMPANY' AND v.isDeleted = false " +
                         "AND NOT EXISTS (SELECT b FROM VehicleBooking b " +
                         "WHERE b.companyVehicle = v " +
                         "AND (:startTime <= b.endTime AND :endTime >= b.startTime))")
         List<Vehicle> findByStatusAndBookingDates(
                         @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+
+        @Query("SELECT COUNT(b) > 0 FROM VehicleBooking b " +
+                        "WHERE b.companyVehicle.id = :vehicleId " +
+                        "AND b.isDeleted = false " +
+                        "AND b.startTime >= CURRENT_TIMESTAMP")
+        boolean isVehicleLinkedToBooking(@Param("vehicleId") int vehicleId);
+
 }

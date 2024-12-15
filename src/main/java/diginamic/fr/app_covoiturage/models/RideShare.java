@@ -31,6 +31,10 @@ public class RideShare {
     @NotNull(message = "La date d'arrivée est obligatoire")
     private LocalDateTime arrivalTime;
 
+    @Column(name = "available_seats")
+    @NotNull(message = "Le nombre de sièges disponible est obligatoire")
+    private int availableSeats;
+
     @ManyToOne
     @JoinColumn(name = "departure_address_id")
     @NotNull(message = "L'adresse de départ est obligatoire")
@@ -45,10 +49,6 @@ public class RideShare {
     @JoinColumn(name = "organizer_id")
     private Employee organizer;
 
-    @Column(name = "available_seats")
-    @NotNull(message = "Le nombre de sièges disponible est obligatoire")
-    private int availableSeats;
-
     @ManyToOne
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
@@ -56,6 +56,9 @@ public class RideShare {
     @ManyToMany
     @JoinTable(name = "employee_ride_share", joinColumns = @JoinColumn(name = "id_ride_share", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"))
     private List<Employee> passengers;
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     public RideShare(LocalDateTime departureTime, LocalDateTime arrivalTime, Address departureAddress,
             Address arrivalAddress, int availableSeats, Employee organizer, List<Employee> passengers) {
@@ -140,6 +143,14 @@ public class RideShare {
 
     public void setPassengers(List<Employee> passengers) {
         this.passengers = passengers;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     @Override

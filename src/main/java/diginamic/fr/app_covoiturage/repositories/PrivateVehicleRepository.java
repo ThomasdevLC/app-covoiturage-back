@@ -12,16 +12,20 @@ import diginamic.fr.app_covoiturage.models.Vehicle;
 
 @Repository
 
-public interface PrivateVehicleRepository extends
-                CrudRepository<Vehicle, Integer> {
-        Optional<Vehicle> findByNumber(String number);
+public interface PrivateVehicleRepository extends CrudRepository<Vehicle, Integer> {
 
-        Optional<Vehicle> findById(int number);
+        @Query("SELECT v FROM Vehicle v WHERE v.number = :number AND v.isDeleted = false")
+        Optional<Vehicle> findByNumber(@Param("number") String number);
 
-        @Query("SELECT v FROM Vehicle v WHERE v.employee.id = :employeeId AND v.type = 'PRIVATE'")
+        @Query("SELECT v FROM Vehicle v WHERE v.id = :id AND v.isDeleted = false")
+        Optional<Vehicle> findById(@Param("id") int id);
+
+        @Query("SELECT v FROM Vehicle v WHERE v.employee.id = :employeeId AND v.type = 'PRIVATE' AND v.isDeleted = false")
         List<Vehicle> findVehiclesByEmployeeId(@Param("employeeId") int employeeId);
 
-        @Query("SELECT COUNT(r) > 0 FROM RideShare r WHERE r.vehicle.id = :vehicleId")
+        @Query("SELECT COUNT(r) > 0 FROM RideShare r " +
+                        "WHERE r.vehicle.id = :vehicleId " +
+                        "AND r.isDeleted = false " +
+                        "AND r.departureTime > CURRENT_TIMESTAMP")
         boolean isVehicleLinkedToRideShare(@Param("vehicleId") int vehicleId);
-
 }

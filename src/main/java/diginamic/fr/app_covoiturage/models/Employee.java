@@ -10,15 +10,18 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,8 +38,16 @@ public class Employee implements UserDetails {
      * Identifiant unique auto-incrementé: int id
      * attribut FirstName de type string
      * attribut Lastname de type String
-     * attribut type de type String
-     * attribut admin de type boolean
+     * attribut email de type String
+     * attribut phone de type String
+     * attribut password de type String
+     * attribut isActive de type boolean
+     * attribut roles de type List<Role>
+     * attribut organizedRides de type List<RideShare>
+     * attribut vehicleBooking de type List<VehicleBooking>
+     * attribut vehicle de type List<Vehicle>
+     * attribut rideShares de type List<RideShare>
+     * 
      */
 
     @Id
@@ -64,9 +75,9 @@ public class Employee implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @NotNull
-    @Column(name = "admin", nullable = false)
-    private boolean admin;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "employee_roles", joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private List<Role> roles = new ArrayList<>();
 
     @NotBlank(message = "Veuillez renseigner votre email.")
     @Email(message = "Le champ doit être un email valide")
@@ -97,15 +108,20 @@ public class Employee implements UserDetails {
     @JoinTable(name = "employee_ride_share", joinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_ride_share", referencedColumnName = "id"))
     private List<RideShare> rideShares;
 
+    @ManyToMany(mappedBy = "employees")
+    private List<Message> messages = new ArrayList<>();
+
+    /**
+     * Méthode getAuthorities() qui retourne la liste des rôles de l'employé
+     * 
+     * @return la liste des rôles de l'employé
+     */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (this.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        }
-        return authorities;
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRoleName().toString()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -115,22 +131,19 @@ public class Employee implements UserDetails {
      * @param lastName
      * @param gender
      * @param phone
-     * @param admin
      * @param email
      * @param password
      */
 
-    public Employee(String firstName, String lastName, String gender, String phone, boolean admin, String email,
-            String password, boolean isActive) {
+    public Employee(String firstName, String lastName, String gender, String phone,
+            String email, String password, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
-        this.admin = admin;
         this.email = email;
         this.password = password;
         this.isActive = isActive;
-
     }
 
     public Employee() {
@@ -177,14 +190,6 @@ public class Employee implements UserDetails {
         this.phone = phone;
     }
 
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -223,6 +228,14 @@ public class Employee implements UserDetails {
 
     public void setRideShares(List<RideShare> rideShares) {
         this.rideShares = rideShares;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     public List<Vehicle> getVehicle() {
@@ -266,10 +279,18 @@ public class Employee implements UserDetails {
         return true;
     }
 
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
         return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", gender=" + gender
-                + ", admin=" + admin + "]";
+                + ", role=" + roles + "]";
     }
 
 }

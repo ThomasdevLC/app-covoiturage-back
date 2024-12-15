@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                                                 .requestMatchers("/auth/**").permitAll()
                                                 .requestMatchers("/company-vehicles/admin").hasRole("ADMIN")
                                                 .requestMatchers("/vehicle-bookings/admin").hasRole("ADMIN")
+                                                .requestMatchers("/roles-management/").hasRole("SUPER_ADMIN")
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,10 +1,10 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
 import java.util.List;
-
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class EmployeeVehicleDTO {
@@ -31,25 +31,27 @@ public class EmployeeVehicleDTO {
     @Email(message = "Le champ doit être un email valide")
     private String email;
 
-    private boolean admin;
+    @NotNull(message = "Veuillez renseigner les rôles d'utilisateur.")
+    private List<String> roles;
 
-    List<CompanyVehicleDTO> companyVehicle;
+    private List<CompanyVehicleDTO> companyVehicle;
 
     public EmployeeVehicleDTO() {
     }
 
     public EmployeeVehicleDTO(int id, String firstName, String lastName, String gender, String phone, String email,
-            boolean admin, List<CompanyVehicleDTO> companyVehicle) {
+            List<String> roles, List<CompanyVehicleDTO> companyVehicle) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
-        this.admin = admin;
+        this.roles = roles;
         this.companyVehicle = companyVehicle;
-
     }
+
+    // Getters et Setters
 
     public int getId() {
         return id;
@@ -99,12 +101,12 @@ public class EmployeeVehicleDTO {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public List<CompanyVehicleDTO> getCompanyVehicle() {

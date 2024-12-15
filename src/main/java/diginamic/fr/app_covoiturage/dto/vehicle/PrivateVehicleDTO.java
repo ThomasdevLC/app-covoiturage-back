@@ -30,11 +30,13 @@ public class PrivateVehicleDTO {
 
     private EmployeeDTO employee;
 
+    private boolean isDeleted;
+
     public PrivateVehicleDTO() {
     }
 
     public PrivateVehicleDTO(int id, String number, String brand, String model,
-            int seats, EmployeeDTO employee, VehicleType type) {
+            int seats, EmployeeDTO employee, VehicleType type, boolean isDeleted) {
         this.id = id;
         this.number = number;
         this.brand = brand;
@@ -42,6 +44,7 @@ public class PrivateVehicleDTO {
         this.seats = seats;
         this.employee = employee;
         this.type = type;
+        this.isDeleted = isDeleted;
     }
 
     public int getId() {
@@ -98,6 +101,14 @@ public class PrivateVehicleDTO {
 
     public void setType(VehicleType type) {
         this.type = type;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }
