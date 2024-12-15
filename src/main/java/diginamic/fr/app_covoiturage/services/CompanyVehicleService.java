@@ -10,6 +10,7 @@ import diginamic.fr.app_covoiturage.repositories.CompanyVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.VehicleBookingRepository;
 import diginamic.fr.app_covoiturage.utils.SecurityUtils;
+import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +35,9 @@ public class CompanyVehicleService {
 
     @Autowired
     private VehicleBookingRepository vehicleBookingRepository;
+
+    @Autowired
+    private MessageService messageService;
 
     public CompanyVehicleDTO createCompanyVehicle(CompanyVehicleDTO companyVehicleDTO) {
         Optional<Vehicle> existingVehicle = companyVehicleRepository.findByNumber(companyVehicleDTO.getNumber());
@@ -97,14 +101,25 @@ public class CompanyVehicleService {
     }
 
     public void deleteCompanyVehicle(int id) {
+        // Récupérer le véhicule par son ID
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Véhicule non reconnu : "));
 
+        // Vérifier si l'utilisateur a le rôle ADMIN
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
-        companyVehicleRepository.delete(existingVehicle);
+        // Vérifier si le véhicule est lié à un booking actif ou futur
+        boolean isLinkedToBooking = companyVehicleRepository.isVehicleLinkedToBooking(id);
+        if (isLinkedToBooking) {
+            throw new IllegalArgumentException(
+                    "Impossible de supprimer ce véhicule car il est  lié à une réservation en cours.");
+        }
+
+        // Marquer le véhicule comme supprimé
+        existingVehicle.setIsDeleted(true);
+        companyVehicleRepository.save(existingVehicle);
     }
 
     public List<CompanyVehicleDTO> getAllVehicles(String brand, String number) {
@@ -134,11 +149,8 @@ public class CompanyVehicleService {
 
         // Vérifier si le véhicule existe
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Véhicule non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non trouvé"));
 
-        if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
-            throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
-        }
         // Vérifier si le statut change de AVAILABLE à un autre statut
         if (vehicle.getStatus() == VehicleStatus.AVAILABLE && newStatus != VehicleStatus.AVAILABLE) {
             // Annuler toutes les réservations associées
@@ -153,21 +165,68 @@ public class CompanyVehicleService {
         return companyVehicleMapper.toDTO(updatedVehicle);
     }
 
+    /**
+     * Annule toutes les réservations futures pour un véhicule et notifie les
+     * employés concernés.
+     *
+     * @param vehicle le véhicule dont les réservations doivent être annulées
+     */
     private void cancelAllBookingsForVehicle(Vehicle vehicle) {
-        List<VehicleBooking> bookings = vehicleBookingRepository.findByCompanyVehicleId(vehicle.getId());
-        for (VehicleBooking booking : bookings) {
-            vehicleBookingRepository.delete(booking);
+        LocalDateTime now = LocalDateTime.now();
+
+        // Récupérer toutes les réservations futures non supprimées pour ce véhicule
+        List<VehicleBooking> futureBookings = vehicleBookingRepository.findFutureBookingsByVehicleId(vehicle.getId(),
+                now);
+
+        if (!futureBookings.isEmpty()) {
+            // Extraire les employés concernés sans duplication
+            List<Employee> affectedEmployees = futureBookings.stream()
+                    .map(VehicleBooking::getEmployee)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            // Notifier chaque employé concerné
+            for (Employee employee : affectedEmployees) {
+                // Filtrer les réservations de cet employé
+                List<VehicleBooking> employeeBookings = futureBookings.stream()
+                        .filter(vb -> vb.getEmployee().getId() == employee.getId())
+                        .collect(Collectors.toList());
+
+                // Créer un message interne pour chaque réservation
+                for (VehicleBooking booking : employeeBookings) {
+                    messageService.notifyEmployeeForBookingCancelation(employee, vehicle, booking);
+                }
+
+                // Annuler les réservations de l'employé
+                employeeBookings.forEach(vb -> {
+                    vb.setDeleted(true); // Suppression logique
+                    vehicleBookingRepository.save(vb);
+                });
+            }
         }
     }
 
     public List<CompanyVehicleDTO> getVehiclesByStatusAndBookingDates(
             LocalDateTime startTime, LocalDateTime endTime) {
         List<Vehicle> vehicles;
+        LocalDateTime now = LocalDateTime.now();
+
+        if (startTime == null || endTime == null) {
+            throw new IllegalArgumentException(
+                    "Vous devez spécifier une date de début et une date de fin de réservation.");
+        }
 
         if (endTime != null && startTime != null && endTime.isBefore(startTime)) {
             throw new IllegalArgumentException(
                     "La date de fin ne peut pas être antérieure à la date de début de réservation.");
         }
+
+        if ((startTime != null && startTime.isBefore(now)) ||
+                (endTime != null && endTime.isBefore(now))) {
+            throw new IllegalArgumentException(
+                    "La date de début et la date de fin ne peuvent pas être antérieures à la date actuelle.");
+        }
+
         if (startTime != null && endTime != null) {
             vehicles = companyVehicleRepository.findByStatusAndBookingDates(startTime, endTime);
         } else {

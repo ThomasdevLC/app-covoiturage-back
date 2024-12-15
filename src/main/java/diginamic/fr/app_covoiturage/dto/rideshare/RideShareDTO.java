@@ -32,12 +32,14 @@ public class RideShareDTO {
 
     private List<EmployeeProfileDTO> passengers;
 
+    private boolean isDeleted;
+
     public RideShareDTO() {
     }
 
     public RideShareDTO(int id, LocalDateTime departureTime, LocalDateTime arrivalTime, AddressDTO departureAddress,
             AddressDTO arrivalAddress, EmployeeProfileDTO organizer, int availableSeats, PrivateVehicleDTO vehicle,
-            List<EmployeeProfileDTO> passengers) {
+            List<EmployeeProfileDTO> passengers, boolean isDeleted) {
         this.id = id;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -47,6 +49,7 @@ public class RideShareDTO {
         this.availableSeats = availableSeats;
         this.vehicle = vehicle;
         this.passengers = passengers;
+        this.isDeleted = isDeleted;
 
     }
 
@@ -120,6 +123,14 @@ public class RideShareDTO {
 
     public void setPassengers(List<EmployeeProfileDTO> passengers) {
         this.passengers = passengers;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

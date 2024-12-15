@@ -25,6 +25,7 @@ public class PrivateVehicleMapper {
         dto.setModel(vehicle.getModel());
         dto.setSeats(vehicle.getSeats());
         dto.setType(vehicle.getType());
+        dto.setIsDeleted(vehicle.getIsDeleted());
 
         if (vehicle.getEmployee() != null) {
             dto.setEmployee(employeeMapper.toDTO(vehicle.getEmployee()));
@@ -45,6 +46,7 @@ public class PrivateVehicleMapper {
         vehicle.setModel(dto.getModel());
         vehicle.setSeats(dto.getSeats());
         vehicle.setType(dto.getType());
+        vehicle.setIsDeleted(dto.getIsDeleted());
 
         if (dto.getEmployee() != null) {
             vehicle.setEmployee(employeeMapper.toEntity(dto.getEmployee()));
