@@ -16,7 +16,7 @@ public interface MessageRepository extends CrudRepository<Message, Integer> {
     /**
      * Récupère la liste de messages non supprimés associés à un employé.
      */
-    @Query("SELECT m FROM Message m JOIN m.employees e WHERE e.id = :employeeId AND m.isDeleted = false")
+    @Query("SELECT m FROM Message m JOIN m.employees e WHERE e.id = :employeeId AND m.isDeleted = false ORDER BY m.date DESC")
     List<Message> findByEmployeeId(@Param("employeeId") int employeeId);
 
     /**
