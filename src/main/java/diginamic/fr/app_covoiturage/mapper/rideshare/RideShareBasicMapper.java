@@ -1,5 +1,6 @@
 package diginamic.fr.app_covoiturage.mapper.rideshare;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareBasicDTO;
@@ -11,16 +12,14 @@ import diginamic.fr.app_covoiturage.models.RideShare;
 @Component
 public class RideShareBasicMapper {
 
-    private final AddressMapper addressMapper;
-    private final EmployeeMapper employeeMapper;
-    private final PrivateVehicleMapper privateVehicleMapper;
+    @Autowired
+    private AddressMapper addressMapper;
 
-    public RideShareBasicMapper(AddressMapper addressMapper, EmployeeMapper employeeMapper,
-            PrivateVehicleMapper privateVehicleMapper) {
-        this.addressMapper = addressMapper;
-        this.employeeMapper = employeeMapper;
-        this.privateVehicleMapper = privateVehicleMapper;
-    }
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
+    @Autowired
+    private PrivateVehicleMapper privateVehicleMapper;
 
     public RideShareBasicDTO toDTO(RideShare rideShare) {
 
@@ -33,7 +32,7 @@ public class RideShareBasicMapper {
         dto.setOrganizer(employeeMapper.toDTO(rideShare.getOrganizer()));
         dto.setAvailableSeats(rideShare.getAvailableSeats());
         dto.setVehicle(privateVehicleMapper.toDTO(rideShare.getVehicle()));
-
+        dto.setDeleted(rideShare.isDeleted());
         return dto;
     }
 
@@ -48,7 +47,7 @@ public class RideShareBasicMapper {
         rideShare.setOrganizer(employeeMapper.toEntity(rideShareDTO.getOrganizer()));
         rideShare.setAvailableSeats(rideShareDTO.getAvailableSeats());
         rideShare.setVehicle(privateVehicleMapper.toEntity(rideShareDTO.getVehicle()));
-
+        rideShare.setDeleted(rideShareDTO.isDeleted());
         return rideShare;
     }
 }

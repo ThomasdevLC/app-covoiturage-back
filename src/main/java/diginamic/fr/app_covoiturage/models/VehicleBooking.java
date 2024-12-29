@@ -2,6 +2,7 @@ package diginamic.fr.app_covoiturage.models;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,9 +34,13 @@ public class VehicleBooking {
     @JoinColumn(name = "vehicle_id")
     private Vehicle companyVehicle;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public VehicleBooking(LocalDateTime startTime, LocalDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
+        this.isDeleted = false;
 
     }
 
@@ -52,6 +57,10 @@ public class VehicleBooking {
 
     public LocalDateTime getStartTime() {
         return startTime;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
     public void setStartTime(LocalDateTime startTime) {
@@ -80,6 +89,10 @@ public class VehicleBooking {
 
     public void setCompanyVehicle(Vehicle companyVehicle) {
         this.companyVehicle = companyVehicle;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }

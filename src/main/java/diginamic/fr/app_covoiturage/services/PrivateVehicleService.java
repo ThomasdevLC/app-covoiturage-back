@@ -1,6 +1,8 @@
 package diginamic.fr.app_covoiturage.services;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PrivateVehicleService {
@@ -24,13 +27,13 @@ public class PrivateVehicleService {
     @Autowired
     private PrivateVehicleRepository privateVehicleRepository;
 
-    public PrivateVehicleDTO createVehicle(PrivateVehicleDTO vehicleDTO) {
-        Optional<Vehicle> existingVehicle = privateVehicleRepository.findByNumber(vehicleDTO.getNumber());
+    public PrivateVehicleDTO createVehicle(PrivateVehicleDTO privateVehicleDTO) {
+        Optional<Vehicle> existingVehicle = privateVehicleRepository.findByNumber(privateVehicleDTO.getNumber());
         if (existingVehicle.isPresent()) {
-            throw new RuntimeException("Ce véhicule est déjà enregistré.");
+            throw new IllegalArgumentException("Ce véhicule est déjà enregistré.");
         }
 
-        Vehicle vehicle = privateVehicleMapper.toEntity(vehicleDTO);
+        Vehicle vehicle = privateVehicleMapper.toEntity(privateVehicleDTO);
 
         int employeeId = vehicle.getEmployee().getId();
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
@@ -54,6 +57,7 @@ public class PrivateVehicleService {
             Vehicle vehicle = optionalVehicle.get();
 
             vehicle.setNumber(vehicleDTO.getNumber());
+            vehicle.setBrand(vehicleDTO.getBrand());
             vehicle.setType(vehicleDTO.getType());
             vehicle.setModel(vehicleDTO.getModel());
             vehicle.setSeats(vehicleDTO.getSeats());
@@ -73,4 +77,46 @@ public class PrivateVehicleService {
             throw new RuntimeException("Véhicule non reconnu");
         }
     }
+
+    public List<PrivateVehicleDTO> getVehiclesByEmployeeId(int employeeId) {
+        List<Vehicle> vehicles = privateVehicleRepository.findVehiclesByEmployeeId(employeeId);
+
+        if (vehicles.isEmpty()) {
+            throw new IllegalArgumentException("Vous n'avez pas de véhicule lié à votre compte.");
+        }
+
+        // Convertir la liste des entités Vehicle en PrivateVehicleDTO
+        return vehicles.stream()
+                .map(privateVehicleMapper::toDTO) // Conversion en DTO
+                .collect(Collectors.toList()); // Collecter les DTOs dans une liste
+    }
+
+    public void deleteVehicle(int id, int employeeId) {
+        // Récupérer le véhicule depuis la base de données
+        Vehicle vehicle = privateVehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
+
+        // Vérifier si l'utilisateur est autorisé à supprimer ce véhicule
+        if (vehicle.getEmployee().getId() != employeeId) {
+            throw new IllegalArgumentException("Utilisateur non autorisé à supprimer ce véhicule.");
+        }
+
+        // Vérifiez si le véhicule est lié à un trajet
+        if (privateVehicleRepository.isVehicleLinkedToRideShare(id)) {
+            throw new IllegalArgumentException(
+                    "Impossible de supprimer ce véhicule car il est lié à un trajet que vous avez organisé.");
+        }
+
+        // Marquer le véhicule comme supprimé
+        vehicle.setIsDeleted(true);
+        privateVehicleRepository.save(vehicle); // Sauvegarder l'état mis à jour
+    }
+
+    public PrivateVehicleDTO getVehicleById(int id) {
+        Vehicle vehicle = privateVehicleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
+
+        return privateVehicleMapper.toDTO(vehicle);
+    }
+
 }

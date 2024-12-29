@@ -16,16 +16,19 @@ public class VehicleBookingDTO {
     @NotNull(message = "Veuillez renseigner la date de fin d'emprunt")
     private LocalDateTime endTime;
 
+    private boolean isDeleted;
+
     private CompanyVehicleDTO vehicle;
     private EmployeeDTO employee;
 
     public VehicleBookingDTO(int id, LocalDateTime startTime, LocalDateTime endTime, CompanyVehicleDTO vehicle,
-            EmployeeDTO employee) {
+            EmployeeDTO employee, boolean isDeleted) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.vehicle = vehicle;
         this.employee = employee;
+        this.isDeleted = isDeleted;
 
     }
 
@@ -62,6 +65,14 @@ public class VehicleBookingDTO {
 
     public void setVehicle(CompanyVehicleDTO vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public EmployeeDTO getEmployee() {

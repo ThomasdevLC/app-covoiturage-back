@@ -3,12 +3,12 @@ package diginamic.fr.app_covoiturage.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
 import diginamic.fr.app_covoiturage.services.CompanyVehicleService;
+import jakarta.validation.Valid;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,53 +20,7 @@ public class CompanyVehicleController {
     @Autowired
     private CompanyVehicleService companyVehicleService;
 
-    @PostMapping
-    public ResponseEntity<?> createVehicle(
-            @RequestBody CompanyVehicleDTO companyVehicleDTO, BindingResult validation) {
-
-        if (validation.hasErrors()) {
-            String errorMessage = validation.getAllErrors().get(0).getDefaultMessage();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-        }
-
-        try {
-            CompanyVehicleDTO createdVehicle = companyVehicleService.createCompanyVehicle(companyVehicleDTO);
-            return new ResponseEntity<>(createdVehicle, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateVehicle(
-            @PathVariable int id,
-            @RequestBody CompanyVehicleDTO companyVehicleDTO,
-            BindingResult validation) {
-
-        if (validation.hasErrors()) {
-            String errorMessage = validation.getAllErrors().get(0).getDefaultMessage();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
-        }
-
-        try {
-            CompanyVehicleDTO updatedVehicle = companyVehicleService.updateCompanyVehicle(id, companyVehicleDTO);
-            return new ResponseEntity<>(updatedVehicle, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompanyVehicle(@PathVariable int id) {
-        try {
-            companyVehicleService.deleteCompanyVehicle(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-    @GetMapping("/")
+    @GetMapping("/admin/")
     public ResponseEntity<?> getAllVehiclesAdminOnly(
             @RequestParam(required = false) String brand,
             @RequestParam(required = false) String number) {
@@ -74,26 +28,52 @@ public class CompanyVehicleController {
         return ResponseEntity.ok(vehicles);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateVehicleStatus(
+    @PostMapping("/admin")
+    public ResponseEntity<CompanyVehicleDTO> createVehicle(@Valid @RequestBody CompanyVehicleDTO companyVehicleDTO) {
+        CompanyVehicleDTO createdVehicle = companyVehicleService.createCompanyVehicle(companyVehicleDTO);
+        return new ResponseEntity<>(createdVehicle, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<CompanyVehicleDTO> updateVehicle(@PathVariable int id,
+            @Valid @RequestBody CompanyVehicleDTO companyVehicleDTO) {
+
+        CompanyVehicleDTO updatedVehicle = companyVehicleService.updateCompanyVehicle(id, companyVehicleDTO);
+        return new ResponseEntity<>(updatedVehicle, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Void> deleteCompanyVehicle(@PathVariable int id) {
+        companyVehicleService.deleteCompanyVehicle(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/admin/{id}/status")
+    public ResponseEntity<CompanyVehicleDTO> updateVehicleStatus(
             @PathVariable int id,
             @RequestParam VehicleStatus newStatus,
             @RequestParam int employeeId) {
 
-        try {
-            CompanyVehicleDTO updatedVehicle = companyVehicleService.updateVehicleStatus(id, newStatus, employeeId);
-            return ResponseEntity.ok(updatedVehicle);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+        CompanyVehicleDTO updatedVehicle = companyVehicleService.updateVehicleStatus(id, newStatus, employeeId);
+        return ResponseEntity.ok(updatedVehicle);
+    }
+
+    @GetMapping("/admin/{id}")
+    public CompanyVehicleDTO getVehicleByIdAdminOnly(@PathVariable int id) {
+        return companyVehicleService.getVehicleByIdAdminOnly(id);
     }
 
     @GetMapping("/status-and-booking-dates")
-    public ResponseEntity<?> getVehiclesByStatusAndBookingDates(
+    public ResponseEntity<List<CompanyVehicleDTO>> getVehiclesByStatusAndBookingDates(
             @RequestParam(required = false) LocalDateTime startTime,
             @RequestParam(required = false) LocalDateTime endTime) {
         List<CompanyVehicleDTO> vehicles = companyVehicleService.getVehiclesByStatusAndBookingDates(startTime, endTime);
         return ResponseEntity.ok(vehicles);
+    }
+
+    @GetMapping("/{id}")
+    public CompanyVehicleDTO getVehicleById(@PathVariable int id) {
+        return companyVehicleService.getVehicleById(id);
     }
 
 }

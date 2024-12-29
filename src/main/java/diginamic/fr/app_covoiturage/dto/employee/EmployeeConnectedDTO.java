@@ -1,22 +1,31 @@
 package diginamic.fr.app_covoiturage.dto.employee;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import diginamic.fr.app_covoiturage.models.Role;
+
 public class EmployeeConnectedDTO {
 
     private int id;
     private String firstName;
     private String lastName;
     private String gender;
-    private boolean isAdmin;
+    private List<String> roles;
 
     public EmployeeConnectedDTO() {
     }
 
-    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, boolean isAdmin) {
+    public EmployeeConnectedDTO(int id, String firstName, String lastName, String gender, List<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.isAdmin = isAdmin;
+        // Transformer le List<Role> en List<String> pour ne contenir que le nom du rôle
+        this.roles = roles.stream()
+                .map(Role::getRoleName)
+                .map(Enum::name)
+                .collect(Collectors.toList());
     }
 
     public int getId() {
@@ -51,11 +60,14 @@ public class EmployeeConnectedDTO {
         this.gender = gender;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles.stream()
+                .map(Role::getRoleName)
+                .map(Enum::name)
+                .collect(Collectors.toList());
     }
 }

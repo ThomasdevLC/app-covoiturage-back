@@ -30,6 +30,7 @@ public class CompanyVehicleMapper {
         dto.setCo2PerKm(vehicle.getCo2PerKm());
         dto.setType(vehicle.getType());
         dto.setStatus(vehicle.getStatus());
+        dto.setIsDeleted(vehicle.getIsDeleted());
 
         if (vehicle.getEmployee() != null) {
             dto.setEmployee(employeeMapper.toDTO(vehicle.getEmployee()));
@@ -55,6 +56,7 @@ public class CompanyVehicleMapper {
         vehicle.setCo2PerKm(dto.getCo2PerKm());
         vehicle.setType(dto.getType());
         vehicle.setStatus(dto.getStatus());
+        vehicle.setIsDeleted(dto.getIsDeleted());
 
         if (dto.getEmployee() != null) {
             vehicle.setEmployee(employeeMapper.toEntity(dto.getEmployee()));

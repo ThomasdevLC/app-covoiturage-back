@@ -1,6 +1,7 @@
 package diginamic.fr.app_covoiturage.services;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import diginamic.fr.app_covoiturage.dto.address.AddressDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareBasicDTO;
 import diginamic.fr.app_covoiturage.dto.rideshare.RideShareDTO;
+import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
+import diginamic.fr.app_covoiturage.exceptions.MessageException;
 import diginamic.fr.app_covoiturage.mapper.address.AddressMapper;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareBasicMapper;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareMapper;
@@ -21,6 +24,7 @@ import diginamic.fr.app_covoiturage.models.RideShare;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.repositories.AddressRepository;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
+import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.RideShareRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -48,6 +52,12 @@ public class RideShareService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    private PrivateVehicleRepository privateVehicleRepository;
+
+    @Autowired
+    private MessageService messageService;
+
     public RideShareDTO createNewRideShare(RideShareDTO rideShareDTO) {
 
         AddressDTO departureAddressDTO = rideShareDTO.getDepartureAddress();
@@ -70,9 +80,23 @@ public class RideShareService {
             throw new IllegalArgumentException("L'adresse de départ et l'adresse d'arrivée doivent être différentes.");
         }
 
-        Integer organizerId = rideShareDTO.getOrganizer().getId();
+        LocalDateTime departureTime = rideShareDTO.getDepartureTime();
+        LocalDateTime arrivalTime = rideShareDTO.getArrivalTime();
+        if (departureTime.isAfter(arrivalTime)) {
+            throw new IllegalArgumentException("La date de départ nne peut pas être antérieure à la date d'arrivée.");
+        }
 
-        // VERIFICATION Covoiturage pendant cette période //
+        LocalDateTime now = LocalDateTime.now();
+
+        if (departureTime.isBefore(now) || arrivalTime.isBefore(now)) {
+            throw new IllegalArgumentException(
+                    "La date de départ et la date d'arrivée ne peuvent pas être antérieures à la date actuelle.");
+        }
+
+        // Vérification et récupération de l'organisateur
+        Integer organizerId = rideShareDTO.getOrganizer().getId(); // Récupérer l'ID de l'organisateur depuis le DTO
+
+        // VERIFICATION Covoiturage pendant cette période
         // LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
         // LocalDateTime newArrivalTime = rideShareDTO.getArrivalTime();
 
@@ -85,12 +109,29 @@ public class RideShareService {
         // }
 
         Employee organizer = employeeRepository.findById(organizerId)
-                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu."));
-        Vehicle vehicle = organizer.getVehicle().stream().findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Aucun véhicule ne correspond à cet utilisateur."));
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu "));
+
+        // Vérification et récupération du véhicule
+        PrivateVehicleDTO vehicleDTO = rideShareDTO.getVehicle(); // Le véhicule est passé dans le corps de la requête
+
+        // Vérifiez que le véhicule est fourni dans le DTO
+        if (vehicleDTO == null) {
+            throw new IllegalArgumentException("Un véhicule doit être spécifié.");
+        }
+
+        // Utilisez privateVehicleRepository.findById pour récupérer le véhicule basé
+        // sur l'ID
+        Vehicle vehicle = privateVehicleRepository.findById(vehicleDTO.getId())
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Véhicule non reconnu avec l'ID : " + vehicleDTO.getId()));
+
+        // Mettez à jour le véhicule dans le DTO
         rideShareDTO.setVehicle(privateVehicleMapper.toDTO(vehicle));
 
+        // Création de l'entité RideShare avec l'organisateur et le véhicule
         RideShare rideShare = rideShareMapper.toEntity(rideShareDTO);
+        rideShare.setOrganizer(organizer); // Associez l'organisateur au covoiturage
+
         RideShare savedRideShare = rideShareRepository.save(rideShare);
 
         return rideShareMapper.toDTO(savedRideShare);
@@ -118,20 +159,36 @@ public class RideShareService {
     }
 
     public RideShareDTO deleteById(Integer id, int organizerId) {
-        Optional<RideShare> optionalRideShare = rideShareRepository.findById(id);
-        if (!optionalRideShare.isPresent()) {
-            throw new EntityNotFoundException("Ce covoiturage n'existe pas");
-        }
+        // Récupérer le covoiturage ou lever une exception s'il n'existe pas
+        RideShare rideShare = rideShareRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ce covoiturage n'existe pas"));
 
-        RideShare rideShare = optionalRideShare.get();
-
+        // Vérifier les droits de l'organisateur
         if (rideShare.getOrganizer().getId() != organizerId) {
             throw new IllegalArgumentException("Vous n'êtes pas autorisé à supprimer ce covoiturage.");
         }
 
-        RideShareDTO rideShareDTO = rideShareMapper.toDTO(rideShare);
-        rideShareRepository.deleteById(id);
-        return rideShareDTO;
+        // Marquer le covoiturage comme supprimé
+        rideShare.setDeleted(true);
+        rideShareRepository.save(rideShare);
+        notifyPassengersForRideShareCancellation(rideShare);
+
+        // Retourner le DTO correspondant
+        return rideShareMapper.toDTO(rideShare);
+    }
+
+    /**
+     * Notifie les passagers d'un covoiturage annulé.
+     *
+     * @param rideShare le covoiturage annulé
+     */
+    private void notifyPassengersForRideShareCancellation(RideShare rideShare) {
+        List<Employee> passengers = rideShare.getPassengers();
+        Vehicle vehicle = rideShare.getVehicle();
+
+        for (Employee passenger : passengers) {
+            messageService.notifyEmployeeForRideshareCancellation(passenger, vehicle, rideShare);
+        }
     }
 
     public RideShareDTO addPassengerToRideShare(int rideShareId, int employeeId) {
@@ -197,6 +254,7 @@ public class RideShareService {
                 departureDateTime);
 
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareBasicMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -210,10 +268,12 @@ public class RideShareService {
 
         if (past) {
             rideShares = rideShareRepository.findByOrganizerIdAndArrivalBefore(organizerId, now);
+
         } else {
             rideShares = rideShareRepository.findByOrganizerIdAndDepartureAfter(organizerId, now);
         }
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareMapper::toDTO)
                 .collect(Collectors.toList());
     }
@@ -232,14 +292,16 @@ public class RideShareService {
         }
 
         return rideShares.stream()
+                .sorted(Comparator.comparing(RideShare::getDepartureTime)) // Tri dates
                 .map(rideShareMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    // ----------------------------------------------------//
+    public RideShareDTO getRideShareById(int id) throws MessageException {
+        RideShare rideShare = rideShareRepository.findById(id)
+                .orElseThrow(() -> new MessageException("Ce covoiturage n'existe pas."));
 
-    public Optional<RideShareDTO> getRideShareById(int id) {
-        return rideShareRepository.findById(id)
-                .map(rideShareMapper::toDTO);
+        return rideShareMapper.toDTO(rideShare);
     }
+
 }

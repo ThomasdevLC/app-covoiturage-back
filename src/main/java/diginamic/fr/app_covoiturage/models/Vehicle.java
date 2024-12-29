@@ -47,6 +47,8 @@ public class Vehicle {
     private VehicleCategory category;
 
     @URL(message = "L'URL de l'image doit être valide.")
+    @Size(max = 500, message = "L'URL de l'image ne peut pas dépasser 500 caractères.")
+    @Column(length = 500, nullable = true)
     private String picUrl;
 
     @Enumerated(EnumType.STRING)
@@ -57,7 +59,7 @@ public class Vehicle {
     @Max(value = 50, message = "Le nombre de sièges ne peut pas dépasser 50.")
     private int seats;
 
-    // @Min(value = 0, message = "La valeur du CO2/km doit être positive.")
+    // @Min(value = 1, message = "La valeur du CO2/km doit être positive.")
     @Column(name = "co2_per_km", nullable = true)
     private double co2PerKm;
 
@@ -75,6 +77,9 @@ public class Vehicle {
     @OneToMany(mappedBy = "companyVehicle", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<VehicleBooking> vehicleBookings;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
@@ -91,6 +96,7 @@ public class Vehicle {
         this.co2PerKm = co2PerKm;
         this.status = status;
         this.type = type;
+        this.isDeleted = false;
     }
 
     public Vehicle() {
@@ -206,6 +212,14 @@ public class Vehicle {
 
     public void setVehicleBookings(List<VehicleBooking> vehicleBookings) {
         this.vehicleBookings = vehicleBookings;
+    }
+
+    public boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }
