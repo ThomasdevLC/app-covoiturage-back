@@ -5,6 +5,26 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+
+/**
+ * Data Transfer Object (DTO) representing an address.
+ * This class is designed to encapsulate details regarding
+ * an address including its ID, street number, street name, postal code, and city.
+ * It is primarily used to transfer address-related data between application layers.
+ *
+ * Each field is annotated with appropriate validation constraints to ensure
+ * data integrity during input or output operations.
+ *
+ * Fields:
+ * - id: Unique identifier for the address.
+ * - number: Represents the street number, must be greater than zero.
+ * - street: The name of the street, must be non-empty and have a length between 2 and 100 characters.
+ * - code: The postal code, must have an exact length of 5 characters.
+ * - city: The name of the city, must be non-empty and have a length between 2 and 100 characters.
+ *
+ * This class includes getter and setter methods for all fields,
+ * as well as parameterized and default constructors.
+ */
 public class AddressDTO {
 
     private int id;

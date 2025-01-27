@@ -6,6 +6,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * Utility class providing security-related helper methods.
+ */
 public class SecurityUtils {
 
     public static boolean hasRole(String... roles) {

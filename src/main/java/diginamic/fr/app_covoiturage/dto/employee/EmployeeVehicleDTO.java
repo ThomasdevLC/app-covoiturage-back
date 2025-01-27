@@ -7,6 +7,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+
+/**
+ * Represents a Data Transfer Object that stores information about an employee
+ * and their associated company vehicles. This class is used to transfer data
+ * between the application layers while validating certain fields.
+ *
+ * The class encapsulates the following employee details:
+ * - A unique identifier.
+ * - Personal information including first name, last name, and gender.
+ * - Contact details such as phone number and email address.
+ * - A list of roles assigned to the employee.
+ *
+ * Additionally, it includes a list of associated company vehicles, represented
+ * by the {@code CompanyVehicleDTO} class.
+ */
 public class EmployeeVehicleDTO {
 
     private int id;

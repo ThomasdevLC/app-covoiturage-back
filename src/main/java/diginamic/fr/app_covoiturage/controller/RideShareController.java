@@ -23,6 +23,11 @@ import diginamic.fr.app_covoiturage.exceptions.MessageException;
 import diginamic.fr.app_covoiturage.services.RideShareService;
 import jakarta.validation.Valid;
 
+/**
+ * RideShareController handles HTTP endpoints related to ride-sharing operations.
+ * This controller processes requests for creating, updating, deleting, retrieving,
+ * and searching rideshares, as well as for managing passengers in rideshares.
+ */
 @RestController
 @RequestMapping("rideshares")
 public class RideShareController {

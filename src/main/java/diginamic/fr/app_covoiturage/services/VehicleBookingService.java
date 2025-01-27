@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing vehicle bookings.
+ * This class handles business logic related to creating, updating, deleting,
+ * and retrieving vehicle booking information.
+ */
 @Service
 public class VehicleBookingService {
 
@@ -36,21 +41,17 @@ public class VehicleBookingService {
     private EmployeeRepository employeeRepository;
 
     public VehicleBookingDTO createBooking(VehicleBookingDTO vehicleBookingDTO) {
-        // 1. Valider les dates de début et de fin
         if (vehicleBookingDTO.getStartTime().isAfter(vehicleBookingDTO.getEndTime())) {
             throw new IllegalArgumentException(
                     "La date de fin ne peut pas être antérieure à la date de début de réservation.");
         }
 
-        // 2. Vérifier si le véhicule existe
         Vehicle vehicle = vehicleRepository.findById(vehicleBookingDTO.getVehicle().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Ce véhicule n'existe pas."));
 
-        // 3. Vérifier si l'employé existe
         Employee employee = employeeRepository.findById(vehicleBookingDTO.getEmployee().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Cet utilisateur n'existe pas."));
 
-        // 4. Vérifier si le véhicule est déjà réservé sur ce créneau
         Optional<VehicleBooking> BookingPeriod = vehicleBookingRepository.findByBookingPeriod(
                 vehicle.getId(), vehicleBookingDTO.getStartTime(), vehicleBookingDTO.getEndTime());
 
@@ -58,15 +59,12 @@ public class VehicleBookingService {
             throw new IllegalArgumentException("Le véhicule  est déjà réservé sur ce créneau.");
         }
 
-        // 5. Créer l'entité de réservation
         VehicleBooking vehicleBooking = vehicleBookingMapper.toEntity(vehicleBookingDTO);
         vehicleBooking.setCompanyVehicle(vehicle);
         vehicleBooking.setEmployee(employee);
 
-        // 6. Sauvegarder la réservation
         VehicleBooking savedBooking = vehicleBookingRepository.save(vehicleBooking);
 
-        // 7. Mapper l'entité sauvegardée en DTO et retourner le résultat
         return vehicleBookingMapper.toDTO(savedBooking);
     }
 
@@ -78,47 +76,36 @@ public class VehicleBookingService {
             throw new IllegalArgumentException("Vous n'êtes pas autorisé à annuler cette réservation.");
         }
 
-        // Marquer la réservation comme supprimée
         booking.setDeleted(true);
         vehicleBookingRepository.save(booking);
     }
 
     public VehicleBookingDTO updateBooking(int bookingId, VehicleBookingDTO vehicleBookingDTO) {
-        // 1. Valider les dates de début et de fin
         if (vehicleBookingDTO.getStartTime().isAfter(vehicleBookingDTO.getEndTime())) {
             throw new IllegalArgumentException(
                     "La date de fin ne peut pas être antérieure à la date de début de réservation");
         }
 
-        // 2. Récupérer la réservation existante par ID
         VehicleBooking existingBooking = vehicleBookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Cette réservation n'existe pas."));
 
-        // 3. Récupérer le nouveau véhicule et vérifier s'il existe
         Vehicle newVehicle = vehicleRepository.findById(vehicleBookingDTO.getVehicle().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Ce véhicule n'existe pas."));
 
-        // 4. Vérifier si le véhicule est déjà réservé pendant la nouvelle période
         Optional<VehicleBooking> conflictingBooking = vehicleBookingRepository.findByBookingPeriod(
                 newVehicle.getId(), vehicleBookingDTO.getStartTime(), vehicleBookingDTO.getEndTime());
 
-        // Si une réservation conflictuelle existe et qu'elle n'est pas celle en cours
-        // de mise à jour
         if (conflictingBooking.isPresent() && conflictingBooking.get().getId() != bookingId) {
             throw new IllegalArgumentException("Le véhicule est déjà réservé sur ce créneau.");
         }
 
-        // 5. Mettre à jour les détails de la réservation
         existingBooking.setStartTime(vehicleBookingDTO.getStartTime());
         existingBooking.setEndTime(vehicleBookingDTO.getEndTime());
-        existingBooking.setCompanyVehicle(newVehicle); // Mise à jour du véhicule
+        existingBooking.setCompanyVehicle(newVehicle);
         existingBooking.setEmployee(employeeRepository.findById(vehicleBookingDTO.getEmployee().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Cet utilisateur n'existe pas.")));
 
-        // 6. Sauvegarder la réservation mise à jour
         VehicleBooking updatedBooking = vehicleBookingRepository.save(existingBooking);
-
-        // 7. Retourner la réservation mise à jour en tant que DTO
         return vehicleBookingMapper.toDTO(updatedBooking);
     }
 
@@ -159,7 +146,6 @@ public class VehicleBookingService {
             now = LocalDateTime.now();
         }
 
-        // Check if the employee exists
         Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
         if (!optionalEmployee.isPresent()) {
             throw new RuntimeException("Utilisateur non reconnu");

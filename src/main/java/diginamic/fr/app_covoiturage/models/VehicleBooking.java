@@ -12,6 +12,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * This class represents a booking for a company vehicle.
+ * It stores information about the start and end time of the booking,
+ * the employee who made the booking, the assigned vehicle, and the
+ * record's deletion status.
+ *
+ * The {@code VehicleBooking} class is annotated as an entity for persistence
+ * with details about the corresponding database table.
+ */
 @Entity
 @Table(name = "vehicle_booking")
 public class VehicleBooking {

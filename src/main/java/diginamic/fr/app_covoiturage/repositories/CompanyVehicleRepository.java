@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for performing CRUD operations and custom queries
+ * on the Vehicle entity specific to company vehicles.
+ */
 @Repository
 public interface CompanyVehicleRepository extends CrudRepository<Vehicle, Integer> {
 

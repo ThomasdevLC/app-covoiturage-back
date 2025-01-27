@@ -16,6 +16,13 @@ import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import diginamic.fr.app_covoiturage.repositories.MessageRepository;
 
+
+/**
+ * Service permettant de gérer les messages liés aux employés
+ * dans le cadre d'annulations de réservations ou de covoiturages,
+ * ainsi que les opérations sur les messages comme lecture, suppression,
+ * ou récupération.
+ */
 @Service
 public class MessageService {
 
@@ -25,13 +32,6 @@ public class MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
-    /**
-     * Crée et sauvegarde un message pour un employé.
-     *
-     * @param employee       l'employé à notifier
-     * @param vehicle        le véhicule concerné
-     * @param vehicleBooking la réservation affectée
-     */
 
     public void notifyEmployeeForBookingCancelation(Employee employee, Vehicle vehicle, VehicleBooking vehicleBooking) {
 

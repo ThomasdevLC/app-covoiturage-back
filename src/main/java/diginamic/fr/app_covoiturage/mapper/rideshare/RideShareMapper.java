@@ -11,6 +11,37 @@ import diginamic.fr.app_covoiturage.models.RideShare;
 
 import java.util.stream.Collectors;
 
+/**
+ * Component responsible for mapping between `RideShare` entity objects and `RideShareDTO` objects.
+ *
+ * This class simplifies the transformation of `RideShare` data between the persistence layer and
+ * the data transfer object (DTO). It ensures a consistent mapping of the relevant attributes and
+ * associated entities, leveraging other mappers to handle nested data transformations.
+ *
+ * Features:
+ * - Conversion from `RideShare` entity to `RideShareDTO`.
+ * - Conversion from `RideShareDTO` back to `RideShare` entity.
+ * - Handles nested mappings for associated objects such as addresses, organizer profiles, vehicles,
+ *   and passengers using `AddressMapper`, `EmployeeProfileMapper`, and `PrivateVehicleMapper`.
+ *
+ * Responsibilities:
+ * - Preserves relationships between ride shares and their attributes including departure and
+ *   arrival addresses, organizer, available seats, passengers, and vehicles.
+ * - Ensures the proper handling of collections, such as mapping a list of passengers, during
+ *   conversion processes.
+ *
+ * Dependency:
+ * This class depends on:
+ * - `AddressMapper` for mapping address-related data.
+ * - `EmployeeProfileMapper` for mapping employee-related data associated with organizers and passengers.
+ * - `PrivateVehicleMapper` for mapping vehicle-related data.
+ *
+ * Methods:
+ * - `toDTO(RideShare rideShare)`: Converts a `RideShare` entity to a `RideShareDTO` representation. Handles
+ *   nested mappings for associated addresses, employee profiles, vehicles, and passengers.
+ * - `toEntity(RideShareDTO rideShareDTO)`: Converts a `RideShareDTO` to a `RideShare` entity. Handles
+ *   nested mappings for reconstructing entities for associated addresses, employees, vehicles, and passengers.
+ */
 @Component
 public class RideShareMapper {
 

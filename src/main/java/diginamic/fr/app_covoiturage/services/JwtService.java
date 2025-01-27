@@ -15,6 +15,21 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * Service class for managing JSON Web Tokens (JWT) operations.
+ *
+ * This class provides methods to:
+ * - Generate JWTs for authenticated users.
+ * - Extract claims such as username and expiration date from tokens.
+ * - Validate the integrity and validity of JWTs.
+ * - Handle token expiration and signing.
+ *
+ * The keys and signing are managed securely using a secret key, and the generated tokens
+ * are signed using HMAC-SHA256 encryption.
+ *
+ * The class is annotated with @Service, making it a Spring-managed component for
+ * dependency injection and consistent usage across the application.
+ */
 @Service
 public class JwtService {
     private final static String SECRET = "jxSfksuJ84mxt9xOLPC2PZuAoKihuu3mRyAdxVprvAR3tJ4wyGdcTzWbTk48yKfNcRi7RAL1klsycSXv";

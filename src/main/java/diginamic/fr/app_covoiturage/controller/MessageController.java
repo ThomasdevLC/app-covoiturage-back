@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import diginamic.fr.app_covoiturage.dto.message.MessageDTO;
 import diginamic.fr.app_covoiturage.services.MessageService;
 
+/**
+ * Contrôleur des messages liés aux employés, permettant de gérer les
+ * opérations sur les messages comme récupération, lecture, et suppression.
+ */
 @RestController
 @RequestMapping("/messages")
 public class MessageController {

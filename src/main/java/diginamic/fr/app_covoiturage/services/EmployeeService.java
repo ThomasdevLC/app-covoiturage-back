@@ -8,14 +8,27 @@ import diginamic.fr.app_covoiturage.mapper.employee.EmployeeProfileMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 
+/**
+ * Service class for managing employees.
+ *
+ * This class provides methods for saving, deleting, and retrieving employee information.
+ * It acts as a layer between the controllers and the repositories, containing business logic
+ * related to employee management.
+ *
+ * Features:
+ * - Save an employee entity to the database.
+ * - Deactivate an employee account by marking it as inactive.
+ * - Retrieve employee profile data, including mapped DTO representations.
+ *
+ * Dependencies:
+ * - EmployeeRepository: Provides CRUD operations for Employee entities.
+ * - EmployeeProfileMapper: Maps Employee entities to EmployeeProfileDTO and vice versa.
+ */
 @Service
 public class EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-
-    // @Autowired
-    // private EmployeeRideSharesMapper employeeRideSharesMapper;
 
     @Autowired
     private EmployeeProfileMapper employeeProfileMapper;
@@ -40,8 +53,4 @@ public class EmployeeService {
                 .map(employeeProfileMapper::toDTO);
     }
 
-    // public Optional<EmployeeRideSharesDTO> getEmployeeById(int id) {
-    // return employeeRepository.findById(id)
-    // .map(employeeRideSharesMapper::toDTO);
-    // }
 }

@@ -7,6 +7,28 @@ import diginamic.fr.app_covoiturage.mapper.address.AddressMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.RideShare;
 
+
+/**
+ * Component responsible for mapping between RideShare entities and RideshareUpdateDTO objects.
+ * This class facilitates the conversion of RideShare entity data to RideshareUpdateDTO and vice versa,
+ * enabling seamless data transfer between different layers of the application during rideshare updates.
+ *
+ * Responsibilities:
+ * - Mapping a RideShare entity to a RideshareUpdateDTO object, while handling null safety.
+ * - Mapping a RideshareUpdateDTO object to a RideShare entity, ensuring all necessary fields
+ *   are converted properly, including nested mappings through AddressMapper.
+ *
+ * Dependencies:
+ * - AddressMapper: Converts departure and arrival addresses between Address entities and AddressDTO objects.
+ *
+ * Methods:
+ * - {@code toDTO(RideShare rideShare)}: Maps the provided RideShare entity to a RideshareUpdateDTO
+ *   object. Returns null if the input is null. Copies departure and arrival times, addresses,
+ *   organizer ID, and available seats.
+ * - {@code toEntity(RideshareUpdateDTO rideshareUpdateDTO)}: Maps the provided RideshareUpdateDTO
+ *   object to a RideShare entity. Returns null if the input is null. Converts applicable fields and
+ *   creates a new organizer Employee entity with the specified ID.
+ */
 @Component
 public class RideshareUpdateMapper {
 

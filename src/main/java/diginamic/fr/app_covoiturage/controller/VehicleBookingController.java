@@ -11,6 +11,10 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controller for managing vehicle booking-related operations.
+ * Provides endpoints to create, update, cancel, and retrieve vehicle bookings.
+ */
 @RestController
 @RequestMapping("/vehicle-bookings")
 public class VehicleBookingController {

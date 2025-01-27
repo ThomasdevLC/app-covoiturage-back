@@ -21,6 +21,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * The CompanyVehicleService class provides methods for managing company vehicles
+ * in the system. This includes creating, updating, retrieving, and deleting
+ * vehicles, as well as updating vehicle status and handling vehicle booking records.
+ * The service ensures proper access control and enforces business rules.
+ *
+ * Responsibilities of this service include:
+ * - Creating and registering new company vehicles.
+ * - Updating existing vehicle details and status.
+ * - Deleting vehicles (logical deletion) after validation checks.
+ * - Retrieving vehicles based on various criteria such as brand, number, status, and booking dates.
+ * - Cancelling future bookings associated with a vehicle.
+ * - Ensuring administrative roles and responsibilities are upheld during operations.
+ *
+ * This service interacts with the following components:
+ * - CompanyVehicleRepository: Handles operations related to vehicle persistence.
+ * - CompanyVehicleMapper: Maps between entity and DTO representations.
+ * - EmployeeRepository: Verifies the existence of employees.
+ * - VehicleBookingRepository: Handles bookings associated with vehicles.
+ * - MessageService: Sends notifications about booking cancellations.
+ *
+ * Access to certain operations is restricted to users with administrative privileges.
+ */
 @Service
 public class CompanyVehicleService {
 
@@ -63,18 +86,14 @@ public class CompanyVehicleService {
     }
 
     public CompanyVehicleDTO updateCompanyVehicle(int id, CompanyVehicleDTO companyVehicleDTO) {
-        // Vérifier si le véhicule existe
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Véhicule non reconnu"));
 
-        // Vérifier l'existence du véhicule avec le même numéro (sauf le véhicule
-        // actuel)
         Optional<Vehicle> vehicleWithSameNumber = companyVehicleRepository.findByNumber(companyVehicleDTO.getNumber());
         if (vehicleWithSameNumber.isPresent() && vehicleWithSameNumber.get().getId() != id) {
             throw new RuntimeException("Ce véhicule est déjà enregistré");
         }
 
-        // Vérifier l'existence de l'employé et ses droits
         Optional<Employee> optionalEmployee = employeeRepository.findById(companyVehicleDTO.getEmployee().getId());
         if (!optionalEmployee.isPresent()) {
             throw new RuntimeException("Utilisateur non reconnu");
@@ -101,23 +120,19 @@ public class CompanyVehicleService {
     }
 
     public void deleteCompanyVehicle(int id) {
-        // Récupérer le véhicule par son ID
         Vehicle existingVehicle = companyVehicleRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Véhicule non reconnu : "));
 
-        // Vérifier si l'utilisateur a le rôle ADMIN
         if (!SecurityUtils.hasRole("ROLE_ADMIN")) {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
-        // Vérifier si le véhicule est lié à un booking actif ou futur
         boolean isLinkedToBooking = companyVehicleRepository.isVehicleLinkedToBooking(id);
         if (isLinkedToBooking) {
             throw new IllegalArgumentException(
                     "Impossible de supprimer ce véhicule car il est  lié à une réservation en cours.");
         }
 
-        // Marquer le véhicule comme supprimé
         existingVehicle.setIsDeleted(true);
         companyVehicleRepository.save(existingVehicle);
     }
@@ -151,17 +166,13 @@ public class CompanyVehicleService {
         Vehicle vehicle = companyVehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new EntityNotFoundException("Véhicule non trouvé"));
 
-        // Vérifier si le statut change de AVAILABLE à un autre statut
         if (vehicle.getStatus() == VehicleStatus.AVAILABLE && newStatus != VehicleStatus.AVAILABLE) {
-            // Annuler toutes les réservations associées
             cancelAllBookingsForVehicle(vehicle);
         }
 
-        // Mettre à jour le statut du véhicule
         vehicle.setStatus(newStatus);
         Vehicle updatedVehicle = companyVehicleRepository.save(vehicle);
 
-        // Convertir en DTO et retourner
         return companyVehicleMapper.toDTO(updatedVehicle);
     }
 
@@ -174,30 +185,24 @@ public class CompanyVehicleService {
     private void cancelAllBookingsForVehicle(Vehicle vehicle) {
         LocalDateTime now = LocalDateTime.now();
 
-        // Récupérer toutes les réservations futures non supprimées pour ce véhicule
         List<VehicleBooking> futureBookings = vehicleBookingRepository.findFutureBookingsByVehicleId(vehicle.getId(),
                 now);
 
         if (!futureBookings.isEmpty()) {
-            // Extraire les employés concernés sans duplication
             List<Employee> affectedEmployees = futureBookings.stream()
                     .map(VehicleBooking::getEmployee)
                     .distinct()
                     .collect(Collectors.toList());
 
-            // Notifier chaque employé concerné
             for (Employee employee : affectedEmployees) {
-                // Filtrer les réservations de cet employé
                 List<VehicleBooking> employeeBookings = futureBookings.stream()
                         .filter(vb -> vb.getEmployee().getId() == employee.getId())
                         .collect(Collectors.toList());
 
-                // Créer un message interne pour chaque réservation
                 for (VehicleBooking booking : employeeBookings) {
                     messageService.notifyEmployeeForBookingCancelation(employee, vehicle, booking);
                 }
 
-                // Annuler les réservations de l'employé
                 employeeBookings.forEach(vb -> {
                     vb.setDeleted(true); // Suppression logique
                     vehicleBookingRepository.save(vb);

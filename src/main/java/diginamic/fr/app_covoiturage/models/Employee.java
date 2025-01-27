@@ -28,27 +28,38 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Represents an Employee entity with various attributes and relationships related to
+ * user details, roles, and associated data such as organized rides, bookings, and vehicles.
+ * This class implements the {@code UserDetails} interface for Spring Security, providing
+ * authentication and authorization capabilities.
+ *
+ * The entity is mapped to the database table "employee" and contains fields for personal
+ * and account information, including first name, last name, gender, phone, email, and password.
+ * It also defines relationships with other entities such as roles, ride shares, vehicle bookings,
+ * vehicles, and messages.
+ *
+ * The class includes validation constraints for certain fields to ensure data integrity
+ * and proper formatting. It supports multiple user-related methods to fulfill the contract
+ * of {@code UserDetails}.
+ *
+ * Relationships:
+ * - Many-to-Many relation with {@code Role}, {@code RideShare}, and {@code Message}.
+ * - One-to-Many relation with {@code RideShare}, {@code VehicleBooking}, and {@code Vehicle}.
+ * - Self-referencing {@code organizedRides} for maintaining organized ride shares.
+ *
+ * Key Responsibilities:
+ * - Authentication via implementing the {@code UserDetails} interface.
+ * - Persistence and validation of employee details.
+ */
+
 @Entity
 @Table(name = "employee")
 
 public class Employee implements UserDetails {
 
-    /**
-     * Attributs de la classe employés(-> Employee)
-     * Identifiant unique auto-incrementé: int id
-     * attribut FirstName de type string
-     * attribut Lastname de type String
-     * attribut email de type String
-     * attribut phone de type String
-     * attribut password de type String
-     * attribut isActive de type boolean
-     * attribut roles de type List<Role>
-     * attribut organizedRides de type List<RideShare>
-     * attribut vehicleBooking de type List<VehicleBooking>
-     * attribut vehicle de type List<Vehicle>
-     * attribut rideShares de type List<RideShare>
-     * 
-     */
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -111,11 +122,7 @@ public class Employee implements UserDetails {
     @ManyToMany(mappedBy = "employees")
     private List<Message> messages = new ArrayList<>();
 
-    /**
-     * Méthode getAuthorities() qui retourne la liste des rôles de l'employé
-     * 
-     * @return la liste des rôles de l'employé
-     */
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -124,16 +131,6 @@ public class Employee implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Constructeur avec arguments pour les modifications
-     * 
-     * @param firstName
-     * @param lastName
-     * @param gender
-     * @param phone
-     * @param email
-     * @param password
-     */
 
     public Employee(String firstName, String lastName, String gender, String phone,
             String email, String password, boolean isActive) {

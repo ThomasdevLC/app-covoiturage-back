@@ -9,6 +9,18 @@ import diginamic.fr.app_covoiturage.dto.message.MessageDTO;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Message;
 
+/**
+ * The MessageMapper class is responsible for converting between the Message entity
+ * and its corresponding data transfer object (MessageDTO). This allows seamless
+ * communication between different layers of the application, such as the service
+ * and presentation layers, while maintaining a clear separation of concerns.
+ *
+ * This class provides methods for:
+ * - Mapping a Message entity to a MessageDTO.
+ * - Mapping a MessageDTO to a Message entity, including associated employees.
+ *
+ * The mapping ensures proper handling of entity relationships and relevant data transformations.
+ */
 @Component
 public class MessageMapper {
 

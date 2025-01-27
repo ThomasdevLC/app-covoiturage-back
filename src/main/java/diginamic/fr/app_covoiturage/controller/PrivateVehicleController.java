@@ -20,6 +20,11 @@ import diginamic.fr.app_covoiturage.exceptions.MessageException;
 import diginamic.fr.app_covoiturage.services.PrivateVehicleService;
 import jakarta.validation.Valid;
 
+/**
+ * Controller for managing private vehicles.
+ * Provides endpoints for creating, updating, retrieving, and deleting private vehicles,
+ * as well as retrieving vehicles associated with a specific employee.
+ */
 @RestController
 @RequestMapping("/private-vehicles")
 public class PrivateVehicleController {

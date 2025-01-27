@@ -13,6 +13,18 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+
+
+
+/**
+ * Represents an address entity which stores details about a specific location.
+ * This entity is mapped to the "address" table in the database.
+ * It captures fields like street number, name, postal code, and city,
+ * with associated validation rules.
+ *
+ * This entity has a one-to-many relationship with the RideShare entity,
+ * specifically for departures and arrivals.
+ */
 @Entity
 @Table(name = "address")
 public class Address {

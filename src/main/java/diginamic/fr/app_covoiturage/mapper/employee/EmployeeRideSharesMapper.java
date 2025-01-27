@@ -9,6 +9,13 @@ import diginamic.fr.app_covoiturage.dto.employee.EmployeeRideSharesDTO;
 import diginamic.fr.app_covoiturage.mapper.rideshare.RideShareBasicMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 
+
+
+/**
+ * A mapper class that converts between EmployeeRideSharesDTO and Employee entities.
+ * This class facilitates the mapping of data from entity to DTO and vice versa,
+ * ensuring the transfer of employee data along with associated ride-sharing information.
+ */
 @Component
 public class EmployeeRideSharesMapper {
 

@@ -11,14 +11,17 @@ import org.springframework.stereotype.Repository;
 
 import diginamic.fr.app_covoiturage.models.RideShare;
 
+/**
+ * Repository interface for managing RideShare entities.
+ * Provides methods to perform CRUD operations, query RideShare data based on various criteria,
+ * and filter data according to organizer, passenger, time periods, and cities.
+ */
 @Repository
 public interface RideShareRepository extends CrudRepository<RideShare, Integer> {
 
-        // Recherche par ID
         @Query("SELECT r FROM RideShare r WHERE r.id = :id AND r.isDeleted = false")
         Optional<RideShare> findById(@Param("id") int id);
 
-        // Recherche de trajets par période et organisateur
         @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.isDeleted = false AND " +
                         "((r.departureTime < :newArrivalTime AND r.arrivalTime > :newDepartureTime) OR " +
                         "(r.departureTime <= :newDepartureTime AND r.arrivalTime >= :newDepartureTime) OR " +
@@ -28,7 +31,6 @@ public interface RideShareRepository extends CrudRepository<RideShare, Integer> 
                         @Param("newDepartureTime") LocalDateTime newDepartureTime,
                         @Param("newArrivalTime") LocalDateTime newArrivalTime);
 
-        // Recherche de trajets par ville de départ/arrivée et date
         @Query("SELECT r FROM RideShare r WHERE r.isDeleted = false AND " +
                         "(:departureCity IS NULL OR r.departureAddress.city = :departureCity) " +
                         "AND (:arrivalCity IS NULL OR r.arrivalAddress.city = :arrivalCity) " +
@@ -41,22 +43,18 @@ public interface RideShareRepository extends CrudRepository<RideShare, Integer> 
                         @Param("currentDateTime") LocalDateTime currentDateTime,
                         @Param("departureDateTime") LocalDateTime departureDateTime);
 
-        // Recherche des trajets passés par organisateur
         @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.arrivalTime < :now AND r.isDeleted = false")
         List<RideShare> findByOrganizerIdAndArrivalBefore(@Param("organizerId") Integer organizerId,
                         @Param("now") LocalDateTime now);
 
-        // Recherche des trajets futurs par organisateur
         @Query("SELECT r FROM RideShare r WHERE r.organizer.id = :organizerId AND r.departureTime > :now AND r.isDeleted = false")
         List<RideShare> findByOrganizerIdAndDepartureAfter(@Param("organizerId") Integer organizerId,
                         @Param("now") LocalDateTime now);
 
-        // Recherche des trajets passés par passager
         @Query("SELECT r FROM RideShare r JOIN r.passengers p WHERE p.id = :passengerId AND r.arrivalTime < :now AND r.isDeleted = false")
         List<RideShare> findByPassengerIdAndArrivalBefore(@Param("passengerId") Integer passengerId,
                         @Param("now") LocalDateTime now);
 
-        // Recherche des trajets futurs par passager
         @Query("SELECT r FROM RideShare r JOIN r.passengers p WHERE p.id = :passengerId AND r.departureTime > :now AND r.isDeleted = false")
         List<RideShare> findByPassengerIdAndDepartureAfter(@Param("passengerId") Integer passengerId,
                         @Param("now") LocalDateTime now);

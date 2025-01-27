@@ -7,6 +7,16 @@ import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * The VehicleBookingMapper class is responsible for mapping between the VehicleBooking
+ * entity and the corresponding VehicleBookingDTO. It facilitates the conversion of data
+ * between domain-level entities and data transfer objects used for presentation
+ * or API purposes.
+ *
+ * This class uses CompanyVehicleMapper and EmployeeMapper to handle the mapping of nested
+ * objects within VehicleBooking or VehicleBookingDTO, such as the associated vehicle
+ * and employee details.
+ */
 @Component
 public class VehicleBookingMapper {
 

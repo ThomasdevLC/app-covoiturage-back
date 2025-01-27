@@ -13,6 +13,20 @@ import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * This controller handles operations related to company vehicles.
+ * It provides endpoints for managing vehicles, including retrieving, creating,
+ * updating, deleting, and updating status.
+ *
+ * Endpoints:
+ * - Retrieve a list of vehicles (optional filtering by brand or number).
+ * - Retrieve vehicle by ID for both admins and general users.
+ * - Create a new vehicle.
+ * - Update an existing vehicle.
+ * - Delete a vehicle by ID.
+ * - Update vehicle status including assignment to an employee.
+ * - Retrieve vehicles based on status and booking date range.
+ */
 @RestController
 @RequestMapping("/company-vehicles")
 public class CompanyVehicleController {

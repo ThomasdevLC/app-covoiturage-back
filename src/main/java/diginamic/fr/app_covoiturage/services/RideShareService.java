@@ -28,6 +28,13 @@ import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
 import diginamic.fr.app_covoiturage.repositories.RideShareRepository;
 import jakarta.persistence.EntityNotFoundException;
 
+/**
+ * Service class for managing ride-sharing functionalities.
+ *
+ * This service provides operations to create, update, delete,
+ * and manage ride-share instances. It also handles functionality
+ * for managing passengers associated with ride-shares.
+ */
 @Service
 public class RideShareService {
 
@@ -93,44 +100,26 @@ public class RideShareService {
                     "La date de départ et la date d'arrivée ne peuvent pas être antérieures à la date actuelle.");
         }
 
-        // Vérification et récupération de l'organisateur
-        Integer organizerId = rideShareDTO.getOrganizer().getId(); // Récupérer l'ID de l'organisateur depuis le DTO
+        Integer organizerId = rideShareDTO.getOrganizer().getId();
 
-        // VERIFICATION Covoiturage pendant cette période
-        // LocalDateTime newDepartureTime = rideShareDTO.getDepartureTime();
-        // LocalDateTime newArrivalTime = rideShareDTO.getArrivalTime();
-
-        // List<RideShare> overlappingRides =
-        // rideShareRepository.findBySimilarPeriod(organizerId,
-        // newDepartureTime, newArrivalTime);
-        // if (!overlappingRides.isEmpty()) {
-        // throw new IllegalArgumentException("Vous avez déjà créé un covoiturage
-        // pendant cette période.");
-        // }
 
         Employee organizer = employeeRepository.findById(organizerId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non reconnu "));
 
-        // Vérification et récupération du véhicule
-        PrivateVehicleDTO vehicleDTO = rideShareDTO.getVehicle(); // Le véhicule est passé dans le corps de la requête
+        PrivateVehicleDTO vehicleDTO = rideShareDTO.getVehicle();
 
-        // Vérifiez que le véhicule est fourni dans le DTO
         if (vehicleDTO == null) {
             throw new IllegalArgumentException("Un véhicule doit être spécifié.");
         }
 
-        // Utilisez privateVehicleRepository.findById pour récupérer le véhicule basé
-        // sur l'ID
         Vehicle vehicle = privateVehicleRepository.findById(vehicleDTO.getId())
                 .orElseThrow(
                         () -> new IllegalArgumentException("Véhicule non reconnu avec l'ID : " + vehicleDTO.getId()));
 
-        // Mettez à jour le véhicule dans le DTO
         rideShareDTO.setVehicle(privateVehicleMapper.toDTO(vehicle));
 
-        // Création de l'entité RideShare avec l'organisateur et le véhicule
         RideShare rideShare = rideShareMapper.toEntity(rideShareDTO);
-        rideShare.setOrganizer(organizer); // Associez l'organisateur au covoiturage
+        rideShare.setOrganizer(organizer);
 
         RideShare savedRideShare = rideShareRepository.save(rideShare);
 
@@ -159,29 +148,20 @@ public class RideShareService {
     }
 
     public RideShareDTO deleteById(Integer id, int organizerId) {
-        // Récupérer le covoiturage ou lever une exception s'il n'existe pas
         RideShare rideShare = rideShareRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ce covoiturage n'existe pas"));
 
-        // Vérifier les droits de l'organisateur
         if (rideShare.getOrganizer().getId() != organizerId) {
             throw new IllegalArgumentException("Vous n'êtes pas autorisé à supprimer ce covoiturage.");
         }
-
-        // Marquer le covoiturage comme supprimé
         rideShare.setDeleted(true);
         rideShareRepository.save(rideShare);
         notifyPassengersForRideShareCancellation(rideShare);
 
-        // Retourner le DTO correspondant
         return rideShareMapper.toDTO(rideShare);
     }
 
-    /**
-     * Notifie les passagers d'un covoiturage annulé.
-     *
-     * @param rideShare le covoiturage annulé
-     */
+
     private void notifyPassengersForRideShareCancellation(RideShare rideShare) {
         List<Employee> passengers = rideShare.getPassengers();
         Vehicle vehicle = rideShare.getVehicle();

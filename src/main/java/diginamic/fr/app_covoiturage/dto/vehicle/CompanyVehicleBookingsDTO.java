@@ -14,6 +14,33 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/**
+ * The CompanyVehicleBookingsDTO class represents a Data Transfer Object (DTO)
+ * for company vehicles and their related booking information.
+ * This class is used for managing and transferring data related to
+ * company vehicles, including attributes such as the vehicle's identification,
+ * registration number, brand, model, category, image URL, motor type, seating
+ * capacity, CO2 emissions, vehicle status, and type. It also includes a list of
+ * associated vehicle bookings.
+ *
+ * The class validates various fields such as the vehicle's registration number,
+ * brand, model, category, motor type, image URL, seating capacity, CO2 emissions
+ * per kilometer, and other parameters using annotations provided by the Java
+ * Bean Validation framework. This ensures that the data adheres to specific
+ * constraints during initialization or modification.
+ *
+ * Key components of this DTO:
+ * - Information about the vehicle, such as identification, registration number,
+ *   brand, model, category, and type.
+ * - Specification details, including motor type, seating capacity, and CO2 emissions.
+ * - Operational status of the vehicle (e.g., available or out of service).
+ * - URL for an image of the vehicle.
+ * - A list of associated bookings represented as VehicleBookingDTO objects.
+ *
+ * It contains constructors for initializing the DTO either with all attributes
+ * or with default values. Getter and setter methods are provided for accessing
+ * and modifying the attributes.
+ */
 public class CompanyVehicleBookingsDTO {
 
     private int id;

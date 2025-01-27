@@ -25,6 +25,14 @@ import diginamic.fr.app_covoiturage.models.enums.VehicleCategory;
 import diginamic.fr.app_covoiturage.models.enums.VehicleStatus;
 import diginamic.fr.app_covoiturage.models.enums.VehicleType;
 
+/**
+ * Represents a Vehicle entity. This class is annotated as a JPA entity
+ * and persists the details of a vehicle in the database. It contains
+ * various attributes such as the unique identifier, registration number,
+ * brand, model, category, and more. Additionally, the class manages
+ * relationships with other entities such as Employee, RideShare, and
+ * VehicleBooking.
+ */
 @Entity
 @Table(name = "vehicle")
 public class Vehicle {

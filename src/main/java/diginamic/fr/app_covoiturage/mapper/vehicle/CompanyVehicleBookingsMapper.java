@@ -12,6 +12,24 @@ import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * The CompanyVehicleBookingsMapper class is responsible for mapping between the Vehicle entity
+ * and its associated data transfer object (DTO), specifically the CompanyVehicleBookingsDTO.
+ * This includes converting domain-level entities representing a company's vehicle and its
+ * bookings into DTOs and vice versa.
+ *
+ * The class utilizes VehicleBookingMapper to map the nested vehicle booking information
+ * within the Vehicle entity or CompanyVehicleBookingsDTO. This ensures that the structure
+ * and details of bookings associated with a specific vehicle are accurately transformed
+ * during the mapping process.
+ *
+ * Main functionalities include:
+ * - Converting a Vehicle entity to a CompanyVehicleBookingsDTO, mapping relevant properties
+ *   and nested collections.
+ * - Converting a CompanyVehicleBookingsDTO back to a Vehicle entity, restoring associations
+ *   and dependencies.
+ */
 @Component
 public class CompanyVehicleBookingsMapper {
 

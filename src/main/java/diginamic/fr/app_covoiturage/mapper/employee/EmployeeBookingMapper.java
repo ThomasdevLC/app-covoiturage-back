@@ -7,6 +7,29 @@ import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.VehicleBooking;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 
+/**
+ * The EmployeeBookingMapper class is responsible for mapping between the
+ * EmployeeBookingDTO and VehicleBooking entities. It provides methods to
+ * convert entity objects to DTO objects and vice versa. This is useful
+ * for transferring data between the database layer and the application layer.
+ *
+ * This class ensures that the data transformation between domain entities
+ * (VehicleBooking, Employee, Vehicle) and the Data Transfer Object
+ * (EmployeeBookingDTO) is managed effectively while maintaining data
+ * consistency and correctness.
+ *
+ * Methods:
+ * - toDTO: Converts a VehicleBooking entity to an EmployeeBookingDTO object.
+ * - toEntity: Converts an EmployeeBookingDTO object back to a VehicleBooking entity.
+ *
+ * The methods handle null checks to avoid NullPointerExceptions during the
+ * mapping process. Both methods ensure that only valid and existing data
+ * elements are processed for conversion.
+ *
+ * This class is marked as a Spring component to allow dependency injection
+ * and easy integration within the service layer or wherever data transformation
+ * is required.
+ */
 @Component
 public class EmployeeBookingMapper {
 

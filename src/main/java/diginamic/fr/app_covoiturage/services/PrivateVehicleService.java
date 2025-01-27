@@ -15,6 +15,11 @@ import diginamic.fr.app_covoiturage.repositories.EmployeeRepository;
 import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
 import jakarta.persistence.EntityNotFoundException;
 
+/**
+ * Service class for handling operations related to private vehicles.
+ * This class manages creation, updating, retrieval, and deletion of private vehicles
+ * as well as associations with employees.
+ */
 @Service
 public class PrivateVehicleService {
 
@@ -84,32 +89,27 @@ public class PrivateVehicleService {
         if (vehicles.isEmpty()) {
             throw new IllegalArgumentException("Vous n'avez pas de véhicule lié à votre compte.");
         }
-
-        // Convertir la liste des entités Vehicle en PrivateVehicleDTO
         return vehicles.stream()
-                .map(privateVehicleMapper::toDTO) // Conversion en DTO
-                .collect(Collectors.toList()); // Collecter les DTOs dans une liste
+                .map(privateVehicleMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
+
     public void deleteVehicle(int id, int employeeId) {
-        // Récupérer le véhicule depuis la base de données
         Vehicle vehicle = privateVehicleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Véhicule non reconnu"));
 
-        // Vérifier si l'utilisateur est autorisé à supprimer ce véhicule
         if (vehicle.getEmployee().getId() != employeeId) {
             throw new IllegalArgumentException("Utilisateur non autorisé à supprimer ce véhicule.");
         }
 
-        // Vérifiez si le véhicule est lié à un trajet
         if (privateVehicleRepository.isVehicleLinkedToRideShare(id)) {
             throw new IllegalArgumentException(
                     "Impossible de supprimer ce véhicule car il est lié à un trajet que vous avez organisé.");
         }
 
-        // Marquer le véhicule comme supprimé
         vehicle.setIsDeleted(true);
-        privateVehicleRepository.save(vehicle); // Sauvegarder l'état mis à jour
+        privateVehicleRepository.save(vehicle);
     }
 
     public PrivateVehicleDTO getVehicleById(int id) {

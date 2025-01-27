@@ -12,6 +12,31 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Data Transfer Object for representing company vehicle details.
+ *
+ * This class is used to transfer data about vehicles associated with a company,
+ * including properties such as vehicle number, brand, model, category, motor type,
+ * seating capacity, CO2 emissions, status, and an associated employee.
+ *
+ * Fields include:
+ * - id: Identifier for the vehicle.
+ * - number: Registration number of the vehicle (mandatory).
+ * - brand: Brand of the vehicle with a specified length constraint.
+ * - model: Model of the vehicle with a specified length constraint.
+ * - category: Category of the vehicle, as per predefined categories.
+ * - picUrl: URL of the vehicle's picture (must be a valid URL).
+ * - motor: Type of motor the vehicle uses (e.g., GASOLINE, HYBRID).
+ * - seats: Number of seats in the vehicle, within a given range.
+ * - co2PerKm: CO2 emissions in grams per kilometer (must be positive).
+ * - status: Current status of the vehicle (e.g., AVAILABLE, REPAIR).
+ * - type: Vehicle type, defaulted to COMPANY.
+ * - employee: Employee assigned to the vehicle, represented as an EmployeeDTO.
+ * - isDeleted: Boolean to indicate if the vehicle is marked as deleted.
+ *
+ * This DTO is typically utilized in scenarios such as vehicle management systems,
+ * where detailed vehicle information needs to be communicated between application layers.
+ */
 public class CompanyVehicleDTO {
 
     private int id;

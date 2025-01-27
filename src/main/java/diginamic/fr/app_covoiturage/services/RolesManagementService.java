@@ -17,6 +17,14 @@ import diginamic.fr.app_covoiturage.repositories.RolesManagementRepository;
 import diginamic.fr.app_covoiturage.utils.SecurityUtils;
 import jakarta.persistence.EntityNotFoundException;
 
+/**
+ * Service class for managing roles and permissions of employees.
+ * Provides methods to retrieve all employees, search employees by keyword,
+ * and toggle the assignment of the ADMIN role.
+ *
+ * Business logic enforces that only users with the ROLE_SUPER_ADMIN permission
+ * are authorized to access these operations.
+ */
 @Service
 public class RolesManagementService {
 
@@ -66,28 +74,22 @@ public class RolesManagementService {
             throw new AccessDeniedException("Vous ne disposez pas des droits nécessaires");
         }
 
-        // Recherche de l'employé
         Employee employee = rolesManagementRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employé non reconnu"));
 
-        // Recherche du rôle ADMIN
         Role adminRole = roleRepository.findByRoleName(RoleName.ADMIN)
                 .orElseThrow(() -> new RuntimeException("Rôle non trouvé : ADMIN"));
 
         if (isAdmin) {
-            // Ajouter le rôle ADMIN s'il n'est pas déjà attribué
             if (!employee.getRoles().contains(adminRole)) {
                 employee.getRoles().add(adminRole);
             }
         } else {
-            // Retirer le rôle ADMIN s'il est présent
             employee.getRoles().remove(adminRole);
         }
 
-        // Sauvegarder les modifications
         Employee updatedEmployee = rolesManagementRepository.save(employee);
 
-        // Retourner l'employé mis à jour sous forme de DTO
         return EmployeeRoleMapper.toEmployeeRoleDTO(updatedEmployee);
     }
 

@@ -22,6 +22,35 @@ import diginamic.fr.app_covoiturage.repositories.PrivateVehicleRepository;
 import diginamic.fr.app_covoiturage.services.PrivateVehicleService;
 import jakarta.persistence.EntityNotFoundException;
 
+/**
+ * Unit test class for the PrivateVehicleService.
+ *
+ * This class contains test cases to ensure the reliable and correct behavior of the
+ * PrivateVehicleService functionalities. Several scenarios are tested, including success
+ * cases and exception handling for operations like creating, retrieving, deleting,
+ * or querying vehicles.
+ *
+ * Dependencies:
+ * - PrivateVehicleService: The service being tested.
+ * - PrivateVehicleMapper: A mocked mapper used during vehicle entity and DTO conversions.
+ * - EmployeeRepository: A mocked repository used to manage employee-related operations.
+ * - PrivateVehicleRepository: A mocked repository used to manage vehicle-related persistence.
+ *
+ * Test Scenarios:
+ * - Test creating a vehicle with valid data.
+ * - Test retrieving a vehicle by ID when no vehicle is found.
+ * - Test unauthorized deletion of a vehicle.
+ * - Test querying vehicles by employee ID when no vehicles are linked to the employee.
+ *
+ * Mocking:
+ * - Dependencies are mocked using Mockito. The `@InjectMocks` annotation is used to inject
+ *   mocked collaborators into the PrivateVehicleService instance under test.
+ * - The `MockitoAnnotations.openMocks(this)` method initializes these mocks before each test.
+ *
+ * Assertions:
+ * - Various assertions are used to verify the expected output or exception for each test case.
+ * - Verifies interactions with mocked dependencies to ensure correct behavior.
+ */
 class PrivateVehicleServiceTest {
 
     @InjectMocks

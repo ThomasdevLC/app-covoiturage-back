@@ -8,6 +8,29 @@ import diginamic.fr.app_covoiturage.dto.employee.EmployeeProfileDTO;
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Data Transfer Object representing details of a ride-share.
+ *
+ * This class is designed to encapsulate information about a ride-share,
+ * including the ride's timing, addresses, organizer, available seats, and vehicle details.
+ * It serves as a data container for transferring ride-share-related
+ * information between application layers.
+ *
+ * Fields:
+ * - id: Unique identifier for the ride-share.
+ * - departureTime: Departure time of the ride (mandatory).
+ * - arrivalTime: Arrival time of the ride (mandatory).
+ * - departureAddress: Address where the ride starts (mandatory).
+ * - arrivalAddress: Address where the ride concludes (mandatory).
+ * - organizer: The organizer of the ride, representing an employee profile.
+ * - availableSeats: Count of seats available for passengers (mandatory).
+ * - vehicle: The private vehicle assigned for this ride.
+ * - passengers: List of passengers participating in the ride, represented as employee profiles.
+ * - isDeleted: A boolean flag indicating whether the ride-share record is marked as deleted.
+ *
+ * The class includes constructors, getters, and setters providing access
+ * and mutability to these fields.
+ */
 public class RideShareDTO {
 
     private int id;

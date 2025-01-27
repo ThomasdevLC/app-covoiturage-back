@@ -10,16 +10,30 @@ import diginamic.fr.app_covoiturage.models.Role;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
 import diginamic.fr.app_covoiturage.repositories.RoleRepository;
 
+
+/**
+ * The EmployeeRegisterMapper is a utility class responsible for mapping data
+ * between Employee and EmployeeRegisterDTO, enabling conversions between data
+ * transfer objects and entity objects. This class is typically used in the
+ * context of registering or managing employee-related data.
+ *
+ * Methods:
+ * - toEntity: Converts an EmployeeRegisterDTO object into an Employee entity.
+ *   It initializes a new Employee instance, populating its attributes with the
+ *   values from the given DTO. Additionally, it assigns a default role (`ROLE_USER`)
+ *   to the employee using the provided RoleRepository.
+ *
+ * - toDTO: Converts an Employee entity into an EmployeeRegisterDTO. It extracts
+ *   the attributes of the Employee and maps them to the corresponding fields
+ *   in the DTO, including a list of role names.
+ *
+ * This class ensures that the data structures for employees remain consistent
+ * between application layers and simplifies the population of complex entity relations.
+ */
 @Component
 public class EmployeeRegisterMapper {
 
-    /**
-     * Mappe un EmployeeRegisterDTO vers une entité Employee.
-     *
-     * @param dto            Le DTO d'inscription
-     * @param roleRepository Le repository pour accéder aux rôles
-     * @return Une entité Employee avec les données du DTO
-     */
+
     public static Employee toEntity(EmployeeRegisterDTO dto, RoleRepository roleRepository) {
         if (dto == null) {
             return null;
@@ -42,12 +56,6 @@ public class EmployeeRegisterMapper {
         return employee;
     }
 
-    /**
-     * Mappe une entité Employee vers un EmployeeRegisterDTO.
-     *
-     * @param employee L'entité Employee à mapper
-     * @return Un DTO EmployeeRegisterDTO avec les données de l'entité
-     */
     public static EmployeeRegisterDTO toDTO(Employee employee) {
         if (employee == null) {
             return null;

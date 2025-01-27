@@ -20,6 +20,30 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * A filter implementation for processing and validating JSON Web Tokens (JWT)
+ * for authentication purposes. This class extends {@link OncePerRequestFilter}
+ * to ensure that the filter is executed once per request.
+ *
+ * The filter intercepts incoming HTTP requests, extracts the JWT from the
+ * "Authorization" header, validates it, and sets up the user's authentication context
+ * if the token is valid. If the path starts with "/auth/", the filter does not perform
+ * JWT validation and passes the request directly to the filter chain.
+ *
+ * Constructor Dependencies:
+ * - {@link JwtService}: Service used for extracting and validating JWT tokens.
+ * - {@link UserDetailsService}: Service used to retrieve user details by username.
+ * - {@link HandlerExceptionResolver}: Resolver for handling exceptions that occur
+ *   during token processing.
+ *
+ * Key Functionalities:
+ * - Extract and validate JWTs from incoming requests.
+ * - Skip JWT processing for specific routes (e.g., "/auth/**").
+ * - Retrieve user details from the {@link UserDetailsService}.
+ * - Set up authenticated user information in the security context.
+ * - Handle validation failures and process exceptions through
+ *   {@link HandlerExceptionResolver}.
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

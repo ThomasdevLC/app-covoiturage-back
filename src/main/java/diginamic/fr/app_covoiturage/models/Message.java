@@ -14,6 +14,24 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+
+
+/**
+ * Represents a message entity with attributes such as content, date, read status,
+ * deleted status, and the employees associated with the message.
+ *
+ * The message content is limited to a maximum of 500 characters and cannot be null.
+ * Each message is associated with a specific date and time when it was created.
+ * The read status and deleted status indicate whether the message has been read
+ * and whether it has been marked for deletion, respectively.
+ *
+ * A many-to-many relationship is defined between messages and employees, which is
+ * managed through a join table named "employee_messages".
+ *
+ * By default, a new message is marked as unread and not deleted.
+ * A default creation date and time is assigned upon instantiation.
+ */
+
 @Entity
 @Table(name = "messages")
 public class Message {

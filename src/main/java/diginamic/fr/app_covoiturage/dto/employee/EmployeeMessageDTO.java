@@ -4,6 +4,23 @@ import java.util.List;
 
 import diginamic.fr.app_covoiturage.dto.message.MessageDTO;
 
+
+/**
+ * Data Transfer Object representing an employee and their associated messages.
+ *
+ * This class encapsulates employee details, including personal information
+ * and a list of messages associated with the employee.
+ *
+ * Fields:
+ * - employeeId: Represents the unique identifier of the employee.
+ * - firstName: The first name of the employee.
+ * - lastName: The last name of the employee.
+ * - email: The email address of the employee.
+ * - messages: A list of MessageDTO objects associated with the employee.
+ *
+ * This class is typically used for transferring data related to employees and
+ * their messages between different layers of the application.
+ */
 public class EmployeeMessageDTO {
     private int employeeId;
     private String firstName;

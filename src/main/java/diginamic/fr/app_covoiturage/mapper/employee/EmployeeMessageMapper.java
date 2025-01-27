@@ -12,6 +12,19 @@ import diginamic.fr.app_covoiturage.mapper.message.MessageMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Message;
 
+
+/**
+ * Mapper class to convert between Employee entities and EmployeeMessageDTO objects.
+ *
+ * This class provides methods to perform conversions between Employee objects
+ * and their corresponding EmployeeMessageDTO representations. It also handles
+ * the association with Message entities and their respective DTOs using the
+ * MessageMapper component.
+ *
+ * Responsibilities:
+ * - Convert Employee entities into EmployeeMessageDTO objects, including associated messages.
+ * - Convert EmployeeMessageDTO objects into Employee entities, linking the provided message entities.
+ */
 @Component
 public class EmployeeMessageMapper {
     @Autowired

@@ -13,6 +13,22 @@ import diginamic.fr.app_covoiturage.responses.LoginResponse;
 import diginamic.fr.app_covoiturage.services.AuthenticationService;
 import diginamic.fr.app_covoiturage.services.JwtService;
 
+/**
+ * Controller class for handling authentication-related operations.
+ * This class provides endpoints for registering new users and authenticating existing users.
+ *
+ * The controller is mapped to the "/auth" URL path and handles HTTP POST requests
+ * for user registration and login functionalities.
+ *
+ * Key Endpoints:
+ * - "/signup": Handles user registration.
+ * - "/login": Handles user login and JWT token generation.
+ *
+ * The authentication process relies on two main services:
+ * - {@link AuthenticationService}: Responsible for user registration
+ *   and authentication logic.
+ * - {@link JwtService}: Responsible for generating and managing JWT tokens.
+ */
 @RequestMapping("/auth")
 @RestController
 

@@ -10,16 +10,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for managing {@code VehicleBooking} entities.
+ * Provides CRUD operations and specific methods to retrieve vehicle bookings
+ * based on different criteria and conditions such as time periods,
+ * employee associations, or vehicle associations.
+ *
+ * The repository leverages Spring Data JPA's {@code CrudRepository} to
+ * provide out-of-the-box data handling features while also including custom
+ * queries for specific use cases.
+ *
+ * Methods:
+ * - Retrieve bookings by their start time or end time, excluding deleted records.
+ * - Find bookings associated with a specific employee or vehicle, excluding deleted records.
+ * - Retrieve all bookings that are not marked as deleted.
+ * - Retrieve current, historical, future, or overlapping bookings for a specific employee or vehicle.
+ * - Fetch lists of bookings based on time periods such as past, current, or future bookings.
+ */
 @Repository
 public interface VehicleBookingRepository extends CrudRepository<VehicleBooking, Integer> {
 
-        List<VehicleBooking> findByStartTimeAndIsDeletedFalse(LocalDateTime startTime);
-
-        List<VehicleBooking> findByEndTimeAndIsDeletedFalse(LocalDateTime endTime);
-
-        List<VehicleBooking> findByEmployeeIdAndIsDeletedFalse(int employeeId);
-
-        List<VehicleBooking> findByCompanyVehicleIdAndIsDeletedFalse(int vehicleId);
 
         List<VehicleBooking> findAllByIsDeletedFalse();
 

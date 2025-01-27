@@ -16,6 +16,23 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+/**
+ * Represents a role in the application. A role is associated with a specific
+ * set of permissions and can be assigned to one or more employees. This class
+ * is mapped to the "roles" table in the database.
+ *
+ * Fields:
+ * - id: Represents the unique identifier of the role, automatically generated.
+ * - roleName: Represents the name of the role, stored as a string and must be unique.
+ * - employees: Represents the collection of employees associated with this role.
+ *
+ * Relationships:
+ * - Many-to-Many relationship with the Employee entity, where the "employee_roles"
+ *   join table persists the association between roles and employees.
+ *
+ * This entity supports operations like assigning a role name, getting the associated
+ * employees, and retrieving the role's unique identifier.
+ */
 @Entity
 @Table(name = "roles")
 public class Role {

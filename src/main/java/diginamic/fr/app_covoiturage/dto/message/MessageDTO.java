@@ -3,6 +3,10 @@ package diginamic.fr.app_covoiturage.dto.message;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * The MessageDTO class is a data transfer object representing a message entity.
+ * It is used to transfer message-related data between different layers of the application.
+ */
 public class MessageDTO {
     private int id;
     private String content;

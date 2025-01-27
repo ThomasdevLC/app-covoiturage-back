@@ -7,6 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import diginamic.fr.app_covoiturage.models.Employee;
 
+
+/**
+ * Repository interface for managing Employee entities.
+ * Provides methods for CRUD operations and custom query executions.
+ * Extends the CrudRepository interface for generic CRUD functionalities.
+ */
 @Repository
 public interface EmployeeRepository extends CrudRepository<Employee, Integer> {
 

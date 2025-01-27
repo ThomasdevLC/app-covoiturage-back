@@ -9,6 +9,20 @@ import java.util.List;
 
 import diginamic.fr.app_covoiturage.dto.booking.VehicleBookingDTO;
 
+/**
+ * The EmployeeBookingDTO class serves as a Data Transfer Object (DTO) for employee booking information.
+ * It is primarily used to encapsulate and transfer details related to an employee booking, such as the
+ * employee's personal information, booking requirements, and associated vehicle bookings.
+ *
+ * This class contains fields for storing employee details including their first name, last name,
+ * gender, phone number, email address, and the number of seats booked. It also includes a list
+ * of vehicle bookings associated with the employee. An instance of this class can be used to
+ * validate and process booking requests or manage booking data in the application.
+ *
+ * Validation constraints are applied to various fields to ensure the integrity and correctness
+ * of the data. For instance, fields like firstName, lastName, gender, phone, and email are mandatory
+ * with additional constraints like length limitations or valid email format.
+ */
 public class EmployeeBookingDTO {
 
     private int id;

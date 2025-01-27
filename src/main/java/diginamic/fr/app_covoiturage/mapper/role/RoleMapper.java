@@ -4,6 +4,15 @@ import diginamic.fr.app_covoiturage.dto.role.RoleDTO;
 import diginamic.fr.app_covoiturage.models.Role;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
 
+
+/**
+ * Provides methods to convert between Role entity and RoleDTO.
+ *
+ * This utility class simplifies the transformation process
+ * between the entity and Data Transfer Object (DTO) representations
+ * of the Role data model. It is commonly used to adapt Role data for
+ * transfer across layers without exposing the full entity.
+ */
 public class RoleMapper {
 
     /**

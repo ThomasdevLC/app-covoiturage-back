@@ -14,6 +14,32 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.authentication.AuthenticationProvider;
 
+/**
+ * SecurityConfiguration class is responsible for configuring Spring Security settings
+ * for the application, including authentication and authorization mechanisms, session
+ * management, and CORS configurations. This configuration class defines custom beans
+ * and settings to secure the application endpoints and manage user access.
+ *
+ * Constructor Dependencies:
+ * - authenticationProvider: Provides custom authentication logic for validating user credentials.
+ * - jwtAuthenticationFilter: A custom filter for validating and processing JSON Web Tokens (JWT).
+ *
+ * Key Configuration Details:
+ * 1. Configures a SecurityFilterChain using the HttpSecurity object:
+ *    - Disables CSRF protection as the application uses stateless sessions.
+ *    - Defines access rules for API endpoints:
+ *        - Endpoints under "/auth/**" are open to all users.
+ *        - "/company-vehicles/admin" and "/vehicle-bookings/admin" require the "ADMIN" role.
+ *        - "/roles-management/" requires the "SUPER_ADMIN" role.
+ *        - All other endpoints require authentication.
+ *    - Configures stateless session management to avoid maintaining user session on the server.
+ *    - Registers custom authentication and JWT filtering mechanisms.
+ *
+ * 2. Configures CORS settings using the CorsFilter bean:
+ *    - Specifies allowed origins, including whitelisted URLs for frontend applications.
+ *    - Defines allowed HTTP methods and headers.
+ *    - Enables credential sharing for cross-origin requests.
+ */
 @Configuration
 public class SecurityConfiguration {
 

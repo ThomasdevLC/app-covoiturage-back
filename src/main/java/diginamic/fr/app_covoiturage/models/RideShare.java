@@ -15,6 +15,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+
+
+/**
+ * Represents a ride-sharing entity with details about departure, arrival,
+ * organizer, vehicle, passengers, and available seats.
+ *
+ * This class is mapped to a database table named "rideShare" and utilizes
+ * JPA annotations for ORM (Object-Relational Mapping). It also includes
+ * constraints to enforce mandatory fields such as departure time, arrival
+ * time, available seats, departure address, and arrival address.
+ *
+ * The RideShare entity can associate multiple passengers, an organizer,
+ * and a vehicle. It has functionality for soft deletion through the
+ * "isDeleted" attribute.
+ */
 @Entity
 @Table(name = "rideShare")
 public class RideShare {

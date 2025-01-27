@@ -13,6 +13,13 @@ import diginamic.fr.app_covoiturage.services.AddressService;
 
 import jakarta.validation.Valid;
 
+/**
+ * REST Controller for managing address-related operations.
+ *
+ * This controller provides an endpoint for creating or retrieving an address.
+ * It is mapped to the "/addresses" URL and interacts with the AddressService
+ * to handle business logic related to the Address entity.
+ */
 @RestController
 @RequestMapping("/addresses")
 public class AddressController {

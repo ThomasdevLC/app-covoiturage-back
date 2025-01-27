@@ -10,6 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import diginamic.fr.app_covoiturage.models.Employee;
 
+/**
+ * Repository interface for managing operations related to the Employee entity.
+ * Provides methods for retrieving and searching Employee data.
+ * Extends the CrudRepository interface for basic CRUD operations.
+ * Annotated with @Repository to indicate its role in the Spring framework dependency injection mechanism.
+ */
 @Repository
 public interface RolesManagementRepository extends CrudRepository<Employee, Integer> {
     Optional<Employee> findById(int id);

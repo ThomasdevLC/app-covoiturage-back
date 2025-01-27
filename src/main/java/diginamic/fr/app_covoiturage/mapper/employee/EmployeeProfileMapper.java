@@ -12,6 +12,26 @@ import diginamic.fr.app_covoiturage.mapper.vehicle.PrivateVehicleMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 
+
+/**
+ * A mapper class for converting between Employee entity and EmployeeProfileDTO.
+ *
+ * This class provides methods to map an Employee entity to its corresponding
+ * EmployeeProfileDTO and vice versa. The mapping ensures that all relevant
+ * employee attributes, including personal details and associated private
+ * vehicles, are correctly transformed between the entity and DTO representations.
+ *
+ * Features:
+ * - Converts an Employee entity into an EmployeeProfileDTO for use in contexts
+ *   that require structured employee profile data.
+ * - Converts an EmployeeProfileDTO back into an Employee entity for operations
+ *   that involve persistence or domain-specific logic.
+ * - Handles nested mapping for associated private vehicles using the
+ *   PrivateVehicleMapper.
+ *
+ * This class depends on the PrivateVehicleMapper for transforming vehicle-related
+ * data, ensuring modular and reusable code for vehicle mappings.
+ */
 @Component
 public class EmployeeProfileMapper {
 

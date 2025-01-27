@@ -7,6 +7,26 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+/**
+ * Data Transfer Object for representing an employee's information.
+ *
+ * This class contains essential details about an employee, including personal
+ * details such as first name, last name, gender, contact information, and a list
+ * of user roles associated with the employee. The class ensures validation
+ * constraints are applied on fields like firstName, lastName, phone, email, etc.
+ *
+ * Fields include:
+ * - id: Represents the unique identifier of the employee.
+ * - firstName: First name of the employee, mandatory, must be between 1 and 100 characters.
+ * - lastName: Last name of the employee, mandatory, must be between 1 and 100 characters.
+ * - gender: Gender of the employee, mandatory, must be between 1 and 30 characters.
+ * - phone: Phone number of the employee, mandatory, must be at least 10 digits.
+ * - email: Email address of the employee, mandatory, must follow a valid email format.
+ * - roles: List of roles assigned to the employee, mandatory.
+ *
+ * This DTO is typically used for transferring data related to employees
+ * between layers of the application (e.g., from the API layer to the service layer).
+ */
 public class EmployeeDTO {
 
     private int id;

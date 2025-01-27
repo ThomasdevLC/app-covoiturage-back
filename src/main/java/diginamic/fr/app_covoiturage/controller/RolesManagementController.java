@@ -13,6 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRoleDTO;
 import diginamic.fr.app_covoiturage.services.RolesManagementService;
 
+/**
+ * Controller for managing roles and permissions of employees.
+ *
+ * This controller provides endpoints to retrieve the list of employees,
+ * search employees by name or email, and toggle the ADMIN role for a specific
+ * employee. It utilizes the RolesManagementService to handle business logic.
+ *
+ * Endpoints:
+ * - GET /roles-management/employees: Retrieve all employees.
+ * - GET /roles-management/employees/search: Search employees by keyword.
+ * - PUT /roles-management/employees/{employeeId}/toggle-admin-role: Enable or disable
+ *   the ADMIN role for a specific employee.
+ *
+ * The operations are restricted to users with the ROLE_SUPER_ADMIN
+ * permission.
+ */
 @RestController
 @RequestMapping("roles-management")
 public class RolesManagementController {

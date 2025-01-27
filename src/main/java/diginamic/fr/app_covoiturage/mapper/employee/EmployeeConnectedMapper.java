@@ -11,6 +11,24 @@ import diginamic.fr.app_covoiturage.models.Role;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
 import diginamic.fr.app_covoiturage.repositories.RoleRepository;
 
+/**
+ * Mapper class for converting between Employee and EmployeeConnectedDTO objects.
+ *
+ * This class provides utility methods to:
+ * - Transform an Employee entity to its corresponding Data Transfer Object (EmployeeConnectedDTO).
+ * - Transform an EmployeeConnectedDTO back to its corresponding Employee entity.
+ *
+ * The relationships between employees and their roles are considered during the mapping
+ * process. Role names are extracted and represented as strings in the DTO and resolved
+ * back to Role entities when converting to an Employee.
+ *
+ * Responsibilities:
+ * - Simplify the transfer of employee data between different application layers.
+ * - Handle the mapping of complex relationships such as roles.
+ *
+ * Dependencies:
+ * - RoleRepository is required for fetching roles during DTO to entity conversion.
+ */
 @Component
 public class EmployeeConnectedMapper {
 

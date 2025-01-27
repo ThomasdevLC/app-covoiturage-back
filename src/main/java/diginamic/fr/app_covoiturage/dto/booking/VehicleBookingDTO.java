@@ -6,6 +6,13 @@ import diginamic.fr.app_covoiturage.dto.employee.EmployeeDTO;
 import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import jakarta.validation.constraints.NotNull;
 
+
+
+/**
+ * The VehicleBookingDTO class represents the data transfer object used for vehicle bookings.
+ * It encapsulates the information needed to manage vehicle booking operations, such as booking
+ * time details, associated vehicle, associated employee, and deletion status.
+ */
 public class VehicleBookingDTO {
 
     private int id;

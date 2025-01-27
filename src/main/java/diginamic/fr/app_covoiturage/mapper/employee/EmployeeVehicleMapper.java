@@ -15,6 +15,27 @@ import diginamic.fr.app_covoiturage.models.Vehicle;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
 import diginamic.fr.app_covoiturage.repositories.RoleRepository;
 
+
+/**
+ * Provides mapping functionality between Employee and EmployeeVehicleDTO objects.
+ * This class is responsible for converting Employee entities to their corresponding
+ * DTO representations and vice versa.
+ *
+ * It performs the following key operations:
+ * - Maps an Employee entity to an EmployeeVehicleDTO object, including the employee's
+ *   personal details, assigned roles, and associated company vehicles.
+ * - Maps an EmployeeVehicleDTO object back to an Employee entity while assigning
+ *   default roles and handling vehicle associations.
+ *
+ * This class utilizes dependencies such as CompanyVehicleMapper for vehicle mappings
+ * and RoleRepository to retrieve role entities.
+ *
+ * Main responsibilities:
+ * - Converting Employee entities to EmployeeVehicleDTO representations with associated roles
+ *   and vehicles.
+ * - Populating Employee entities from EmployeeVehicleDTO with default behavior for roles
+ *   and vehicle associations.
+ */
 @Component
 public class EmployeeVehicleMapper {
 

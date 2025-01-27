@@ -8,6 +8,35 @@ import diginamic.fr.app_covoiturage.dto.employee.EmployeeDTO;
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Data Transfer Object (DTO) representing the basic details of a ride-sharing operation.
+ * This class encapsulates data related to a single ride-sharing event, including relevant
+ * information such as departure and arrival details, the organizer, available seats, and the vehicle used.
+ * It is primarily used to facilitate the transfer of ride-sharing data between different layers
+ * of the application.
+ *
+ * Fields:
+ * - id: Unique identifier for the ride-sharing event.
+ * - departureTime: The date and time when the ride is scheduled to start.
+ * - arrivalTime: The date and time when the ride is expected to end.
+ * - departureAddress: The starting address of the ride.
+ * - arrivalAddress: The destination address of the ride.
+ * - organizer: The employee organizing and managing the ride.
+ * - availableSeats: The number of seats available for passengers in the ride.
+ * - vehicle: The private vehicle used for the ride.
+ * - isDeleted: A flag indicating whether the ride has been logically deleted.
+ *
+ * Constructors:
+ * - A default constructor for creating an empty instance of the class.
+ * - A parameterized constructor for initializing all fields.
+ *
+ * Getter and Setter Methods:
+ * - Provides access to and allows modification of all fields.
+ *
+ * Additional Methods:
+ * - getTripDuration(): Calculates the duration of the trip based on the departure and arrival times.
+ * - getFormattedTripDuration(): Returns the trip duration as a formatted string in hours and minutes.
+ */
 public class RideShareBasicDTO {
 
     private int id;

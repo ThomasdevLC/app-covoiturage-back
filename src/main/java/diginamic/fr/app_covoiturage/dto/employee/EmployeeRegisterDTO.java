@@ -3,6 +3,39 @@ package diginamic.fr.app_covoiturage.dto.employee;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+/**
+ * Data Transfer Object for registering a new employee.
+ *
+ * This class is used to encapsulate the necessary details required to register
+ * an employee within the system. It includes personal information such as
+ * the first name, last name, gender, phone number, email address, and password.
+ * Additionally, it contains the account activation status and assigned roles.
+ *
+ * The default role "ROLE_USER" is assigned if no roles are specified during
+ * initialization. The class provides methods to access, set, and validate
+ * the employee registration data.
+ *
+ * Fields:
+ * - firstName: The first name of the employee.
+ * - lastName: The last name of the employee.
+ * - gender: The gender of the employee.
+ * - phone: The phone number of the employee.
+ * - email: The email address of the employee.
+ * - password: The password for the employee's account.
+ * - isActive: A boolean indicating whether the employee's account is active.
+ *   Defaults to true if not explicitly specified.
+ * - roles: A list of roles assigned to the employee. Defaults to "ROLE_USER"
+ *   if no roles are provided or the provided list is empty.
+ *
+ * Constructors:
+ * - A parameterized constructor that initializes all the fields.
+ * - A no-argument constructor that sets default values for the roles and account activation.
+ *
+ * This class is commonly used for transferring employee registration data
+ * between layers of the application.
+ */
 public class EmployeeRegisterDTO {
 
     private String firstName;

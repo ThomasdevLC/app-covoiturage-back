@@ -10,6 +10,15 @@ import org.springframework.stereotype.Repository;
 
 import diginamic.fr.app_covoiturage.models.Message;
 
+/**
+ * MessageRepository is a data access interface that manages Message entities.
+ * It extends the CrudRepository interface provided by Spring Data, offering
+ * basic CRUD operations and custom query methods for Message entities.
+ *
+ * It provides methods to:
+ * - Retrieve a list of non-deleted messages associated with a given employee.
+ * - Retrieve a non-deleted message by its unique identifier.
+ */
 @Repository
 public interface MessageRepository extends CrudRepository<Message, Integer> {
 

@@ -7,6 +7,40 @@ import diginamic.fr.app_covoiturage.dto.vehicle.CompanyVehicleDTO;
 import diginamic.fr.app_covoiturage.mapper.employee.EmployeeMapper;
 import diginamic.fr.app_covoiturage.models.Vehicle;
 
+/**
+ * A utility component for mapping between Vehicle entities and
+ * CompanyVehicleDTO objects.
+ *
+ * This mapper provides methods to convert Vehicle entities to their
+ * corresponding Data Transfer Objects (DTO) and vice versa. The mapping
+ * covers all essential fields including details about the vehicle and
+ * its associated employee.
+ *
+ * Fields Mapped:
+ * - id: The vehicle's unique identifier.
+ * - number: The vehicle's registration number.
+ * - brand: The brand of the vehicle.
+ * - model: The model of the vehicle.
+ * - category: The category of the vehicle.
+ * - picUrl: The URL of the vehicle's picture.
+ * - motor: Details about the vehicle's motor.
+ * - seats: Number of seats in the vehicle.
+ * - co2PerKm: CO2 emissions per kilometer for the vehicle.
+ * - type: The type of the vehicle.
+ * - status: The operational status of the vehicle.
+ * - isDeleted: A flag indicating if the vehicle is deleted.
+ * - employee: The employee associated with the vehicle.
+ *
+ * Key Functionalities:
+ * - Conversion from Vehicle entity to CompanyVehicleDTO: Transfers all
+ *   fields including related Employee data if available.
+ * - Conversion from CompanyVehicleDTO to Vehicle entity: Transfers all
+ *   fields and maps related EmployeeDTO to Employee entity if provided.
+ *
+ * Dependencies:
+ * - EmployeeMapper: Used for mapping the associated employee between
+ *   Employee and EmployeeDTO representations.
+ */
 @Component
 public class CompanyVehicleMapper {
 

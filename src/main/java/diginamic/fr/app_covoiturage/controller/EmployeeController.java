@@ -17,6 +17,24 @@ import diginamic.fr.app_covoiturage.mapper.employee.EmployeeConnectedMapper;
 import diginamic.fr.app_covoiturage.models.Employee;
 import diginamic.fr.app_covoiturage.services.EmployeeService;
 
+/**
+ * REST controller for managing employee-related operations.
+ *
+ * This controller serves endpoints for various actions related to employees,
+ * including retrieving authenticated employee information, fetching employee profiles,
+ * and deactivating employee accounts. It acts as an entry point for HTTP requests
+ * related to employee data, delegating business logic to the EmployeeService and
+ * mapping entities to DTOs using EmployeeConnectedMapper.
+ *
+ * Endpoints:
+ * - Delete an employee account based on their ID.
+ * - Retrieve the profile of an employee by their ID, returning it as a DTO.
+ * - Get the authenticated employee's information.
+ *
+ * Dependencies:
+ * - EmployeeService: Executes the business logic for employee management.
+ * - EmployeeConnectedMapper: Maps employee entities to connected employee DTOs.
+ */
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {

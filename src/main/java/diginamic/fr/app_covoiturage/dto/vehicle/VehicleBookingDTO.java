@@ -5,6 +5,24 @@ import java.time.LocalDateTime;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeDTO;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Data Transfer Object for representing vehicle booking details.
+ *
+ * This class is used to encapsulate data related to vehicle bookings,
+ * including the booking ID, start time, end time, the vehicle being booked,
+ * and the employee associated with the booking.
+ *
+ * Fields:
+ * - id: Unique identifier for the booking.
+ * - startTime: The starting date and time of the booking (mandatory).
+ * - endTime: The ending date and time of the booking (mandatory).
+ * - vehicle: The vehicle being reserved, represented as a CompanyVehicleDTO.
+ * - employee: The employee who has made the booking, represented as an EmployeeDTO.
+ *
+ * This DTO is typically used in scenarios like vehicle management and booking systems,
+ * allowing for the storage and transfer of relevant booking information between
+ * application components.
+ */
 public class VehicleBookingDTO {
 
     private int id;

@@ -4,6 +4,29 @@ import java.util.List;
 
 import diginamic.fr.app_covoiturage.dto.vehicle.PrivateVehicleDTO;
 
+
+
+/**
+ * Data Transfer Object representing an employee's profile information.
+ *
+ * This class serves as a container for transferring employee-related data
+ * within the application, particularly in contexts where the profile details
+ * of an employee are required. The EmployeeProfileDTO includes attributes such
+ * as personal details, contact information, and associated private vehicles.
+ *
+ * Attributes:
+ * - id: Unique identifier for the employee.
+ * - firstName: Employee's first name.
+ * - lastName: Employee's last name.
+ * - gender: Employee's gender.
+ * - phone: Contact phone number of the employee.
+ * - email: Email address of the employee.
+ * - vehicle: List of private vehicles associated with the employee.
+ *
+ * It facilitates the organization and communication of structured employee
+ * profile data between different layers of the application, ensuring data
+ * integrity and relevance.
+ */
 public class EmployeeProfileDTO {
 
     private int id;

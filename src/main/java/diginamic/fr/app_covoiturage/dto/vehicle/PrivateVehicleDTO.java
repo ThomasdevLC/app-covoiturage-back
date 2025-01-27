@@ -7,6 +7,27 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Data Transfer Object for representing the details of a private vehicle.
+ *
+ * This class is used to transfer data related to a private vehicle within
+ * different layers of the application. It includes information such as
+ * the vehicle's identification number, registration number, brand, model,
+ * seating capacity, and the assigned employee.
+ *
+ * Fields include:
+ * - id: Unique identifier for the private vehicle.
+ * - number: Registration number of the vehicle, mandatory with validation for non-nullity.
+ * - brand: Brand of the vehicle, mandatory, must have between 1 and 50 characters.
+ * - model: Model of the vehicle, mandatory, must have between 1 and 50 characters.
+ * - seats: Number of seats available in the vehicle, mandatory, must be between 1 and 50.
+ * - type: Type of the vehicle, defaults to PRIVATE as defined in the VehicleType enumeration.
+ * - employee: Employee assigned to this vehicle.
+ * - isDeleted: Flag indicating whether the vehicle is deleted.
+ *
+ * Constraints such as non-nullity, size limitations, and numeric bounds are
+ * enforced for certain fields to ensure data integrity.
+ */
 public class PrivateVehicleDTO {
 
     private int id;

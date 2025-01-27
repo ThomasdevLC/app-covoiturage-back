@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import diginamic.fr.app_covoiturage.models.Vehicle;
 
+/**
+ * Repository interface for managing Private Vehicles within the application.
+ * Provides database access and query methods for the Vehicle entity.
+ */
 @Repository
 
 public interface PrivateVehicleRepository extends CrudRepository<Vehicle, Integer> {

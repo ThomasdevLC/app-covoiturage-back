@@ -8,13 +8,21 @@ import diginamic.fr.app_covoiturage.models.Role;
 import diginamic.fr.app_covoiturage.models.enums.RoleName;
 import diginamic.fr.app_covoiturage.dto.employee.EmployeeRoleDTO;
 
+
+/**
+ * Utility class for mapping between Employee and EmployeeRoleDTO objects.
+ *
+ * This class provides functionality to convert an Employee entity to
+ * an EmployeeRoleDTO object and vice versa. It is used to facilitate the
+ * transfer of employee and role-related data between different layers of
+ * an application. The mapping ensures the separation of entity and DTO representations.
+ *
+ * Methods:
+ * - toEmployeeRoleDTO: Converts an Employee object to an EmployeeRoleDTO object.
+ * - toEmployee: Converts an EmployeeRoleDTO object to an Employee object.
+ */
 public class EmployeeRoleMapper {
-    /**
-     * Convertit un Employee en EmployeeRoleDTO.
-     *
-     * @param employee L'entité Employee à convertir.
-     * @return Le DTO EmployeeRoleDTO correspondant.
-     */
+
     public static EmployeeRoleDTO toEmployeeRoleDTO(Employee employee) {
         if (employee == null) {
             return null;
@@ -32,12 +40,6 @@ public class EmployeeRoleMapper {
                 roleNames);
     }
 
-    /**
-     * Convertit un EmployeeRoleDTO en Employee.
-     *
-     * @param employeeRoleDTO Le DTO EmployeeRoleDTO à convertir.
-     * @return L'entité Employee correspondant.
-     */
     public static Employee toEmployee(EmployeeRoleDTO employeeRoleDTO) {
         if (employeeRoleDTO == null) {
             return null;

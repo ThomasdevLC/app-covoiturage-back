@@ -4,6 +4,15 @@ import diginamic.fr.app_covoiturage.dto.address.AddressDTO;
 import diginamic.fr.app_covoiturage.models.Address;
 import org.springframework.stereotype.Component;
 
+/**
+ * Component responsible for mapping between Address entity and AddressDTO objects.
+ * This class provides methods for converting between the entity and DTO representations,
+ * facilitating the transfer of address-related data between different layers of the application.
+ *
+ * Methods:
+ * - {@code toDTO(Address address)}: Maps an Address entity to its AddressDTO representation. Returns null if the input is null.
+ * - {@code toEntity(AddressDTO addressDTO)}: Maps an AddressDTO to its Address entity representation. Returns null if the input is null.
+ */
 @Component
 public class AddressMapper {
 

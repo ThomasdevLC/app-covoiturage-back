@@ -8,6 +8,34 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Data Transfer Object (DTO) for representing an address with associated ride-sharing details.
+ * This class is intended to encapsulate data related to an address and its connections
+ * to ride-sharing operations such as departures and arrivals.
+ *
+ * The AddressRideSharesDTO includes fields for basic address details (street number, street name,
+ * postal code, city) along with lists of associated ride-sharing departures and arrivals.
+ *
+ * This class offers getter and setter methods for accessing and modifying its properties
+ * and is equipped with validation annotations to ensure data integrity.
+ *
+ * Fields:
+ * - id: Unique identifier for the address.
+ * - number: Represents the street number, must be greater than zero.
+ * - street: The name of the street, must be non-empty and have a length between 2 and 100 characters.
+ * - code: The postal code, must have an exact length of 5 characters.
+ * - city: The name of the city, must be non-empty and have a length between 2 and 100 characters.
+ * - rideShareDepartures: List containing ride share departures associated with the address.
+ * - rideShareArrivals: List containing ride share arrivals associated with the address.
+ *
+ * Constructors:
+ * - A default no-argument constructor for creating an empty AddressRideSharesDTO.
+ * - A parameterized constructor for initializing an AddressRideSharesDTO with specific values.
+ *
+ * Validation:
+ * - Field level validation ensures requirements such as non-null values and field length constraints
+ *   are adhered to during data operations.
+ */
 public class AddressRideSharesDTO {
 
     private int id;
